@@ -1,0 +1,81 @@
+#############################################################################
+#
+#	CyberBittorrent for C
+#
+#	Copyright (C) Satoshi Konno 2007
+#
+#	06/05/07
+#		- first release.
+#
+#############################################################################
+
+AC_INIT(include/cybergarage/bittorrent/cbittorrent.h)
+AC_CONFIG_AUX_DIR(config)
+
+AM_INIT_AUTOMAKE(cgbittorrent, 0.1)
+AM_CONFIG_HEADER(config.h)
+
+##############################
+# Checks for programs.
+##############################
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_AWK
+AC_PROG_LIBTOOL
+AC_PROG_RANLIB
+
+##############################
+# Checks for Long Long
+##############################
+
+AC_MSG_CHECKING([whether $CC supports long long])
+AC_TRY_COMPILE([
+#include <stdlib.h>
+typedef long long CgInt64;
+],
+[],
+[AC_MSG_RESULT(yes)
+AC_DEFINE([HAVE_LONGLONG],1,[LONGLONG])],
+[AC_MSG_RESULT(no)]
+)
+
+#############################################################################
+# Check whether libtool should be used
+#############################################################################
+
+AC_ARG_WITH(libtool,
+	AS_HELP_STRING([--with-libtool],
+		       [use libtool to build the library (default = yes)]),
+		       [with_libtool=no],
+		       [with_libtool=yes])
+AM_CONDITIONAL(HAVE_LIBTOOL, test $with_libtool = yes)
+
+##############################
+# Checks for functions
+##############################
+
+AC_CHECK_FUNCS([printf])
+
+##############################
+# Checks for library
+##############################
+	
+AC_CHECK_HEADERS([cybergarage/http/chttp.h],,[AC_MSG_ERROR(This library needs CyberLink for C)])
+AC_CHECK_LIB([clinkc],[main])
+
+##############################
+# Makefiles
+##############################
+
+AC_OUTPUT([
+Makefile
+include/Makefile
+lib/Makefile
+lib/unix/Makefile
+sample/Makefile
+sample/printpeers/Makefile
+sample/printpeers/unix/Makefile
+testunit/Makefile
+testunit/unix/Makefile
+])
