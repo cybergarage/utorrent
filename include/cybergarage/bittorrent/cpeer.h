@@ -22,6 +22,7 @@ extern "C" {
 
 #include <cybergarage/typedef.h>
 #include <cybergarage/util/clist.h>
+#include <cybergarage/net/csocket.h>
 
 /****************************************
 * Define
@@ -37,6 +38,7 @@ typedef struct _CgBittorrentPeer {
 	struct _CgBittorrentPeer *next;
 	char *addr;
 	int port;
+	CgSocket *sock;
 } CgBittorrentPeer, CgBittorrentPeerList;
 
 /****************************************
@@ -150,6 +152,24 @@ void cg_bittorrent_peer_setaddress(CgBittorrentPeer *peer, char *addr);
  * \return Port of the peer.
  */
 #define cg_bittorrent_peer_getport(peer) (peer->port)
+
+ /**
+ * Connect the specified peer.
+ *
+ * \param peer Peer in question.
+ *
+ * \return TRUE when the connection is succeeded, otherwise FALSE.
+ */
+BOOL cg_bittorrent_peer_connect(CgBittorrentPeer *peer);
+
+ /**
+ * Close a connection of the specified peer.
+ *
+ * \param peer Peer in question.
+ *
+ * \return TRUE when the connection is closed normally, otherwise FALSE.
+ */
+BOOL cg_bittorrent_peer_close(CgBittorrentPeer *peer);
 
 #ifdef  __cplusplus
 }

@@ -30,6 +30,7 @@ cgbittorrent_source = \
 	../../src/cybergarage/bittorrent/cmetainfo_print.c \
 	../../src/cybergarage/bittorrent/cpeer.c \
 	../../src/cybergarage/bittorrent/cpeer_list.c \
+	../../src/cybergarage/bittorrent/cpeer_socket.c \
 	../../src/cybergarage/bittorrent/csha1.c \
 	../../src/cybergarage/bittorrent/ctracker.c \
 	../../src/cybergarage/bittorrent/ctracker_fetch.c \

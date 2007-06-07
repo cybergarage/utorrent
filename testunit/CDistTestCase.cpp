@@ -367,3 +367,39 @@ void CDistTestCase::testSHA1()
     printf ("\nError %d. Should be %d.\n", err, shaNull );
 	*/
 }
+
+////////////////////////////////////////
+// testPeerSocket
+////////////////////////////////////////
+
+void CDistTestCase::testPeerSocket()
+{
+	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
+	cg_bittorrent_tracker_load(
+		cbt , 
+		cbm,
+		(unsigned char *)CDIST_TEST_TRACKER_PEERID,
+		"",
+		CDIST_TEST_TRACKER_PORT,
+		CDIST_TEST_TRACKER_UPLOADED,
+		CDIST_TEST_TRACKER_DOWNLOADED,
+		CDIST_TEST_TRACKER_LEFT,
+		TRUE,
+		CG_BITTORRENT_TRACKER_EVENT_STARTED,
+		CDIST_TEST_TRACKER_NUMWANT
+		);
+
+	CgBittorrentPeer *cbp = cg_bittorrent_tracker_getpeers(cbt);
+	CPPUNIT_ASSERT(cbp);
+	CPPUNIT_ASSERT(0< cg_strlen(cg_bittorrent_peer_getaddress(cbp)));
+	CPPUNIT_ASSERT(0 < cg_bittorrent_peer_getport(cbp));
+
+	CPPUNIT_ASSERT(cg_bittorrent_peer_connect(cbp));
+	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
+
+	cg_bittorrent_tracker_delete(cbt);
+	cg_bittorrent_metainfo_delete(cbm);
+}
+

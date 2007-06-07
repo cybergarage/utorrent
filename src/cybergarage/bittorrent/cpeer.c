@@ -32,6 +32,7 @@ CgBittorrentPeer *cg_bittorrent_peer_new(void)
 
 	peer->addr = NULL;
 	peer->port = 0;
+	peer->sock = NULL;
 
 	return peer;
 }
@@ -46,6 +47,9 @@ void cg_bittorrent_peer_delete(CgBittorrentPeer *peer)
 		return;
 
 	cg_bittorrent_peer_setaddress(peer, NULL);
+
+	if (peer->sock)
+		cg_socket_delete(peer->sock);
 
 	free(peer);
 }
