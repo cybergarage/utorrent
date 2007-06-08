@@ -402,4 +402,3 @@ void CDistTestCase::testPeerSocket()
 	cg_bittorrent_tracker_delete(cbt);
 	cg_bittorrent_metainfo_delete(cbm);
 }
-
