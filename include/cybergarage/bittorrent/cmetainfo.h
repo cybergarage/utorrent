@@ -152,6 +152,16 @@ BOOL cg_bittorrent_metainfo_fetch(CgBittorrentMetainfo *cbm, char *url);
  */
 void cg_bittorrent_metainfo_print(CgBittorrentMetainfo *cbm);
 
+/**
+ * Get the info hash.
+ *
+ * \param cbm Metainfo in question.
+ * \param infoHash Buffer to store the info hash.
+ *
+ * \return TRUE when the info hash was generated normally, otherwise NULL.
+ */
+BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char *infoHash);
+
 /****************************************
 * Macros
 ****************************************/

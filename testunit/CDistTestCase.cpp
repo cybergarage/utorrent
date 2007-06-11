@@ -372,7 +372,7 @@ void CDistTestCase::testSHA1()
 // testPeerSocket
 ////////////////////////////////////////
 
-void CDistTestCase::testPeerSocket()
+void CDistTestCase::testPeerHandshake()
 {
 	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
@@ -397,6 +397,15 @@ void CDistTestCase::testPeerSocket()
 	CPPUNIT_ASSERT(0 < cg_bittorrent_peer_getport(cbp));
 
 	CPPUNIT_ASSERT(cg_bittorrent_peer_connect(cbp));
+
+	CgBittorrentHandshake *hsIn = cg_bittorrent_handshake_new();
+	CgBittorrentHandshake *hsOut = cg_bittorrent_handshake_new();
+	cg_bittorrent_handshake_setinfohash(hsIn, "");
+	cg_bittorrent_handshake_setinfopeerid(hsIn, CDIST_TEST_TRACKER_PEERID);
+
+	cg_bittorrent_handshake_delete(hsIn);
+	cg_bittorrent_handshake_delete(hsOut);
+
 	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
 
 	cg_bittorrent_tracker_delete(cbt);

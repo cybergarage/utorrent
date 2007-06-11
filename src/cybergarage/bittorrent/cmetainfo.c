@@ -46,4 +46,23 @@ void cg_bittorrent_metainfo_delete(CgBittorrentMetainfo *cbm)
 	free(cbm);
 }
 
+/****************************************
+* cg_bittorrent_metainfo_getinfohash
+****************************************/
 
+BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char *infoHash)
+{
+	CgBittorrentBencoding *infoVal;
+
+	if (!cbm)
+		return FALSE;
+
+	infoVal = cg_bittorrent_metainfo_getdictionaryvaluebyname(cbm, CG_BITTORRENT_METAINFO_INFO);
+	if (!infoVal)
+		return FALSE;
+
+	if (!cg_bittorrent_bencoding_tosha1(infoVal, infoHash))
+		return FALSE;
+
+	return TRUE;
+}

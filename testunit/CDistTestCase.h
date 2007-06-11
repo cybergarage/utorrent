@@ -18,7 +18,7 @@ class CDistTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( testMetainfoLoad);
   CPPUNIT_TEST( testTrackerLoad);
   //CPPUNIT_TEST( testSHA1 );
-  CPPUNIT_TEST( testPeerSocket);
+  CPPUNIT_TEST( testPeerHandshake);
 
   CPPUNIT_TEST_SUITE_END();
 
@@ -38,7 +38,7 @@ protected:
 	void testMetainfoLoad();
 	void testTrackerLoad();
 	void testSHA1();
-	void testPeerSocket();
+	void testPeerHandshake();
 };
 
 #endif

@@ -23,6 +23,7 @@ extern "C" {
 #include <cybergarage/typedef.h>
 #include <cybergarage/util/clist.h>
 #include <cybergarage/net/csocket.h>
+#include <cybergarage/bittorrent/chandshake.h>
 
 /****************************************
 * Define
@@ -170,6 +171,41 @@ BOOL cg_bittorrent_peer_connect(CgBittorrentPeer *peer);
  * \return TRUE when the connection is closed normally, otherwise FALSE.
  */
 BOOL cg_bittorrent_peer_close(CgBittorrentPeer *peer);
+
+ /**
+ * Read data from the specified peer.
+ *
+ * \param peer Peer in question.
+ * \param buffer Buffer to read.
+ * \param bufferLen Length of the buffer.
+ *
+ * \return a number of read data.
+ */
+
+#define cg_bittorrent_peer_read(peer, buffer, bufferLen) cg_socket_read(peer->sock, buffer, bufferLen)
+
+ /**
+ * Write data to the specified peer.
+ *
+ * \param peer Peer in question.
+ * \param buffer Buffer to write.
+ * \param bufferLen Length of the buffer.
+ *
+ * \return a number of wrote data.
+ */
+
+#define cg_bittorrent_peer_write(peer, buffer, bufferLen) cg_socket_write(peer->sock, buffer, bufferLen)
+
+ /**
+ * Handshake with the current peer.
+ *
+ * \param peer Peer in question.
+ * \param hsIn Handshake infomation of the client.
+ * \param hsOut Handshake infomation of the connected peer.
+ *
+ * \return TRUE when the connection is closed normally, otherwise FALSE.
+ */
+BOOL cg_bittorrent_peer_handshake(CgBittorrentPeer *peer, CgBittorrentHandshake *hsIn, CgBittorrentHandshake *hsOut);
 
 #ifdef  __cplusplus
 }

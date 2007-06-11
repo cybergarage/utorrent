@@ -28,8 +28,6 @@ extern "C" {
 
 #define CG_BITTORRENT_HANDSHAKE_PSTR "BitTorrent protocol"
 
-
-
 /****************************************
 * Data Type
 ****************************************/
@@ -62,6 +60,33 @@ CgBittorrentHandshake *cg_bittorrent_handshake_new(void);
 void cg_bittorrent_handshake_delete(CgBittorrentHandshake *hs);
 
 /**
+ * Get a pstrlen of the specified handshake.
+ *
+ * \param hs Handshake in question.
+ *
+ * \return pstrlen of the handshake.
+ */
+#define cg_bittorrent_handshake_getpstrlen(hs) (hs->pstrlen)
+
+/**
+ * Get a pstr of the specified handshake.
+ *
+ * \param hs Handshake in question.
+ *
+ * \return pstr of the handshake.
+ */
+#define cg_bittorrent_handshake_getpstr(hs) (hs->pstr)
+
+/**
+ * Get a reserved of the specified handshake.
+ *
+ * \param hs Handshake in question.
+ *
+ * \return reserved of the handshake.
+ */
+#define cg_bittorrent_handshake_getreserved(hs) (hs->reserved)
+
+/**
  * Set a info_hash of the specified handshake.
  *
  * \param hs Handshake in question.
@@ -76,7 +101,7 @@ void cg_bittorrent_handshake_delete(CgBittorrentHandshake *hs);
  *
  * \return Info_hash of the handshake.
  */
-#define cg_bittorrent_handshake_getinfohash(peer) (hs->infoHash)
+#define cg_bittorrent_handshake_getinfohash(hs) (hs->infoHash)
 
 /**
  * Set a peer_id of the specified handshake.
