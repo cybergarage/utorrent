@@ -109,7 +109,7 @@ void cg_bittorrent_handshake_delete(CgBittorrentHandshake *hs);
  * \param hs Handshake in question.
  * \param value Peer_id to set.
  */
-#define cg_bittorrent_handshake_setpeerid(hs, value) memcpy(hs->peerid, value, sizeof(hs->peerid))
+#define cg_bittorrent_handshake_setpeerid(hs, value) memcpy(hs->peerId, value, sizeof(hs->peerId))
 
 /**
  * Get a peerid of the specified handshake.
