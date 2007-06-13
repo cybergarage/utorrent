@@ -33,7 +33,7 @@ extern "C" {
 ****************************************/
 
 typedef struct _CgBittorrentHandshake {
-	unsigned int pstrlen;
+	unsigned char pstrlen;
 	char *pstr;
 	unsigned char reserved[8];
 	unsigned char infoHash[20];

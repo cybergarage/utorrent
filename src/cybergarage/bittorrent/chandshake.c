@@ -31,6 +31,8 @@ CgBittorrentHandshake *cg_bittorrent_handshake_new(void)
 	hs->pstrlen =cg_strlen(CG_BITTORRENT_HANDSHAKE_PSTR);
 	hs->pstr = cg_strdup(CG_BITTORRENT_HANDSHAKE_PSTR);
 	memset(hs->reserved, 0, sizeof(hs->reserved));
+	memset(hs->infoHash, 0, sizeof(hs->infoHash));
+	memset(hs->peerId, 0, sizeof(hs->peerId));
 
 	return hs;
 }

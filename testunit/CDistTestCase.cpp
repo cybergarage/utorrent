@@ -391,6 +391,9 @@ void CDistTestCase::testPeerHandshake()
 		CDIST_TEST_TRACKER_NUMWANT
 		);
 
+	unsigned char infoValHash[CG_SHA1_HASH_SIZE];
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(cbm, infoValHash));
+
 	CgBittorrentPeer *cbp = cg_bittorrent_tracker_getpeers(cbt);
 	CPPUNIT_ASSERT(cbp);
 	CPPUNIT_ASSERT(0< cg_strlen(cg_bittorrent_peer_getaddress(cbp)));
@@ -400,7 +403,7 @@ void CDistTestCase::testPeerHandshake()
 
 	CgBittorrentHandshake *hsIn = cg_bittorrent_handshake_new();
 	CgBittorrentHandshake *hsOut = cg_bittorrent_handshake_new();
-	cg_bittorrent_handshake_setinfohash(hsIn, "");
+	cg_bittorrent_handshake_setinfohash(hsIn, infoValHash);
 	cg_bittorrent_handshake_setpeerid(hsIn, CDIST_TEST_TRACKER_PEERID);
 
 	CPPUNIT_ASSERT(cg_bittorrent_peer_handshake(cbp, hsIn, hsOut));
