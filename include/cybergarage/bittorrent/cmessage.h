@@ -64,8 +64,9 @@ extern "C" {
 ****************************************/
 
 typedef struct _CgBittorrentMessage {
-	unsigned int lenght;
+	unsigned int length;
 	unsigned char type;
+	char *payload;
 } CgBittorrentMessage;
 
 /****************************************
@@ -102,7 +103,7 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg);
  *
  * \return Length of the message.
  */
-#define cg_bittorrent_message_getlength(peer) (msg->length)
+#define cg_bittorrent_message_getlength(msg) (msg->length)
 
 /**
  * Set a type of the specified message.

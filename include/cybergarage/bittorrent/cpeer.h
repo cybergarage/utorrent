@@ -24,6 +24,7 @@ extern "C" {
 #include <cybergarage/util/clist.h>
 #include <cybergarage/net/csocket.h>
 #include <cybergarage/bittorrent/chandshake.h>
+#include <cybergarage/bittorrent/cmessage.h>
 
 /****************************************
 * Define

@@ -27,6 +27,10 @@ CgBittorrentMessage *cg_bittorrent_message_new(void)
 	if (!msg)
 		return NULL;
 
+	msg->length = 0;
+	msg->type = 0;
+	msg->payload = NULL;
+
 	return msg;
 }
 
@@ -38,6 +42,9 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg)
 {
 	if (!msg)
 		return;
+
+	if (msg->payload)
+		free(msg->payload);
 
 	free(msg);
 }
