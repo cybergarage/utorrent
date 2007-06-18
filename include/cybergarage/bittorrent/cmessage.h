@@ -20,7 +20,7 @@
 extern "C" {
 #endif
 
-#include <cybergarage/typedef.h>
+#include <cybergarage/bittorrent/cpeer.h>
 
 /****************************************
 * Define
@@ -68,6 +68,16 @@ typedef struct _CgBittorrentMessage {
 	unsigned char type;
 	char *payload;
 } CgBittorrentMessage;
+
+/****************************************
+* Function Type
+****************************************/
+
+/**
+ * Prototype for reading a peer message
+ *
+ */
+typedef void (*CG_BITTORRENT_MESSAGE_READ_FUNC)(void *, char *, int);
 
 /****************************************
 * Function

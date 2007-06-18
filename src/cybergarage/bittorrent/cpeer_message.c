@@ -13,19 +13,19 @@
 *
 ******************************************************************/
 
-#include <cybergarage/bittorrent/cpeer.h>
+#include <cybergarage/bittorrent/cmessage.h>
 
 /****************************************
-* cg_bittorrent_peer_readmessage
+* cg_bittorrent_peer_recvmsgheader
 ****************************************/
 
-int cg_bittorrent_peer_recvmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg)
+BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessage *msg)
 {
 	unsigned int pstrlen;
 	unsigned int npstrlen;
 
-	if (!peer)
-		return 0;
+	if (!peer || !msg)
+		return FALSE;
 
 	/* Recv a message*/
 	if (cg_bittorrent_peer_read(peer, (char *)&npstrlen, sizeof(npstrlen)) != sizeof(npstrlen))
@@ -36,19 +36,81 @@ int cg_bittorrent_peer_recvmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg)
 	if (cg_bittorrent_peer_read(peer, &msg->type, sizeof(msg->type)) != sizeof(msg->type))
 		return FALSE;
 
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_peer_recvmsgbody
+****************************************/
+
+int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *msg)
+{
+	int pstrlen;
+	int readlen;
+	int nread;
+
+	if (!peer || !msg)
+		return 0;
+
 	if (msg->payload) {
 		free(msg->payload);
 		msg->payload = NULL;
 	}
 
-	if (0 < pstrlen) {
-		msg->payload = (char *)malloc(pstrlen);
-		if (cg_bittorrent_peer_read(peer, &msg->payload, pstrlen) != pstrlen)
-			return FALSE;
+	pstrlen = cg_bittorrent_message_getlength(msg);
+	if (pstrlen <=0)
+		return 0;
+
+	msg->payload = (char *)malloc(pstrlen);
+
+	readlen = 0;
+	while (readlen < pstrlen) {
+		nread = cg_bittorrent_peer_read(peer, (msg->payload + readlen), (pstrlen - readlen));
+		if (nread <= 0)
+			return readlen;
+		readlen += nread;
 	}
 
-	return TRUE;
+	return readlen;
 }
+
+/****************************************
+* cg_bittorrent_peer_recvmsgbodyasync
+****************************************/
+
+int cg_bittorrent_peer_recvmsgbodyasync(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CG_BITTORRENT_MESSAGE_READ_FUNC func, void *userData, char *buf, int bufSize)
+{
+	int pstrlen;
+	int readlen;
+	int nread;
+
+	if (!peer || !msg || !func)
+		return 0;
+
+	if (msg->payload) {
+		free(msg->payload);
+		msg->payload = NULL;
+	}
+
+	pstrlen = cg_bittorrent_message_getlength(msg);
+	if (pstrlen <=0)
+		return 0;
+
+	readlen = 0;
+	while (readlen < pstrlen) {
+		nread = pstrlen - readlen;
+		if (bufSize < nread)
+			nread = bufSize;
+		nread = cg_bittorrent_peer_read(peer, buf, nread);
+		if (nread <= 0)
+			return readlen;
+		func(userData, buf, nread);
+		readlen += nread;
+	}
+
+	return readlen;
+}
+
 
 /****************************************
 * cg_bittorrent_peer_writemessage
