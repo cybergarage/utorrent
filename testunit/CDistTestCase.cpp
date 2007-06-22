@@ -401,15 +401,26 @@ void CDistTestCase::testPeerHandshake()
 
 	CPPUNIT_ASSERT(cg_bittorrent_peer_connect(cbp));
 
+	/* Handshake */
 	CgBittorrentHandshake *hsIn = cg_bittorrent_handshake_new();
 	CgBittorrentHandshake *hsOut = cg_bittorrent_handshake_new();
 	cg_bittorrent_handshake_setinfohash(hsIn, infoValHash);
 	cg_bittorrent_handshake_setpeerid(hsIn, CDIST_TEST_TRACKER_PEERID);
-
 	CPPUNIT_ASSERT(cg_bittorrent_peer_handshake(cbp, hsIn, hsOut));
-
 	cg_bittorrent_handshake_delete(hsIn);
 	cg_bittorrent_handshake_delete(hsOut);
+
+	/* Message */
+	CgBittorrentMessage *msg = cg_bittorrent_message_new();
+/*
+	while (cg_bittorrent_peer_recvmsgheader(peer, msg)) {
+		switch (cg_bittorrent_message_gettype(msg)) {
+			default:
+				cg_bittorrent_peer_recvmsgbody(peer, msg);
+		}
+	}
+*/
+	cg_bittorrent_message_delete(msg);
 
 	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
 
