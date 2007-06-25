@@ -16,11 +16,11 @@
 #ifndef _CG_BITTORRENT_MESSAGE_H_
 #define _CG_BITTORRENT_MESSAGE_H_
 
+#include <cybergarage/typedef.h>
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
-
-#include <cybergarage/bittorrent/cpeer.h>
 
 /****************************************
 * Define

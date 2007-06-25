@@ -13,7 +13,7 @@
 *
 ******************************************************************/
 
-#include <cybergarage/bittorrent/cmessage.h>
+#include <cybergarage/bittorrent/cpeer.h>
 
 /****************************************
 * cg_bittorrent_peer_recvmsgheader

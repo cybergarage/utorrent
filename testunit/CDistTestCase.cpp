@@ -412,14 +412,17 @@ void CDistTestCase::testPeerHandshake()
 
 	/* Message */
 	CgBittorrentMessage *msg = cg_bittorrent_message_new();
-/*
-	while (cg_bittorrent_peer_recvmsgheader(peer, msg)) {
+	while (cg_bittorrent_peer_recvmsgheader(cbp, msg)) {
 		switch (cg_bittorrent_message_gettype(msg)) {
 			default:
-				cg_bittorrent_peer_recvmsgbody(peer, msg);
+				{
+					cg_bittorrent_peer_recvmsgbody(cbp, msg);
+					int msgType = cg_bittorrent_message_gettype(msg);
+				}
+				break;
 		}
 	}
-*/
+
 	cg_bittorrent_message_delete(msg);
 
 	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
