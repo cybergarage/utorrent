@@ -133,3 +133,18 @@ CgBittorrentBencodingList *cg_bittorrent_dictionary_getlistbyname(CgBittorrentDi
 	
 	return cg_bittorrent_bencoding_getlist(benElem);
 }
+
+/****************************************
+* cg_bittorrent_dictionary_getdictionarybyname
+****************************************/
+
+CgBittorrentDictionary *cg_bittorrent_dictionary_getdictionarybyname(CgBittorrentDictionary *cbd, char *name)
+{
+	CgBittorrentBencoding *benElem;
+
+	benElem = cg_bittorrent_dictionary_getvaluebyname(cbd, name);
+	if (!benElem)
+		return NULL;
+	
+	return cg_bittorrent_bencoding_getdictionary(benElem);
+}

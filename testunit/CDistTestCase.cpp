@@ -376,6 +376,14 @@ void CDistTestCase::testPeerHandshake()
 {
 	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+	cg_bittorrent_metainfo_print(cbm);
+	CgBittorrentDictionary *info = cg_bittorrent_metainfo_getinfo(cbm);
+	CPPUNIT_ASSERT(info);
+
+	CgBittorrentBencodingList *files = cg_bittorrent_metainfo_getinfofiles(cbm);
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_ismultiplefilemode(cbm) == TRUE);
+	CgInt64 pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+
 	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
 	cg_bittorrent_tracker_load(
 		cbt , 
@@ -392,6 +400,7 @@ void CDistTestCase::testPeerHandshake()
 		);
 
 	unsigned char infoValHash[CG_SHA1_HASH_SIZE];
+	
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(cbm, infoValHash));
 
 	CgBittorrentPeer *cbp = cg_bittorrent_tracker_getpeers(cbt);

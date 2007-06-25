@@ -200,6 +200,16 @@ CgInt64 cg_bittorrent_dictionary_getintegerbyname(CgBittorrentDictionary *cbd, c
  */
 CgBittorrentBencodingList *cg_bittorrent_dictionary_getlistbyname(CgBittorrentDictionary *cbd, char *name);
 
+/**
+ * Return a dictionary list by name.
+ *
+ * \param cbm Dictionary in question.
+ * \param name Name of the dictionary.
+ *
+ * \return Dictionary of the dictionary if the specified name is found and the type is list, otherwise NULL.
+ */
+CgBittorrentDictionary *cg_bittorrent_dictionary_getdictionarybyname(CgBittorrentDictionary *cbd, char *name);
+
 /****************************************
 * Function (Internal)
 ****************************************/

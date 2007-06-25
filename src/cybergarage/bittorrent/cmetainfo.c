@@ -57,7 +57,7 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
 	if (!cbm)
 		return FALSE;
 
-	infoVal = cg_bittorrent_metainfo_getdictionaryvaluebyname(cbm, CG_BITTORRENT_METAINFO_INFO);
+	infoVal = cg_bittorrent_metainfo_getvaluebyname(cbm, CG_BITTORRENT_METAINFO_INFO);
 	if (!infoVal)
 		return FALSE;
 
