@@ -14,6 +14,7 @@ class CDistTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( testBencodingList );
   CPPUNIT_TEST( testBencodingDictionary );
   CPPUNIT_TEST( testBencodingDictionaryNest );
+  CPPUNIT_TEST( testMessageHasPiece );
   //CPPUNIT_TEST( testMetainfoFetch );
   CPPUNIT_TEST( testMetainfoLoad);
   CPPUNIT_TEST( testTrackerLoad);
@@ -34,6 +35,7 @@ protected:
 	void testBencodingList();
 	void testBencodingDictionary();
 	void testBencodingDictionaryNest();
+	void testMessageHasPiece();
 	void testMetainfoFetch();
 	void testMetainfoLoad();
 	void testTrackerLoad();

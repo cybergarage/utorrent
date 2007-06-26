@@ -66,7 +66,7 @@ extern "C" {
 typedef struct _CgBittorrentMessage {
 	unsigned int length;
 	unsigned char type;
-	char *payload;
+	CgByte *payload;
 } CgBittorrentMessage;
 
 /****************************************
@@ -131,6 +131,16 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg);
  * \return Type of the message.
  */
 #define cg_bittorrent_message_gettype(msg) (msg->type)
+
+/**
+ * Check if a peer has the specfied piece.
+ *
+ * \param msg Message in question.
+ * \param index Index of the piece.
+ *
+ * \return TRUE if the peer has the specified piece, otherwise FALSE.
+ */
+BOOL cg_bittorrent_message_haspiece(CgBittorrentMessage *msg, int index);
 
 /****************************************
 * Message

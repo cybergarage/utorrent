@@ -189,7 +189,8 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
 #define cg_bittorrent_metainfo_getinfoname(cbb) cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_NAME)
 #define cg_bittorrent_metainfo_getinfolength(cbb) cg_bittorrent_dictionary_getintegerbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_LENGTH)
 #define cg_bittorrent_metainfo_getinfomd5sum(cbb) cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_MD5SUM)
-#define cg_bittorrent_metainfo_getinfofiles(cbb) cg_bittorrent_dictionary_getlistbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_FILES)
+#define cg_bittorrent_metainfo_getinfofileslist(cbb) cg_bittorrent_dictionary_getlistbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_FILES)
+#define cg_bittorrent_metainfo_getinfofiles(cbb) cg_bittorrent_bencodinglist_gets(cg_bittorrent_metainfo_getinfofileslist(cbb))
 
 /****************************************
 * Function (Metainfo)

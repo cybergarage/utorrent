@@ -205,6 +205,30 @@ void CDistTestCase::testBencodingDictionaryNest()
 }
 
 ////////////////////////////////////////
+// testMessageHasPiece
+////////////////////////////////////////
+
+#define CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE 32
+
+void CDistTestCase::testMessageHasPiece()
+{
+	CgBittorrentMessage *msg = cg_bittorrent_message_new();
+	msg->type = CG_BITTORRENT_MESSAGE_BITFIELD;
+	msg->length = CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE;
+	msg->payload = (CgByte *)malloc(CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE);
+	for (int n=0; n<32; n++)
+		msg->payload[n] = 0xAA; // 10101010
+	for (int i=0; i<(CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE*8); i++) {
+		BOOL hasPiece = cg_bittorrent_message_haspiece(msg, i);
+		if (i % 2)
+			CPPUNIT_ASSERT(!hasPiece);
+		else
+			CPPUNIT_ASSERT(hasPiece);
+	}
+	cg_bittorrent_message_delete(msg);
+}
+
+////////////////////////////////////////
 // testMetainfoFetch
 ////////////////////////////////////////
 
@@ -380,8 +404,15 @@ void CDistTestCase::testPeerHandshake()
 	CgBittorrentDictionary *info = cg_bittorrent_metainfo_getinfo(cbm);
 	CPPUNIT_ASSERT(info);
 
-	CgBittorrentBencodingList *files = cg_bittorrent_metainfo_getinfofiles(cbm);
+	/* Info */
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_ismultiplefilemode(cbm) == TRUE);
+	CgBittorrentBencodingList *filesList = cg_bittorrent_metainfo_getinfofileslist(cbm);
+	CPPUNIT_ASSERT(filesList);
+	CPPUNIT_ASSERT(cg_bittorrent_bencodinglist_size(filesList) == 2);
+	for (CgBittorrentBencoding *ben = cg_bittorrent_metainfo_getinfofiles(cbm); ben; ben = cg_bittorrent_bencoding_next(ben)) {
+		CPPUNIT_ASSERT(cg_bittorrent_bencoding_isdictionary(ben));
+	}
+
 	CgInt64 pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
 
 	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
@@ -405,22 +436,34 @@ void CDistTestCase::testPeerHandshake()
 
 	CgBittorrentPeer *cbp = cg_bittorrent_tracker_getpeers(cbt);
 	CPPUNIT_ASSERT(cbp);
-	CPPUNIT_ASSERT(0< cg_strlen(cg_bittorrent_peer_getaddress(cbp)));
-	CPPUNIT_ASSERT(0 < cg_bittorrent_peer_getport(cbp));
-
-	CPPUNIT_ASSERT(cg_bittorrent_peer_connect(cbp));
 
 	/* Handshake */
 	CgBittorrentHandshake *hsIn = cg_bittorrent_handshake_new();
 	CgBittorrentHandshake *hsOut = cg_bittorrent_handshake_new();
 	cg_bittorrent_handshake_setinfohash(hsIn, infoValHash);
 	cg_bittorrent_handshake_setpeerid(hsIn, CDIST_TEST_TRACKER_PEERID);
-	CPPUNIT_ASSERT(cg_bittorrent_peer_handshake(cbp, hsIn, hsOut));
+	while(cbp) {
+		CPPUNIT_ASSERT(0< cg_strlen(cg_bittorrent_peer_getaddress(cbp)));
+		CPPUNIT_ASSERT(0 < cg_bittorrent_peer_getport(cbp));
+		if (cg_bittorrent_peer_connect(cbp) == FALSE)
+			cbp = cg_bittorrent_peer_next(cbp);
+		if (cg_bittorrent_peer_handshake(cbp, hsIn, hsOut) == TRUE)
+			break;
+		cbp = cg_bittorrent_peer_next(cbp);
+	}
 	cg_bittorrent_handshake_delete(hsIn);
 	cg_bittorrent_handshake_delete(hsOut);
 
-	/* Message */
+	CPPUNIT_ASSERT(cbp);
+
+	/* Bitfield */
 	CgBittorrentMessage *msg = cg_bittorrent_message_new();
+	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgheader(cbp, msg));
+	char msgType = cg_bittorrent_message_gettype(msg);
+	//CPPUNIT_ASSERT(msgType == CG_BITTORRENT_MESSAGE_BITFIELD);
+	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgbody(cbp, msg));
+	CgInt64 msgLength = cg_bittorrent_message_getlength(msg);
+	/*
 	while (cg_bittorrent_peer_recvmsgheader(cbp, msg)) {
 		switch (cg_bittorrent_message_gettype(msg)) {
 			default:
@@ -431,7 +474,9 @@ void CDistTestCase::testPeerHandshake()
 				break;
 		}
 	}
-
+*/
+	// 3525195776 / 262144 / 8 = 1680.9443359375
+	//msgLength = 1682;
 	cg_bittorrent_message_delete(msg);
 
 	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
