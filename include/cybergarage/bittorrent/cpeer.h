@@ -41,6 +41,8 @@ typedef struct _CgBittorrentPeer {
 	char *addr;
 	int port;
 	CgSocket *sock;
+	CgByte *bitfield;
+	int bitfieldLength;
 } CgBittorrentPeer, CgBittorrentPeerList;
 
 /****************************************
@@ -155,6 +157,33 @@ void cg_bittorrent_peer_setaddress(CgBittorrentPeer *peer, char *addr);
  */
 #define cg_bittorrent_peer_getport(peer) (peer->port)
 
+/**
+ * Set a peer bitfield.
+ *
+ * \param peer Peer in question.
+ * \param value Bitfield to set.
+ * \param value Length of the bitfield to set.
+ */
+void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, int bitfieldLength);
+
+ /**
+ * Get a peer bitfield.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Bitfield of the peer.
+ */
+#define cg_bittorrent_peer_getbitfield(peer) (peer->bitfield)
+
+ /**
+ * Get a length of the bitfield.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Length of the bitfield.
+ */
+#define cg_bittorrent_peer_getbitfieldlength(peer) (peer->bitfieldLength)
+
  /**
  * Connect the specified peer.
  *
@@ -207,6 +236,28 @@ BOOL cg_bittorrent_peer_close(CgBittorrentPeer *peer);
  * \return TRUE when the connection is closed normally, otherwise FALSE.
  */
 BOOL cg_bittorrent_peer_handshake(CgBittorrentPeer *peer, CgBittorrentHandshake *hsIn, CgBittorrentHandshake *hsOut);
+
+/**
+ * Check if a peer has the specfied piece.
+ *
+ * \param peer Peer in question.
+ * \param index Index of the piece.
+ *
+ * \return TRUE if the peer has the specified piece, otherwise FALSE.
+ */
+BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index);
+
+/**
+ * Request the specfied piece.
+ *
+ * \param peer Peer in question.
+ * \param index Index of the piece.
+ * \param begin Offset of the piece.
+ * \param length Length of the piece.
+ *
+ * \return TRUE if the request is successful, otherwise FALSE.
+ */
+BOOL cg_bittorrent_peer_request(CgBittorrentPeer *peer, int index, int begin, int length);
 
 BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
 int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *msg);

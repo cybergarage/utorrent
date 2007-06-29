@@ -241,6 +241,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_request.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_socket.c"
 				>
 			</File>

@@ -49,21 +49,3 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg)
 	free(msg);
 }
 
-/****************************************
-* cg_bittorrent_message_delete
-****************************************/
-
-BOOL cg_bittorrent_message_haspiece(CgBittorrentMessage *msg, int index)
-{
-	int bitfieldNum;
-	int bitfieldOffset;
-	CgByte bitfieldMask;
-	if (cg_bittorrent_message_gettype(msg) != CG_BITTORRENT_MESSAGE_BITFIELD)
-		return FALSE;
-	bitfieldNum = index / 8;
-	bitfieldOffset = index % 8;
-	bitfieldMask = 1 << (7 - bitfieldOffset); 
-	if (cg_bittorrent_message_getlength(msg) < bitfieldNum)
-		return FALSE;
-	return (msg->payload[bitfieldNum] & bitfieldMask) ? TRUE : FALSE;
-}

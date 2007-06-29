@@ -133,14 +133,13 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg);
 #define cg_bittorrent_message_gettype(msg) (msg->type)
 
 /**
- * Check if a peer has the specfied piece.
+ * Get a payload of the specified message.
  *
  * \param msg Message in question.
- * \param index Index of the piece.
  *
- * \return TRUE if the peer has the specified piece, otherwise FALSE.
+ * \return Payload of the message.
  */
-BOOL cg_bittorrent_message_haspiece(CgBittorrentMessage *msg, int index);
+#define cg_bittorrent_message_getpayload(msg) (msg->payload)
 
 /****************************************
 * Message

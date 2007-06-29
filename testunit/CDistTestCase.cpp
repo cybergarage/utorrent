@@ -212,20 +212,19 @@ void CDistTestCase::testBencodingDictionaryNest()
 
 void CDistTestCase::testMessageHasPiece()
 {
-	CgBittorrentMessage *msg = cg_bittorrent_message_new();
-	msg->type = CG_BITTORRENT_MESSAGE_BITFIELD;
-	msg->length = CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE;
-	msg->payload = (CgByte *)malloc(CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE);
+	CgBittorrentPeer *peer = cg_bittorrent_peer_new();
+	peer->bitfieldLength = CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE;
+	peer->bitfield = (CgByte *)malloc(CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE);
 	for (int n=0; n<32; n++)
-		msg->payload[n] = 0xAA; // 10101010
+		peer->bitfield[n] = 0xAA; // 10101010
 	for (int i=0; i<(CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE*8); i++) {
-		BOOL hasPiece = cg_bittorrent_message_haspiece(msg, i);
+		BOOL hasPiece = cg_bittorrent_peer_haspiece(peer, i);
 		if (i % 2)
 			CPPUNIT_ASSERT(!hasPiece);
 		else
 			CPPUNIT_ASSERT(hasPiece);
 	}
-	cg_bittorrent_message_delete(msg);
+	cg_bittorrent_peer_delete(peer);
 }
 
 ////////////////////////////////////////
@@ -463,6 +462,8 @@ void CDistTestCase::testPeerHandshake()
 	//CPPUNIT_ASSERT(msgType == CG_BITTORRENT_MESSAGE_BITFIELD);
 	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgbody(cbp, msg));
 	CgInt64 msgLength = cg_bittorrent_message_getlength(msg);
+	cg_bittorrent_peer_setbitfield(cbp, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getlength(msg));
+
 	/*
 	while (cg_bittorrent_peer_recvmsgheader(cbp, msg)) {
 		switch (cg_bittorrent_message_gettype(msg)) {
