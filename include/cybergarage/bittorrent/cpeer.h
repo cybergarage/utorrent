@@ -38,6 +38,7 @@ typedef struct _CgBittorrentPeer {
 	BOOL headFlag;
 	struct _CgBittorrentPeer *prev;
 	struct _CgBittorrentPeer *next;
+	void *tracker;
 	char *addr;
 	int port;
 	CgSocket *sock;
@@ -122,6 +123,23 @@ void cg_bittorrent_peer_delete(CgBittorrentPeer *peer);
  * \return Next Peer of the list, otherwise NULL if the list has no items.
  */
 #define cg_bittorrent_peer_next(peer) (CgBittorrentPeer *)cg_list_next((CgList *)peer)
+
+/**
+ * Set a parent tracker.
+ *
+ * \param peer Peer in question.
+ * \param value Tracker to set.
+ */
+#define cg_bittorrent_peer_settracker(peer, tracker)  (peer->tracker = value)
+
+/**
+ * Get a parent tracker.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Tracker of the peer.
+ */
+#define cg_bittorrent_peer_gettracker(peer) (CgBittorrentTracker *)(peer->tracker)
 
 /**
  * Set a peer address.

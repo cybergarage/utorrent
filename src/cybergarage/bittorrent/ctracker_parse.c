@@ -62,6 +62,7 @@ BOOL cg_bittorrent_tracker_parse(CgBittorrentTracker *cbt, char *data, int dataL
 		newPeer = cg_bittorrent_peer_new();
 		if (!newPeer)
 			continue;
+		cg_bittorrent_peer_settracker(newPeer, cbt);
 		cg_bittorrent_peer_setaddress(newPeer, addr);
 		cg_bittorrent_peer_setport(newPeer, ntohs(*port));
 		cg_bittorrent_peerlist_add(peerList, newPeer);

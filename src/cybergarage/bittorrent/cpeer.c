@@ -35,6 +35,7 @@ CgBittorrentPeer *cg_bittorrent_peer_new(void)
 	peer->sock = NULL;
 	peer->bitfield = NULL;
 	peer->bitfieldLength = 0;
+	peer->tracker = NULL;
 
 	return peer;
 }
