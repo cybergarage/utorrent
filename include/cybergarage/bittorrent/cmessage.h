@@ -17,6 +17,7 @@
 #define _CG_BITTORRENT_MESSAGE_H_
 
 #include <cybergarage/typedef.h>
+#include <cybergarage/bittorrent/cbencoding.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -64,7 +65,7 @@ extern "C" {
 ****************************************/
 
 typedef struct _CgBittorrentMessage {
-	unsigned int length;
+	CgBittorrentInteger length;
 	unsigned char type;
 	CgByte *payload;
 } CgBittorrentMessage;
@@ -133,6 +134,14 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg);
 #define cg_bittorrent_message_gettype(msg) (msg->type)
 
 /**
+ * Set a payload of the specified message.
+ *
+ * \param msg Message in question.
+ * \param value Payload to set.
+ */
+void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value);
+
+/**
  * Get a payload of the specified message.
  *
  * \param msg Message in question.
@@ -140,6 +149,15 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg);
  * \return Payload of the message.
  */
 #define cg_bittorrent_message_getpayload(msg) (msg->payload)
+
+/**
+ * Get a integer value of the specified message.
+ *
+ * \param msg Message in question.
+ *
+ * \return Integer of the message.
+ */
+CgBittorrentInteger cg_bittorrent_message_getpayloadinteger(CgBittorrentMessage *msg, int index);
 
 /****************************************
 * Message

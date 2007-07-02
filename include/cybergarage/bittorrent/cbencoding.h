@@ -44,6 +44,8 @@ extern "C" {
 #define CG_BITTORRENT_BENCODING_TRAIL_ID 'e'
 #define CG_BITTORRENT_BENCODING_DELIM ':'
 
+typedef unsigned int CgBittorrentInteger;
+
 /****************************************
 * Data Type
 ****************************************/

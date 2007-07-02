@@ -111,18 +111,30 @@ int cg_bittorrent_peer_recvmsgbodyasync(CgBittorrentPeer *peer, CgBittorrentMess
 	return readlen;
 }
 
+/****************************************
+* cg_bittorrent_peer_recvmsg
+****************************************/
+
+BOOL cg_bittorrent_peer_recvmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg)
+{
+	if (cg_bittorrent_peer_recvmsgheader(peer, msg) == FALSE)
+		return FALSE;
+	if (cg_bittorrent_peer_recvmsgbody(peer, msg) != cg_bittorrent_message_getlength(msg))
+		return FALSE;
+	return TRUE;
+}
 
 /****************************************
 * cg_bittorrent_peer_writemessage
 ****************************************/
 
-int cg_bittorrent_peer_sendmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg)
+BOOL cg_bittorrent_peer_sendmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg)
 {
 	unsigned int pstrlen;
 	unsigned int npstrlen;
 
 	if (!peer)
-		return 0;
+		return FALSE;
 
 	/* Send message */
 	pstrlen = cg_bittorrent_message_getlength(msg);

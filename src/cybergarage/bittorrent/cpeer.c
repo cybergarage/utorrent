@@ -110,7 +110,7 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index)
 	bitfieldNum = index / 8;
 	bitfieldOffset = index % 8;
 	bitfieldMask = 1 << (7 - bitfieldOffset); 
-	if (cg_bittorrent_peer_getbitfieldlength(peer) < (unsigned int)bitfieldNum)
+	if (cg_bittorrent_peer_getbitfieldlength(peer) < (CgBittorrentInteger)bitfieldNum)
 		return FALSE;
 	return (peer->bitfield[bitfieldNum] & bitfieldMask) ? TRUE : FALSE;
 }

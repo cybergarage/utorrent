@@ -229,6 +229,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_command.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_handshake.c"
 				>
 			</File>
@@ -238,10 +242,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_message.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_request.c"
 				>
 			</File>
 			<File

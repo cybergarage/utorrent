@@ -49,3 +49,39 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg)
 	free(msg);
 }
 
+/****************************************
+* cg_bittorrent_message_setpayload
+****************************************/
+
+void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value)
+{
+	if (!msg)
+		return;
+
+	if (msg->payload)
+		free(msg->payload);
+
+	msg->payload = value;
+}
+
+/****************************************
+* cg_bittorrent_message_getpayloadinteger
+****************************************/
+
+CgBittorrentInteger cg_bittorrent_message_getpayloadinteger(CgBittorrentMessage *msg, int index)
+{
+	CgBittorrentInteger *intVal;
+
+	if (!msg)
+		return 0;
+
+	if (!msg->payload)
+		return 0;
+
+	if (cg_bittorrent_message_getlength(msg) <= index)
+		return 0;
+
+	intVal = (CgBittorrentInteger *)(msg->payload + index);
+
+	return *intVal;
+}
