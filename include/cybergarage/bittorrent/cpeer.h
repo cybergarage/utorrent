@@ -130,7 +130,7 @@ void cg_bittorrent_peer_delete(CgBittorrentPeer *peer);
  * \param peer Peer in question.
  * \param value Tracker to set.
  */
-#define cg_bittorrent_peer_settracker(peer, tracker)  (peer->tracker = value)
+#define cg_bittorrent_peer_settracker(peer, value)  (peer->tracker = value)
 
 /**
  * Get a parent tracker.
