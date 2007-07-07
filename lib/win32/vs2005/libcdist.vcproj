@@ -193,6 +193,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cdownloadmgr.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cfilemgr.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\chandshake.c"
 				>
 			</File>
@@ -280,6 +288,14 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\cybergarage\bittorrent\cdictionary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\cybergarage\bittorrent\cdownloadmgr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\cybergarage\bittorrent\cfilemgr.h"
 				>
 			</File>
 			<File
