@@ -17,6 +17,7 @@
 #define _CG_BITTORRENT_DOWNLOADMGR_H_
 
 #include <cybergarage/bittorrent/ctracker.h>
+#include <cybergarage/bittorrent/cfilemgr.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -27,7 +28,8 @@ extern "C" {
 ****************************************/
 
 typedef struct _CgBittorrentDownloadMgr {
-	int test;
+	CgBittorrentTracker *tracker;
+	CgBittorrentFileMgr *filemgr;
 } CgBittorrentDownloadMgr;
 
 /****************************************
@@ -35,35 +37,70 @@ typedef struct _CgBittorrentDownloadMgr {
 ****************************************/
 
 /**
- * Create a new downloadmgr.
+ * Create a new  downnload manager.
  *
- * \return New downloadmgr.
+ * \return New  downnload manager.
  */
 CgBittorrentDownloadMgr *cg_bittorrent_downloadmgr_new(void);
 
 /**
- * Destroy a downloadmgr.
+ * Destroy a downnload manager.
  *
- * \param dlmgr DownloadMgr to destroy.
+ * \param dlmgr  Downnload manager to destroy.
  */
 void cg_bittorrent_downloadmgr_delete(CgBittorrentDownloadMgr *dlmgr);
 
 /**
- * Set a downloadmgr type.
+ * Set a tracker of the specified download manager.
  *
- * \param dlmgr DownloadMgr in question.
- * \param value Type to set.
+ * \param dlmgr  Download manager in question.
+ * \param trakcer Tracker to set.
  */
-#define cg_bittorrent_downloadmgr_settype(dlmgr, value) (dlmgr->type = value)
+#define cg_bittorrent_downloadmgr_settrakcer(dlmgr, value) (dlmgr->tracker = value)
 
 /**
- * Return a downloadmgr type.
+ * Return a  tracker of the specified download manager.
  *
- * \param dlmgr DownloadMgr in question.
+ * \param dlmgr Download manager in question.
  *
- * \return DownloadMgr type.
+ * \return Tracker of the specified download manager.
  */
-#define cg_bittorrent_downloadmgr_gettype(dlmgr) (dlmgr->type)
+#define cg_bittorrent_downloadmgr_gettrakcer(dlmgr) (dlmgr->tracker)
+
+/**
+ * Set a file manager of the specified download manager.
+ *
+ * \param dlmgr  Download manager in question.
+ * \param trakcer File manager  to set.
+ */
+#define cg_bittorrent_downloadmgr_setfilemgr(dlmgr, value) (dlmgr->filemgr = value)
+
+/**
+ * Return a  file manager of the specified download manager.
+ *
+ * \param dlmgr Download manager in question.
+ *
+ * \return File manager of the specified download manager.
+ */
+#define cg_bittorrent_downloadmgr_getfilemgr(dlmgr) (dlmgr->filemgr)
+
+/**
+ * Start a downnload manager.
+ *
+ * \param dlmgr  Downnload manager to destroy.
+ *
+ * \return TRUE if the specified downalod manager is started normally, otherwise FALSE.
+ */
+BOOL cg_bittorrent_downloadmgr_start(CgBittorrentDownloadMgr *dlmgr);
+
+/**
+ * Stop a downnload manager.
+ *
+ * \param dlmgr  Downnload manager to destroy.
+ *
+ * \return TRUE if the specified downalod manager is stopped normally, otherwise FALSE.
+ */
+BOOL cg_bittorrent_downloadmgr_stop(CgBittorrentDownloadMgr *dlmgr);
 
 #ifdef  __cplusplus
 }

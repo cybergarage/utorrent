@@ -28,6 +28,9 @@ CgBittorrentDownloadMgr *cg_bittorrent_downloadmgr_new()
 	if (!dlmgr)
 		return NULL;
 
+	cg_bittorrent_downloadmgr_settrakcer(dlmgr, NULL);
+	cg_bittorrent_downloadmgr_setfilemgr(dlmgr, NULL);
+
 	return dlmgr;
 }
 
