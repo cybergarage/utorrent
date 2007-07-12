@@ -30,6 +30,7 @@ CgBittorrentDownloadMgr *cg_bittorrent_downloadmgr_new()
 
 	cg_bittorrent_downloadmgr_settrakcer(dlmgr, NULL);
 	cg_bittorrent_downloadmgr_setfilemgr(dlmgr, NULL);
+	cg_bittorrent_downloadmgr_setstrategymgr(dlmgr, NULL);
 
 	return dlmgr;
 }
@@ -43,5 +44,40 @@ void cg_bittorrent_downloadmgr_delete(CgBittorrentDownloadMgr *dlmgr)
 	if (!dlmgr)
 		return;
 
+	cg_bittorrent_downloadmgr_clear(dlmgr);
+
 	free(dlmgr);
+}
+
+/****************************************
+* cg_bittorrent_downloadmgr_clear
+****************************************/
+
+void cg_bittorrent_downloadmgr_clear(CgBittorrentDownloadMgr *dlmgr)
+{
+	if (!dlmgr)
+		return;
+}
+
+/****************************************
+* cg_bittorrent_downloadmgr_initialize
+****************************************/
+
+BOOL cg_bittorrent_downloadmgr_initialize(CgBittorrentDownloadMgr *dlmgr)
+{
+	CgBittorrentTracker *tracker;
+	CgBittorrentFileMgr *filemgr;
+	CgBittorrentStrategyMgr *stgmgr;
+
+	if (!dlmgr)
+		return FALSE;
+
+	tracker = cg_bittorrent_downloadmgr_gettrakcer(dlmgr);
+	filemgr = cg_bittorrent_downloadmgr_getfilemgr(dlmgr);
+	stgmgr = cg_bittorrent_downloadmgr_getstrategymgr(dlmgr);
+
+	if (!tracker || !filemgr ||!stgmgr)
+		return FALSE;
+
+	return TRUE;
 }

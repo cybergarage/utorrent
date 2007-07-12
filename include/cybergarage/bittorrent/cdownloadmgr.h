@@ -18,6 +18,7 @@
 
 #include <cybergarage/bittorrent/ctracker.h>
 #include <cybergarage/bittorrent/cfilemgr.h>
+#include <cybergarage/bittorrent/cstrategymgr.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -30,10 +31,11 @@ extern "C" {
 typedef struct _CgBittorrentDownloadMgr {
 	CgBittorrentTracker *tracker;
 	CgBittorrentFileMgr *filemgr;
+	CgBittorrentStrategyMgr *stgmgr;
 } CgBittorrentDownloadMgr;
 
 /****************************************
-* Function (DownloadMgr)
+* Function
 ****************************************/
 
 /**
@@ -85,6 +87,23 @@ void cg_bittorrent_downloadmgr_delete(CgBittorrentDownloadMgr *dlmgr);
 #define cg_bittorrent_downloadmgr_getfilemgr(dlmgr) (dlmgr->filemgr)
 
 /**
+ * Set a strategy manager of the specified download manager.
+ *
+ * \param dlmgr  Download manager in question.
+ * \param stgmgr Strategy manager  to set.
+ */
+#define cg_bittorrent_downloadmgr_setstrategymgr(dlmgr, value) (dlmgr->stgmgr = value)
+
+/**
+ * Return a  strategy manager of the specified download manager.
+ *
+ * \param dlmgr Download manager in question.
+ *
+ * \return Strategy manager of the specified download manager.
+ */
+#define cg_bittorrent_downloadmgr_getstrategymgr(dlmgr) (dlmgr->stgmgr)
+
+/**
  * Start a downnload manager.
  *
  * \param dlmgr  Downnload manager to destroy.
@@ -101,6 +120,27 @@ BOOL cg_bittorrent_downloadmgr_start(CgBittorrentDownloadMgr *dlmgr);
  * \return TRUE if the specified downalod manager is stopped normally, otherwise FALSE.
  */
 BOOL cg_bittorrent_downloadmgr_stop(CgBittorrentDownloadMgr *dlmgr);
+
+/****************************************
+* Function (Internal)
+****************************************/
+
+/**
+ * Initialize the spceifiled downnload manager.
+ *
+ * \param dlmgr  Downnload manager to Initialize.
+ *
+ * \return TRUE if the specified downalod manager is Initialized normally, otherwise FALSE.
+ */
+BOOL cg_bittorrent_downloadmgr_initialize(CgBittorrentDownloadMgr *dlmgr);
+
+/**
+ * Free work areas in the spceifiled downnload manager.
+ *
+ * \param dlmgr  Downnload manager to Initialize.
+ *
+ */
+void cg_bittorrent_downloadmgr_clear(CgBittorrentDownloadMgr *dlmgr);
 
 #ifdef  __cplusplus
 }

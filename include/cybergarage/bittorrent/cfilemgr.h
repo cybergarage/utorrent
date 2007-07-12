@@ -28,6 +28,7 @@ typedef struct _CgBittorrentFileMgr {
 	int test;
 } CgBittorrentFileMgr;
 
+
 /****************************************
 * Function (FileMgr)
 ****************************************/
