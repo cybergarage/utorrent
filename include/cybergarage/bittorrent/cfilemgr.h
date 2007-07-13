@@ -16,6 +16,8 @@
 #ifndef _CG_BITTORRENT_FILEMGR_H_
 #define _CG_BITTORRENT_FILEMGR_H_
 
+#include <cybergarage/bittorrent/cblockdevmgr.h>
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
@@ -24,45 +26,57 @@ extern "C" {
 * Data Type
 ****************************************/
 
-typedef struct _CgBittorrentFileMgr {
-	int test;
-} CgBittorrentFileMgr;
+typedef CgBittorrentBlockDeviceMgr CgBittorrentFileMgr;
 
+typedef struct _CgBittorrentFileMgrData {
+	char *dstDir;
+} CgBittorrentFileMgrData;
 
 /****************************************
-* Function (FileMgr)
+* Function
 ****************************************/
 
 /**
- * Create a new filemgr.
+ * Create a new file manager.
  *
- * \return New filemgr.
+ * \return New file manager.
  */
 CgBittorrentFileMgr *cg_bittorrent_filemgr_new(void);
 
 /**
  * Destroy a filemgr.
  *
- * \param dlmgr FileMgr to destroy.
+ * \param filemgr File manager to destroy.
  */
-void cg_bittorrent_filemgr_delete(CgBittorrentFileMgr *dlmgr);
-
-/**
- * Set a filemgr type.
- *
- * \param dlmgr FileMgr in question.
- * \param value Type to set.
- */
-#define cg_bittorrent_filemgr_settype(dlmgr, value) (dlmgr->type = value)
+void cg_bittorrent_filemgr_delete(CgBittorrentFileMgr *filemgr);
 
 /**
  * Return a filemgr type.
  *
- * \param dlmgr FileMgr in question.
+ * \param filemgr File manager in question.
  *
  * \return FileMgr type.
  */
-#define cg_bittorrent_filemgr_gettype(dlmgr) (dlmgr->type)
+#define cg_bittorrent_filemgr_getdata(filemgr) ((CgBittorrentFileMgrData *)cg_bittorrent_blockdevicemgr_getuserdata(filemgr))
+
+/**
+ * Set a destination directory.
+ *
+ * \param filemgr File manager in question.
+ * \param value Type to set.
+ */
+void cg_bittorrent_filemgr_setdestinationdirectory(CgBittorrentFileMgr *filemgr, char *value);
+
+/**
+ * Return a stored destination directory.
+ *
+ * \param filemgr File manager in question.
+ *
+ * \return Stored destination directory.
+ */
+char *cg_bittorrent_filemgr_getdestinationdirectory(CgBittorrentFileMgr *filemgr);
+
+/* destinationdirectory */
 
 #ifdef  __cplusplus
 }

@@ -29,9 +29,9 @@ CgBittorrentBlockDeviceMgr *cg_bittorrent_blockdevicemgr_new()
 	if (!bdmrg)
 		return NULL;
 
-	cg_bittorrent_blockdevicemgr_setreadfunc(bdmrg, NULL);
-	cg_bittorrent_blockdevicemgr_setwritefunc(bdmrg, NULL);
-	cg_bittorrent_blockdevicemgr_sethavefunc(bdmrg, NULL);
+	cg_bittorrent_blockdevicemgr_setreadpiecefunc(bdmrg, NULL);
+	cg_bittorrent_blockdevicemgr_setwritepiecefunc(bdmrg, NULL);
+	cg_bittorrent_blockdevicemgr_sethavepiecefunc(bdmrg, NULL);
 
 	return bdmrg;
 }

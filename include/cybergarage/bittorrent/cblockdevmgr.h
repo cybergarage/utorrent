@@ -26,14 +26,14 @@ extern "C" {
 * Data Type
 ****************************************/
 
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_READ)(CgBittorrentTracker *, int pieceIndex, CgByte **);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_WRITE)(CgBittorrentTracker *, int pieceIndex, CgByte *);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_HAVE)(CgBittorrentTracker *, int pieceIndex);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE)(void *, CgBittorrentTracker *, int , CgByte **);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_WRITEPIECE)(void *, CgBittorrentTracker *, int , CgByte *);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_HAVEPIECE)(void *, CgBittorrentTracker *, int);
 
 typedef struct _CgBittorrentBlockDeviceMgr {
-	CG_BITTORRENT_BLOCKDEVICEMGR_READ readFunc;
-	CG_BITTORRENT_BLOCKDEVICEMGR_WRITE writeFunc;
-	CG_BITTORRENT_BLOCKDEVICEMGR_HAVE haveFunc;
+	CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE readPieceFunc;
+	CG_BITTORRENT_BLOCKDEVICEMGR_WRITEPIECE writePieceFunc;
+	CG_BITTORRENT_BLOCKDEVICEMGR_HAVEPIECE havePieceFunc;
 	void *userData;
 } CgBittorrentBlockDeviceMgr;
 
@@ -61,7 +61,7 @@ void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr);
  * \param bdmgr Block device manager in question.
  * \param func Function to set.
  */
-#define cg_bittorrent_blockdevicemgr_setreadfunc(bdmgr, func) (bdmgr->readFunc = func)
+#define cg_bittorrent_blockdevicemgr_setreadpiecefunc(bdmgr, func) (bdmgr->readPieceFunc = func)
 
 /**
  * Return a read function.
@@ -69,9 +69,8 @@ void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr);
  * \param bdmgr Block device manager in question.
  *
  * \return Read function
- .
  */
-#define cg_bittorrent_blockdevicemgr_getreadfunc(bdmgr) (bdmgr->readFunc)
+#define cg_bittorrent_blockdevicemgr_getreadpiecefunc(bdmgr) (bdmgr->readPieceFunc)
 
 /**
  * Set a write function.
@@ -79,7 +78,7 @@ void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr);
  * \param bdmgr Block device manager in question.
  * \param func Function to set.
  */
-#define cg_bittorrent_blockdevicemgr_setwritefunc(bdmgr, func) (bdmgr->writeFunc = func)
+#define cg_bittorrent_blockdevicemgr_setwritepiecefunc(bdmgr, func) (bdmgr->writePieceFunc = func)
 
 /**
  * Return a write function.
@@ -87,9 +86,8 @@ void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr);
  * \param bdmgr Block device manager in question.
  *
  * \return Read function
- .
  */
-#define cg_bittorrent_blockdevicemgr_getwritefunc(bdmgr) (bdmgr->writeFunc)
+#define cg_bittorrent_blockdevicemgr_getwritepiecefunc(bdmgr) (bdmgr->writePieceFunc)
 
 /**
  * Set a have function.
@@ -97,7 +95,7 @@ void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr);
  * \param bdmgr Block device manager in question.
  * \param func Function to set.
  */
-#define cg_bittorrent_blockdevicemgr_sethavefunc(bdmgr, func) (bdmgr->haveFunc = func)
+#define cg_bittorrent_blockdevicemgr_sethavepiecefunc(bdmgr, func) (bdmgr->havePieceFunc = func)
 
 /**
  * Return a have function.
@@ -105,9 +103,62 @@ void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr);
  * \param bdmgr Block device manager in question.
  *
  * \return Read function
+ */
+#define cg_bittorrent_blockdevicemgr_gethavepiecefunc(bdmgr) (bdmgr->havePieceFunc)
+
+/**
+ * Set a user data.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param value User data to set.
+ */
+#define cg_bittorrent_blockdevicemgr_setuserdata(bdmgr, value) (bdmgr->userData = value)
+
+/**
+ * Get a user data.
+ *
+ * \param bdmgr Block device manager in question.
+ *
+ * \return User data
+ */
+#define cg_bittorrent_blockdevicemgr_getuserdata(bdmgr) (bdmgr->userData)
+
+/**
+ * Read a piece.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param tracker Tracker of the piece.
+ * \param idx Index of the piece.
+ * \param buf Pointer of a buffer to read the specifed piece. You have to free the pointer when you don't need.
+ *
+ * \return TRUE if the specifed piece is read normally, otherwise FALSE.
+ */
+#define cg_bittorrent_blockdevicemgr_readpiece(bdmgr, tracker, idx, buf) ((bdmgr->readPieceFunc) ? FALSE : bdmgr->readPieceFunc(tracker, idx, buf))
+
+/**
+ * Write a piece.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param tracker Tracker of the piece.
+ * \param idx Index of the piece.
+ * \param buf Buffer which has a piece data.
+ *
+ * \return TRUE if the specifed piece is worte normally, otherwise FALSE.
+ */
+#define cg_bittorrent_blockdevicemgr_writepiece(bdmgr, tracker, idx, buf) ((bdmgr->writePieceFunc) ? FALSE : bdmgr->writePieceFunc(tracker, idx, buf))
+
+/**
+ * Check a piece.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param tracker Tracker of the piece.
+ * \param idx Index of the piece.
+ *
+ * \return TRUE if the specifed piece is available, otherwise FALSE.
  .
  */
-#define cg_bittorrent_blockdevicemgr_gethavefunc(bdmgr) (bdmgr->haveFunc)
+#define cg_bittorrent_blockdevicemgr_havepiece(bdmgr, tracker, idx) ((bdmgr->havePieceFunc) ? FALSE : bdmgr->havePieceFunc(tracker, idx))
+
 
 #ifdef  __cplusplus
 }
