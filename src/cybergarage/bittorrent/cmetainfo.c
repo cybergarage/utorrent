@@ -66,3 +66,28 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
 
 	return TRUE;
 }
+
+/****************************************
+* cg_bittorrent_metainfo_getfilepropertyvalue
+****************************************/
+
+char *cg_bittorrent_metainfo_getfilepropertyvalue(CgBittorrentMetainfo *cbm, char *propName, int index)
+{
+	CgBittorrentBencoding *file;
+	int n;
+
+	if (!cbm)
+		return NULL;
+
+	if (cg_bittorrent_metainfo_issinglefilemode(cbm))
+		return cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbm), propName);
+
+	file = cg_bittorrent_metainfo_getinfofiles(cbm);
+	for(n=0; n<index; n++)
+		file = cg_bittorrent_bencoding_next(file);
+
+	if (!file)
+		return NULL;
+
+	return NULL;
+}

@@ -176,21 +176,21 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
 * Macros
 ****************************************/
 
-#define cg_bittorrent_metainfo_getinfo(cbb) cg_bittorrent_metainfo_getdictionarybyname(cbb, CG_BITTORRENT_METAINFO_INFO)
-#define cg_bittorrent_metainfo_getannounce(cbb) cg_bittorrent_metainfo_getstringbyname(cbb, CG_BITTORRENT_METAINFO_ANNOUNCE)
-#define cg_bittorrent_metainfo_getannouncelist(cbb) cg_bittorrent_metainfo_getstringbyname(cbb, CG_BITTORRENT_METAINFO_ANNOUNCELIST)
-#define cg_bittorrent_metainfo_getcreationdate(cbb) cg_bittorrent_metainfo_getintegerbyname(cbb,CG_BITTORRENT_METAINFO_CREATIONDATE)
-#define cg_bittorrent_metainfo_getcomment(cbb) cg_bittorrent_metainfo_getstringbyname(cbb, CG_BITTORRENT_METAINFO_COMMENT)
-#define cg_bittorrent_metainfo_getcreateby(cbb) cg_bittorrent_metainfo_getstringbyname(cbb, CG_BITTORRENT_METAINFO_CREATEDBY)
+#define cg_bittorrent_metainfo_getinfo(cbm) cg_bittorrent_metainfo_getdictionarybyname(cbm, CG_BITTORRENT_METAINFO_INFO)
+#define cg_bittorrent_metainfo_getannounce(cbm) cg_bittorrent_metainfo_getstringbyname(cbm, CG_BITTORRENT_METAINFO_ANNOUNCE)
+#define cg_bittorrent_metainfo_getannouncelist(cbm) cg_bittorrent_metainfo_getstringbyname(cbm, CG_BITTORRENT_METAINFO_ANNOUNCELIST)
+#define cg_bittorrent_metainfo_getcreationdate(cbm) cg_bittorrent_metainfo_getintegerbyname(cbm,CG_BITTORRENT_METAINFO_CREATIONDATE)
+#define cg_bittorrent_metainfo_getcomment(cbm) cg_bittorrent_metainfo_getstringbyname(cbm, CG_BITTORRENT_METAINFO_COMMENT)
+#define cg_bittorrent_metainfo_getcreateby(cbm) cg_bittorrent_metainfo_getstringbyname(cbm, CG_BITTORRENT_METAINFO_CREATEDBY)
 
-#define cg_bittorrent_metainfo_getinfopiecelength(cbb) cg_bittorrent_dictionary_getintegerbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_PIECE_LENGTH)
-#define cg_bittorrent_metainfo_getinfopieces(cbb) cg_bittorrent_metainfo_getstringbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_PIECES)
-#define cg_bittorrent_metainfo_getinfoprivate(cbb) cg_bittorrent_dictionary_getintegerbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_PRIVATE)
-#define cg_bittorrent_metainfo_getinfoname(cbb) cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_NAME)
-#define cg_bittorrent_metainfo_getinfolength(cbb) cg_bittorrent_dictionary_getintegerbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_LENGTH)
-#define cg_bittorrent_metainfo_getinfomd5sum(cbb) cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_MD5SUM)
-#define cg_bittorrent_metainfo_getinfofileslist(cbb) cg_bittorrent_dictionary_getlistbyname(cg_bittorrent_metainfo_getinfo(cbb), CG_BITTORRENT_METAINFO_FILES)
-#define cg_bittorrent_metainfo_getinfofiles(cbb) cg_bittorrent_bencodinglist_gets(cg_bittorrent_metainfo_getinfofileslist(cbb))
+#define cg_bittorrent_metainfo_getinfopiecelength(cbm) cg_bittorrent_dictionary_getintegerbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_PIECE_LENGTH)
+#define cg_bittorrent_metainfo_getinfopieces(cbm) cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_PIECES)
+#define cg_bittorrent_metainfo_getinfoprivate(cbm) cg_bittorrent_dictionary_getintegerbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_PRIVATE)
+#define cg_bittorrent_metainfo_getinfoname(cbm) cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_NAME)
+#define cg_bittorrent_metainfo_getinfolength(cbm) cg_bittorrent_dictionary_getintegerbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_LENGTH)
+#define cg_bittorrent_metainfo_getinfomd5sum(cbm) cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_MD5SUM)
+#define cg_bittorrent_metainfo_getinfofileslist(cbm) cg_bittorrent_dictionary_getlistbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_FILES)
+#define cg_bittorrent_metainfo_getinfofiles(cbm) cg_bittorrent_bencodinglist_gets(cg_bittorrent_metainfo_getinfofileslist(cbm))
 
 /****************************************
 * Function (Metainfo)
@@ -214,10 +214,12 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
  */
 #define cg_bittorrent_metainfo_issinglefilemode(cbm) (!cg_bittorrent_metainfo_ismultiplefilemode(cbm))
 
-
 /****************************************
 * Function (Internal)
 ****************************************/
+
+char *cg_bittorrent_metainfo_getfilepropertyvalue(CgBittorrentMetainfo *cbm, char *propName, int index);
+CgInt64 cg_bittorrent_metainfo_getfilepropertyinteger(CgBittorrentMetainfo *cbm, char *propName, int index);
 
 BOOL cg_bittorrent_metainfo_parse(CgBittorrentMetainfo *cbm, char *data, int dataLen);
 BOOL cg_bittorrent_metainfo_save(CgBittorrentMetainfo *cbm, char *fileName);
