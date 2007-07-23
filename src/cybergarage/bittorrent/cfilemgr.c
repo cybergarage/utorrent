@@ -15,6 +15,22 @@
 
 #include <cybergarage/bittorrent/cfilemgr.h>
 #include <cybergarage/util/cstring.h>
+#include <cybergarage/io/cfile.h>
+
+/****************************************
+* cg_bittorrent_filemgr_readpiece
+****************************************/
+
+static BOOL cg_bittorrent_filemgr_openfile(CgBittorrentFileMgr *filemgr, CgBittorrentTracker *tracker, int mode, CgFile **file)
+{
+	char *dstDir;
+
+	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
+	if (cg_strlen(dstDir) <= 0)
+		return FALSE;
+
+	return TRUE;
+}
 
 /****************************************
 * cg_bittorrent_filemgr_readpiece
