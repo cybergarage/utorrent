@@ -39,6 +39,7 @@ extern "C" {
 #define CG_BITTORRENT_METAINFO_LENGTH "length"
 #define CG_BITTORRENT_METAINFO_MD5SUM "md5sum"
 #define CG_BITTORRENT_METAINFO_FILES "files"
+#define CG_BITTORRENT_METAINFO_PATH "path"
 
 /****************************************
 * Data Type
@@ -218,11 +219,22 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
 * Function (Internal)
 ****************************************/
 
-char *cg_bittorrent_metainfo_getfilepropertyvalue(CgBittorrentMetainfo *cbm, char *propName, int index);
+int cg_bittorrent_metainfo_getnfiles(CgBittorrentMetainfo *cbm);
+
+CgBittorrentBencoding *cg_bittorrent_metainfo_getfileproperty(CgBittorrentMetainfo *cbm, char *propName, int index);
+char *cg_bittorrent_metainfo_getfilepropertystring(CgBittorrentMetainfo *cbm, char *propName, int index);
 CgInt64 cg_bittorrent_metainfo_getfilepropertyinteger(CgBittorrentMetainfo *cbm, char *propName, int index);
 
 BOOL cg_bittorrent_metainfo_parse(CgBittorrentMetainfo *cbm, char *data, int dataLen);
 BOOL cg_bittorrent_metainfo_save(CgBittorrentMetainfo *cbm, char *fileName);
+
+/****************************************
+* Function (Metainfo)
+****************************************/
+
+#define cg_bittorrent_metainfo_getinfofilepath(cbm, index) cg_bittorrent_metainfo_getfileproperty(cbm, CG_BITTORRENT_METAINFO_PATH, index)
+#define cg_bittorrent_metainfo_getinfofilelength(cbm, index) cg_bittorrent_metainfo_getfilepropertyinteger(cbm, CG_BITTORRENT_METAINFO_LENGTH, index)
+#define cg_bittorrent_metainfo_getinfofilemd5sum(cbm, index) cg_bittorrent_metainfo_getfilepropertystring(cbm, CG_BITTORRENT_METAINFO_MD5SUM, index)
 
 #ifdef  __cplusplus
 }

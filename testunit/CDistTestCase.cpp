@@ -266,7 +266,23 @@ void CDistTestCase::testMetainfoLoad()
 	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getannounce(cbm), "http://torrent.linux.duke.edu:6969/announce"));
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getcreationdate(cbm) == 1161640274);
 
-	printf("\n");
+	CgBittorrentBencoding *pathList;
+	CgBittorrentBencoding *pathItem;
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getnfiles(cbm) == 2);
+	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getinfoname(cbm), "Zod-dvd-i386"));
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfopiecelength(cbm) == 262144);
+	/* FC-6-i386-DVD.iso */
+	pathList = cg_bittorrent_metainfo_getinfofilepath(cbm, 0);
+	pathItem = cg_bittorrent_bencoding_getlists(pathList);
+	CPPUNIT_ASSERT(cg_streq("FC-6-i386-DVD.iso", cg_bittorrent_bencoding_getstring(pathItem)));
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfofilelength(cbm, 0) == 3525195776);
+	
+	/* SHA1SUM */
+	pathList = cg_bittorrent_metainfo_getinfofilepath(cbm, 1);
+	pathItem = cg_bittorrent_bencoding_getlists(pathList);
+	CPPUNIT_ASSERT(cg_streq("SHA1SUM", cg_bittorrent_bencoding_getstring(pathItem)));
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfofilelength(cbm, 1) == 671);
+	//printf("\n");
 	//cg_bittorrent_metainfo_print(cbm);
 
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_save(cbm, CDIST_TEST_METAINFO_FILE ".copy"));

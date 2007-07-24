@@ -149,5 +149,5 @@ char *cg_bittorrent_filemgr_getdestinationdirectory(CgBittorrentFileMgr *filemgr
 	if (!filemgrData)
 		return NULL;
 
-	return filemgrData->dstDir;
+		return filemgrData->dstDir;
 }
