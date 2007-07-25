@@ -159,6 +159,8 @@ void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr);
  */
 #define cg_bittorrent_blockdevicemgr_havepiece(bdmgr, tracker, idx) ((bdmgr->havePieceFunc) ? FALSE : bdmgr->havePieceFunc(tracker, idx))
 
+BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg, CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex);
+
 
 #ifdef  __cplusplus
 }

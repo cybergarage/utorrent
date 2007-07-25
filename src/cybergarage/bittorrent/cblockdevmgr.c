@@ -56,16 +56,17 @@ BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg
 {
 	int cbmFileCnt;
 	int pieceLength;
-	CgInt64 bdmOffset;
+	CgInt64 pieceOffset;
 	CgInt64 cbmFileOffset;
 	CgInt64 cbmFileLength;
+	CgInt64 fileLength;
 	int cbmFileIndex;
 
 	if (!bdmrg || !cbm)
 		return FALSE;
 
 	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
-	bdmOffset = (CgInt64)pieceIdx * (CgInt64)pieceLength;
+	pieceOffset = (CgInt64)pieceIdx * (CgInt64)pieceLength;
 
 	if (cg_bittorrent_metainfo_ismultiplefilemode(cbm)) {
 		cbmFileCnt = cg_bittorrent_metainfo_getnfiles(cbm);
@@ -75,16 +76,17 @@ BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg
 		*startFileIndex = *endFileIndex = 0;
 		cbmFileOffset = 0;
 		for (cbmFileIndex=0; cbmFileIndex<cbmFileCnt; cbmFileIndex++) { /* Info in Multiple File Mode */
-			if (cbmFileOffset < bdmOffset) {
+			fileLength = cg_bittorrent_metainfo_getinfofilelength(cbm, cbmFileIndex);
+			if (pieceOffset < (cbmFileOffset + fileLength)) {
 				*startFileIndex = cbmFileIndex;
 				break;
 			}
-			cbmFileOffset += cg_bittorrent_metainfo_getinfofilelength(cbm, cbmFileIndex);
+			cbmFileOffset += fileLength;
 		}
 
 		for (; cbmFileIndex<cbmFileCnt; cbmFileIndex++) {
 			cbmFileOffset += cg_bittorrent_metainfo_getinfofilelength(cbm, cbmFileIndex);
-			if (bdmOffset <= cbmFileOffset) {
+			if (pieceOffset <= cbmFileOffset) {
 				*endFileIndex = cbmFileIndex;
 				break;
 			}
@@ -92,7 +94,7 @@ BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg
 	}
 	else { /* Info in Single File Mode */
 		cbmFileLength = cg_bittorrent_metainfo_getinfolength(cbm);
-		if (cbmFileLength < bdmOffset)
+		if (cbmFileLength < pieceOffset)
 			return FALSE;
 		*startFileIndex = *endFileIndex = 0;
 	}

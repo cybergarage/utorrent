@@ -411,6 +411,41 @@ void CDistTestCase::testSHA1()
 // testPeerSocket
 ////////////////////////////////////////
 
+void CDistTestCase::testBlockDevice()
+{
+	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
+	CPPUNIT_ASSERT(cbm);
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+
+	int pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+
+	CgBittorrentBlockDeviceMgr *blockDev = cg_bittorrent_blockdevicemgr_new();
+
+	if (cg_bittorrent_metainfo_ismultiplefilemode(cbm)) {
+		int cbmFileCnt = cg_bittorrent_metainfo_getnfiles(cbm);
+		CPPUNIT_ASSERT(0 < cbmFileCnt);
+		CgInt64 cbmFileOffset = 0;
+		int startFileIndex;
+		int endFileIndex;
+		for (int n=0; n<cbmFileCnt; n++) { /* Info in Multiple File Mode */
+			cbmFileOffset += cg_bittorrent_metainfo_getinfofilelength(cbm, n);
+			float pieceIdx = (float)cbmFileOffset / (float)pieceLength;
+			cg_bittorrent_blockdevicemgr_getfileindex(blockDev, cbm, (int)pieceIdx, &startFileIndex, &endFileIndex);
+			CPPUNIT_ASSERT(startFileIndex == n);
+			CPPUNIT_ASSERT(endFileIndex == n);
+		}
+	}
+	else { /* Info in Single File Mode */
+	}
+
+	cg_bittorrent_blockdevicemgr_delete(blockDev);
+	cg_bittorrent_metainfo_delete(cbm);
+}
+
+////////////////////////////////////////
+// testPeerSocket
+////////////////////////////////////////
+
 void CDistTestCase::testPeerHandshake()
 {
 	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
