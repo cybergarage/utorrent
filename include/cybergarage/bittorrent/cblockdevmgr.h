@@ -26,9 +26,9 @@ extern "C" {
 * Data Type
 ****************************************/
 
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE)(void *, CgBittorrentTracker *, int, int , CgByte **);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_WRITEPIECE)(void *, CgBittorrentTracker *, int, int , CgByte *);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_HAVEPIECE)(void *, CgBittorrentTracker *, int, int);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **pieceData, int *pieceLength);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_WRITEPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx, CgByte *pieceData, int pieceLength);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_HAVEPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx);
 
 typedef struct _CgBittorrentBlockDeviceMgr {
 	CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE readPieceFunc;

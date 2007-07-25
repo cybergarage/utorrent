@@ -21,7 +21,48 @@
 * cg_bittorrent_filemgr_readpiece
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_openfile(CgBittorrentFileMgr *filemgr, CgBittorrentTracker *tracker, int mode, CgFile **file)
+static char *cg_bittorrent_filemgr_getfilename(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, CgString *filename)
+{
+	char *dstDir;
+	int dstDirLen;
+
+	if (!filemgr || !filename || !cbm)
+		return NULL;
+
+	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
+	dstDirLen = cg_strlen(dstDir);
+	if (dstDirLen <= 0)
+		return NULL;
+	
+	cg_string_addvalue(filename, dstDir);
+
+/*
+	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
+	CPPUNIT_ASSERT(cbm);
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+
+	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getannounce(cbm), "http://torrent.linux.duke.edu:6969/announce"));
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getcreationdate(cbm) == 1161640274);
+
+	CgBittorrentBencoding *pathList;
+	CgBittorrentBencoding *pathItem;
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getnfiles(cbm) == 2);
+	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getinfoname(cbm), "Zod-dvd-i386"));
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfopiecelength(cbm) == 262144);
+	pathList = cg_bittorrent_metainfo_getinfofilepath(cbm, 0);
+	pathItem = cg_bittorrent_bencoding_getlists(pathList);
+	CPPUNIT_ASSERT(cg_streq("FC-6-i386-DVD.iso", cg_bittorrent_bencoding_getstring(pathItem)));
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfofilelength(cbm, 0) == 3525195776);
+*/
+
+	return cg_string_getvalue(filename);
+}
+
+/****************************************
+* cg_bittorrent_filemgr_readpiece
+****************************************/
+
+static BOOL cg_bittorrent_filemgr_openfile(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int mode, CgFile **file)
 {
 	char *dstDir;
 
@@ -36,7 +77,7 @@ static BOOL cg_bittorrent_filemgr_openfile(CgBittorrentFileMgr *filemgr, CgBitto
 * cg_bittorrent_filemgr_readpiece
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_readpiece(CgBittorrentFileMgr *filemgr, CgBittorrentTracker *tracker, int index, CgByte **buf)
+static BOOL cg_bittorrent_filemgr_readpiece(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **buf, int *bufLen)
 {
 	char *dstDir;
 
@@ -51,7 +92,7 @@ static BOOL cg_bittorrent_filemgr_readpiece(CgBittorrentFileMgr *filemgr, CgBitt
 * cg_bittorrent_filemgr_writepiece
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_writepiece(CgBittorrentFileMgr *filemgr, CgBittorrentTracker *tracker, int index, CgByte *buf)
+static BOOL cg_bittorrent_filemgr_writepiece(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen)
 {
 	return TRUE;
 }
@@ -60,7 +101,7 @@ static BOOL cg_bittorrent_filemgr_writepiece(CgBittorrentFileMgr *filemgr, CgBit
 * cg_bittorrent_filemgr_havepiece
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_havepiece(CgBittorrentFileMgr *filemgr, CgBittorrentTracker *tracker, int index)
+static BOOL cg_bittorrent_filemgr_havepiece(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx)
 {
 	return TRUE;
 }
