@@ -32,6 +32,9 @@ CgBittorrentBlockDeviceMgr *cg_bittorrent_blockdevicemgr_new()
 	cg_bittorrent_blockdevicemgr_setreadpiecefunc(bdmrg, NULL);
 	cg_bittorrent_blockdevicemgr_setwritepiecefunc(bdmrg, NULL);
 	cg_bittorrent_blockdevicemgr_sethavepiecefunc(bdmrg, NULL);
+	cg_bittorrent_blockdevicemgr_setopenfilefunc(bdmrg, NULL);
+	cg_bittorrent_blockdevicemgr_setreadfilefunc(bdmrg, NULL);
+	cg_bittorrent_blockdevicemgr_setclosefilefunc(bdmrg, NULL);
 
 	return bdmrg;
 }
@@ -77,7 +80,7 @@ BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg
 		cbmFileOffset = 0;
 		for (cbmFileIndex=0; cbmFileIndex<cbmFileCnt; cbmFileIndex++) { /* Info in Multiple File Mode */
 			fileLength = cg_bittorrent_metainfo_getinfofilelength(cbm, cbmFileIndex);
-			if (pieceOffset < (cbmFileOffset + fileLength)) {
+			if ((cbmFileOffset <= pieceOffset) && (pieceOffset <= (cbmFileOffset + fileLength))) {
 				*startFileIndex = cbmFileIndex;
 				break;
 			}
@@ -86,7 +89,7 @@ BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg
 
 		for (; cbmFileIndex<cbmFileCnt; cbmFileIndex++) {
 			cbmFileOffset += cg_bittorrent_metainfo_getinfofilelength(cbm, cbmFileIndex);
-			if (pieceOffset <= cbmFileOffset) {
+			if ((pieceOffset + pieceLength) <= cbmFileOffset) {
 				*endFileIndex = cbmFileIndex;
 				break;
 			}
