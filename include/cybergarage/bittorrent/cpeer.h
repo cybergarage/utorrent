@@ -266,6 +266,16 @@ BOOL cg_bittorrent_peer_handshake(CgBittorrentPeer *peer, CgBittorrentHandshake 
 BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index);
 
 /**
+ * Check if a peer has the specfied piece.
+ *
+ * \param peer Peer in question.
+ * \param index Index of the piece.
+ *
+ * \return TRUE if the peer has the specified piece, otherwise FALSE.
+ */
+BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int index, int offset, CgByte *buf, int bufLen);
+
+/**
  * Request the specfied piece.
  *
  * \param peer Peer in question.

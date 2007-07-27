@@ -114,3 +114,55 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index)
 		return FALSE;
 	return (peer->bitfield[bitfieldNum] & bitfieldMask) ? TRUE : FALSE;
 }
+
+/****************************************
+* cg_bittorrent_peer_getpiece
+
+****************************************/
+
+BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int index, int offset, CgByte *buf, int bufLen)
+{
+/*
+	CgBittorrentHandshake *hsIn = cg_bittorrent_handshake_new();
+	CgBittorrentHandshake *hsOut = cg_bittorrent_handshake_new();
+	cg_bittorrent_handshake_setinfohash(hsIn, infoValHash);
+	cg_bittorrent_handshake_setpeerid(hsIn, CDIST_TEST_TRACKER_PEERID);
+	while(cbp) {
+		CPPUNIT_ASSERT(0< cg_strlen(cg_bittorrent_peer_getaddress(cbp)));
+		CPPUNIT_ASSERT(0 < cg_bittorrent_peer_getport(cbp));
+		if (cg_bittorrent_peer_connect(cbp) == FALSE)
+			cbp = cg_bittorrent_peer_next(cbp);
+		if (cg_bittorrent_peer_handshake(cbp, hsIn, hsOut) == TRUE)
+			break;
+		cbp = cg_bittorrent_peer_next(cbp);
+	}
+	cg_bittorrent_handshake_delete(hsIn);
+	cg_bittorrent_handshake_delete(hsOut);
+
+	CPPUNIT_ASSERT(cbp);
+
+	/ Bitfield /
+	CgBittorrentMessage *msg = cg_bittorrent_message_new();
+	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgheader(cbp, msg));
+	char msgType = cg_bittorrent_message_gettype(msg);
+	//CPPUNIT_ASSERT(msgType == CG_BITTORRENT_MESSAGE_BITFIELD);
+	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgbody(cbp, msg));
+	CgInt64 msgLength = cg_bittorrent_message_getlength(msg);
+	cg_bittorrent_peer_setbitfield(cbp, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getlength(msg));
+
+	while (cg_bittorrent_peer_recvmsgheader(cbp, msg)) {
+		switch (cg_bittorrent_message_gettype(msg)) {
+			default:
+				{
+					cg_bittorrent_peer_recvmsgbody(cbp, msg);
+					int msgType = cg_bittorrent_message_gettype(msg);
+				}
+				break;
+		}
+	}
+	// 3525195776 / 262144 / 8 = 1680.9443359375
+	//msgLength = 1682;
+	cg_bittorrent_message_delete(msg);
+*/
+}
+
