@@ -194,6 +194,15 @@ void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, in
 #define cg_bittorrent_peer_getbitfield(peer) (peer->bitfield)
 
  /**
+ * Check a peer bitfield.
+ *
+ * \param peer Peer in question.
+ *
+ * \return TRUE when the peer has a bitfield, otherwise FALSE.
+ */
+#define cg_bittorrent_peer_hasbitfield(peer) ((peer->bitfield) ? TRUE : FALSE)
+
+ /**
  * Get a length of the bitfield.
  *
  * \param peer Peer in question.

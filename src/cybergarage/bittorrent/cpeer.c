@@ -120,13 +120,21 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index)
 
 ****************************************/
 
-BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int index, int offset, CgByte *buf, int bufLen)
+BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *peerId, int index, int offset, CgByte *buf, int bufLen)
 {
-/*
-	CgBittorrentHandshake *hsIn = cg_bittorrent_handshake_new();
-	CgBittorrentHandshake *hsOut = cg_bittorrent_handshake_new();
+	CgBittorrentHandshake *hsIn;
+	CgBittorrentHandshake *hsOut;
+
+	if (cg_bittorrent_peer_hasbitfield(peer)) {
+		if (cg_bittorrent_peer_haspiece(peer, index) == FALSE)
+			return FALSE;
+	}
+
+	shsIn = cg_bittorrent_handshake_new();
+	hsOut = cg_bittorrent_handshake_new();
 	cg_bittorrent_handshake_setinfohash(hsIn, infoValHash);
 	cg_bittorrent_handshake_setpeerid(hsIn, CDIST_TEST_TRACKER_PEERID);
+/*
 	while(cbp) {
 		CPPUNIT_ASSERT(0< cg_strlen(cg_bittorrent_peer_getaddress(cbp)));
 		CPPUNIT_ASSERT(0 < cg_bittorrent_peer_getport(cbp));
