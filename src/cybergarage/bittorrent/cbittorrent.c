@@ -17,6 +17,5 @@
 #  include "config.h"
 #endif
 
-#include <cybergarage/net/cinterface.h>
-#include <cybergarage/util/clog.h>
+#include <cybergarage/bittorrent/cbittorrent.h>
 
