@@ -31,27 +31,9 @@ extern "C" {
 * Data Type
 ****************************************/
 
-typedef struct _CgBittorrent {
-	int port;
-} CgBittorrent;
-
 /****************************************
 * Function
 ****************************************/
-
-/**
- * Create a new instance of the bittorrent.
- *
- * \return New instance.
- */
-CgBittorrent *cg_bittorrent_new();
-
-/**
- * Destroy a instance of the bittorrent.
- *
- * \param cbbList Bencoding list to destory.
- */
-void cg_bittorrent_delete(CgBittorrent *cb);
 
 #ifdef  __cplusplus
 }

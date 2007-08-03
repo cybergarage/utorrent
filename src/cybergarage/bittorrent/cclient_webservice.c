@@ -4,7 +4,7 @@
 *
 *	Copyright (C) Satoshi Konno 2007
 *
-*	File: cbittorrent_http.c
+*	File: cclient_webservice.c
 *
 *	Revision:
 *
@@ -13,5 +13,5 @@
 *
 ******************************************************************/
 
-#include <cybergarage/bittorrent/cbittorrent.h>
+#include <cybergarage/bittorrent/cclient.h>
 
