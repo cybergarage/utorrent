@@ -26,6 +26,7 @@ static void cg_bittorrent_client_getrequestrecieved(CgBittorrentClient *cbc, CgH
 	char *urlPath;
 
 	urlStr = cg_http_request_geturi(httpReq);
+
 	if (cg_strlen(urlStr) <= 0) {
 		cg_http_request_postbadrequest(httpReq);
 		return;
