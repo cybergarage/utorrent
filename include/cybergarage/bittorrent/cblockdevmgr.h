@@ -28,7 +28,9 @@ extern "C" {
 
 /* Metainfo */
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_ADDMETAINFO)(void *cbdmgr, CgBittorrentMetainfo *cbm);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_REMOVEMETAINFO)(void *cbdmgr, CgBittorrentMetainfo *cbm);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_REMOVEMETAINFO)(void *cbdmgr, char *infoHash);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFOS)(void *cbdmgr, CgBittorrentMetainfoList *cbmList);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFO)(void *cbdmgr, char *infoHash, CgBittorrentMetainfo *cbm);
 
 /* Piece */
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **pieceData, int *pieceLength);
@@ -39,6 +41,13 @@ typedef int (*CG_BITTORRENT_BLOCKDEVICEMGR_READFILE)(void *cbdmgr, char *buf, in
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_CLOSEFILE)(void *cbdmgr);
 
 typedef struct _CgBittorrentBlockDeviceMgr {
+	/* Metainfo */
+	CG_BITTORRENT_BLOCKDEVICEMGR_ADDMETAINFO addMetainfoFunc;
+	CG_BITTORRENT_BLOCKDEVICEMGR_REMOVEMETAINFO removeMetainfoFunc;
+	CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFOS getMetainfosFunc;
+	CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFO getMetainfoFunc;
+
+	/* Piece */
 	CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE readPieceFunc;
 	CG_BITTORRENT_BLOCKDEVICEMGR_WRITEPIECE writePieceFunc;
 	CG_BITTORRENT_BLOCKDEVICEMGR_HAVEPIECE havePieceFunc;
@@ -65,6 +74,14 @@ CgBittorrentBlockDeviceMgr *cg_bittorrent_blockdevicemgr_new(void);
  * \param bdmgr BlockDevMgr to destroy.
  */
 void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr);
+
+/****************************************
+* Function (Metainfo)
+****************************************/
+
+/****************************************
+* Function (Piece)
+****************************************/
 
 /**
  * Set a read function.

@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <widget minimumVersion="4.0">
-<!--
-	CPU Portal
-	Design & Code: Arlo Rose
-
-	A tiny little portal into your CPU activity.
-	
-	1.1 - Now using timer object to reduce CPU usage (ironic, huh?).
-	1.2 - Added vitality, adjusted code to be 4.0-compatible
-
-	Copyright (C) 2003 - 2006 Yahoo! Inc.  All Rights Reserved.
--->
-
 	<window title="CgBittorrent">
 		<name>mainWindow</name>
 		<width>320</width>
