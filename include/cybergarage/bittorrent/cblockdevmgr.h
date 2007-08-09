@@ -26,6 +26,11 @@ extern "C" {
 * Data Type
 ****************************************/
 
+/* Metainfo */
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_ADDMETAINFO)(void *cbdmgr, CgBittorrentMetainfo *cbm);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_REMOVEMETAINFO)(void *cbdmgr, CgBittorrentMetainfo *cbm);
+
+/* Piece */
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **pieceData, int *pieceLength);
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_WRITEPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx, CgByte *pieceData, int pieceLength);
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_HAVEPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx);

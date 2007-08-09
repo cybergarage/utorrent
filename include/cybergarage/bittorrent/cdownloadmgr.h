@@ -29,7 +29,6 @@ extern "C" {
 ****************************************/
 
 typedef struct _CgBittorrentDownloadMgr {
-	CgBittorrentTracker *tracker;
 	CgBittorrentFileMgr *filemgr;
 	CgBittorrentStrategyMgr *stgmgr;
 } CgBittorrentDownloadMgr;
@@ -51,23 +50,6 @@ CgBittorrentDownloadMgr *cg_bittorrent_downloadmgr_new(void);
  * \param dlmgr  Downnload manager to destroy.
  */
 void cg_bittorrent_downloadmgr_delete(CgBittorrentDownloadMgr *dlmgr);
-
-/**
- * Set a tracker of the specified download manager.
- *
- * \param dlmgr  Download manager in question.
- * \param trakcer Tracker to set.
- */
-#define cg_bittorrent_downloadmgr_settrakcer(dlmgr, value) (dlmgr->tracker = value)
-
-/**
- * Return a  tracker of the specified download manager.
- *
- * \param dlmgr Download manager in question.
- *
- * \return Tracker of the specified download manager.
- */
-#define cg_bittorrent_downloadmgr_gettrakcer(dlmgr) (dlmgr->tracker)
 
 /**
  * Set a file manager of the specified download manager.

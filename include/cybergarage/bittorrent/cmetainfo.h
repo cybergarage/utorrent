@@ -46,8 +46,62 @@ extern "C" {
 ****************************************/
 
 typedef struct _CgBittorrentMetainfo {
+	BOOL headFlag;
+	struct _CgBittorrentMetainfo *prev;
+	struct _CgBittorrentMetainfo *next;
 	CgBittorrentDictionary *dir;
-} CgBittorrentMetainfo;
+} CgBittorrentMetainfo, CgBittorrentMetainfoList;
+
+/****************************************
+* Function (Metainfo List)
+****************************************/
+
+/**
+ * Create a new metainfo list.
+ *
+ * \return Metainfo list.
+ */
+CgBittorrentMetainfoList *cg_bittorrent_metainfolist_new();
+
+/**
+ * Destroy a metainfo list.
+ *
+ * \param cbmList Metainfo list to destory.
+ */
+void cg_bittorrent_metainfolist_delete(CgBittorrentMetainfoList *cbmList);
+
+/**
+ * Clear all items of a metainfo list.
+ *
+ * \param cbmList Metainfo list to clear.
+ */
+#define cg_bittorrent_metainfolist_clear(cbmList) cg_list_clear((CgList *)cbmList, (CG_LIST_DESTRUCTORFUNC)cg_bittorrent_metainfo_delete)
+
+/**
+ * Get the size of a metainfo list.
+ *
+ * \param cbmList Metainfo list in question.
+ *
+ * \return Size of the metainfo list.
+ */
+#define cg_bittorrent_metainfolist_size(cbmList) cg_list_size((CgList *)cbmList)
+
+/**
+ * Get the first item from a metainfo list.
+ *
+ * \param cbmList Metainfo list in question.
+ *
+ * \return First Metainfo of the list, otherwise NULL if the list has no items.
+ */
+#define cg_bittorrent_metainfolist_gets(cbmList) (CgBittorrentMetainfo *)cg_list_next((CgList *)cbmList)
+
+/**
+ * Add a metainfo into a metainfo list.
+ *
+ * \param cbmList Metainfo list in question.
+ * \param cbm Metainfo to add to the list.
+ */
+#define cg_bittorrent_metainfolist_add(cbmList, cbm) cg_list_add((CgList *)cbmList, (CgList *)cbm)
 
 /****************************************
 * Function (Metainfo)

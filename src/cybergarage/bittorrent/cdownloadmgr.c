@@ -28,7 +28,6 @@ CgBittorrentDownloadMgr *cg_bittorrent_downloadmgr_new()
 	if (!dlmgr)
 		return NULL;
 
-	cg_bittorrent_downloadmgr_settrakcer(dlmgr, NULL);
 	cg_bittorrent_downloadmgr_setfilemgr(dlmgr, NULL);
 	cg_bittorrent_downloadmgr_setstrategymgr(dlmgr, NULL);
 
@@ -65,18 +64,16 @@ void cg_bittorrent_downloadmgr_clear(CgBittorrentDownloadMgr *dlmgr)
 
 BOOL cg_bittorrent_downloadmgr_initialize(CgBittorrentDownloadMgr *dlmgr)
 {
-	CgBittorrentTracker *tracker;
 	CgBittorrentFileMgr *filemgr;
 	CgBittorrentStrategyMgr *stgmgr;
 
 	if (!dlmgr)
 		return FALSE;
 
-	tracker = cg_bittorrent_downloadmgr_gettrakcer(dlmgr);
 	filemgr = cg_bittorrent_downloadmgr_getfilemgr(dlmgr);
 	stgmgr = cg_bittorrent_downloadmgr_getstrategymgr(dlmgr);
 
-	if (!tracker || !filemgr ||!stgmgr)
+	if (!filemgr ||!stgmgr)
 		return FALSE;
 
 	return TRUE;
