@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dock-item version="1.0">
+	<image  id="background"
+			src="Images/Vitality/base.png" />
+	<image  id="miniRed"
+			src="Images/Vitality/Red.png" />
+	<image 	id="miniTen"
+			src="Images/0.png"
+			hOffset="4"
+			vOffset="10"/>
+	<image 	id="miniOne"
+			src="Images/0.png"
+			hOffset="38"
+			vOffset="10"/>
+</dock-item>

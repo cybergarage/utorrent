@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+  <name>CgBittorrent</name>
+  <version>1.0</version>
+  <identifier>org.cybergarage.widget.bittorrent</identifier>
+  <image usage="dock" src="Images/Vitality/inactive.png"/>
+  <author name="Satoshi Konno" organization="CyberGarage" href="http://www.cybergarage.org"/>
+	<copyright>(c) 2003-2007 Yahoo! Inc.</copyright>
+  <description>Gives you a neat little window into how hard your processor is working.</description>
+  <platform minVersion="4.0" />
+</metadata>
