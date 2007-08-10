@@ -3,6 +3,7 @@
 *	CyberBittorrent for C
 *
 *	Copyright (C) Satoshi Konno 2007
+
 *
 *	File: cdownloadmgr.h
 *

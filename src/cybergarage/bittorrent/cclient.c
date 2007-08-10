@@ -33,6 +33,7 @@ CgBittorrentClient *cg_bittorrent_client_new()
 	if (!cbc)
 		return NULL;
 
+	/* HTTP Server */
 	cbc->httpServer = cg_http_server_new();
 	if (!cbc->httpServer) {
 		free(cbc);
@@ -40,6 +41,10 @@ CgBittorrentClient *cg_bittorrent_client_new()
 	}
 	cg_http_server_setlistener(cbc->httpServer, cg_bittorrent_client_httplistener);
 	cg_http_server_setuserdata(cbc->httpServer, cbc);
+
+	/* Manager */
+	cg_bittorrent_client_setblockdevicemgr(cbc, NULL);
+	cg_bittorrent_client_setstrategymgr(cbc, NULL);
 
 	return cbc;
 }
@@ -62,12 +67,19 @@ void cg_bittorrent_client_delete(CgBittorrentClient *cbc)
 /****************************************
 * cg_bittorrent_client_start
 ****************************************/
-
 BOOL cg_bittorrent_client_start(CgBittorrentClient *cbc)
 {
+	if (!cbc->blockDevMgr)
+		return FALSE;
+	if (!cg_bittorrent_blockdevicemgr_isvalidated(cbc->blockDevMgr))
+		return FALSE;
+
+	if (!cbc->stgyMgr)
+		return FALSE;
+
 	if (cbc->httpServer)
 		cg_http_server_start(cbc->httpServer);
-
+	
 	return TRUE;
 }
 

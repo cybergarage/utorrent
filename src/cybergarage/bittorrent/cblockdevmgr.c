@@ -23,39 +23,84 @@
 
 CgBittorrentBlockDeviceMgr *cg_bittorrent_blockdevicemgr_new()
 {
-	CgBittorrentBlockDeviceMgr *bdmrg;
+	CgBittorrentBlockDeviceMgr *bdmgr;
 
-	bdmrg = (CgBittorrentBlockDeviceMgr *)malloc(sizeof(CgBittorrentBlockDeviceMgr));
-	if (!bdmrg)
+	bdmgr = (CgBittorrentBlockDeviceMgr *)malloc(sizeof(CgBittorrentBlockDeviceMgr));
+	if (!bdmgr)
 		return NULL;
 
-	cg_bittorrent_blockdevicemgr_setreadpiecefunc(bdmrg, NULL);
-	cg_bittorrent_blockdevicemgr_setwritepiecefunc(bdmrg, NULL);
-	cg_bittorrent_blockdevicemgr_sethavepiecefunc(bdmrg, NULL);
-	cg_bittorrent_blockdevicemgr_setopenfilefunc(bdmrg, NULL);
-	cg_bittorrent_blockdevicemgr_setreadfilefunc(bdmrg, NULL);
-	cg_bittorrent_blockdevicemgr_setclosefilefunc(bdmrg, NULL);
+	/* Metainfo */
+	cg_bittorrent_blockdevicemgr_setaddmetainfofunc(bdmgr, NULL);
+	cg_bittorrent_blockdevicemgr_setremovemetainfofunc(bdmgr, NULL);
+	cg_bittorrent_blockdevicemgr_setgetmetainfosfunc(bdmgr, NULL);
+	cg_bittorrent_blockdevicemgr_setgetmetainfofunc(bdmgr, NULL);
 
-	return bdmrg;
+	/* Piece */
+	cg_bittorrent_blockdevicemgr_setreadpiecefunc(bdmgr, NULL);
+	cg_bittorrent_blockdevicemgr_setwritepiecefunc(bdmgr, NULL);
+	cg_bittorrent_blockdevicemgr_sethavepiecefunc(bdmgr, NULL);
+
+	/* File */
+	cg_bittorrent_blockdevicemgr_setopenfilefunc(bdmgr, NULL);
+	cg_bittorrent_blockdevicemgr_setreadfilefunc(bdmgr, NULL);
+	cg_bittorrent_blockdevicemgr_setclosefilefunc(bdmgr, NULL);
+
+	return bdmgr;
 }
 
 /****************************************
 * cg_bittorrent_blockdevicemgr_delete
 ****************************************/
 
-void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmrg)
+void cg_bittorrent_blockdevicemgr_delete(CgBittorrentBlockDeviceMgr *bdmgr)
 {
-	if (!bdmrg)
+	if (!bdmgr)
 		return;
 
-	free(bdmrg);
+	free(bdmgr);
 }
 
 /****************************************
 * cg_bittorrent_blockdevicemgr_getfileindex
 ****************************************/
 
-BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg, CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex)
+BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
+{
+	/* Metainfo */
+	if (!cg_bittorrent_blockdevicemgr_getaddmetainfofunc(bdmgr))
+		return FALSE;
+	if (!cg_bittorrent_blockdevicemgr_getremovemetainfofunc(bdmgr))
+		return FALSE;
+	if (!cg_bittorrent_blockdevicemgr_getgetmetainfosfunc(bdmgr))
+		return FALSE;
+	if (!cg_bittorrent_blockdevicemgr_getgetmetainfofunc(bdmgr))
+		return FALSE;
+
+	/* Piece */
+	if (!cg_bittorrent_blockdevicemgr_getreadpiecefunc(bdmgr))
+		return FALSE;
+	if (!cg_bittorrent_blockdevicemgr_getwritepiecefunc(bdmgr))
+		return FALSE;
+	if (!cg_bittorrent_blockdevicemgr_gethavepiecefunc(bdmgr))
+		return FALSE;
+
+	/* File */
+	if (!cg_bittorrent_blockdevicemgr_getopenfilefunc(bdmgr))
+		return FALSE;
+	if (!cg_bittorrent_blockdevicemgr_getreadfilefunc(bdmgr))
+		return FALSE;
+	if (!cg_bittorrent_blockdevicemgr_getclosefilefunc(bdmgr))
+		return FALSE;
+
+	return TRUE;
+}
+
+
+/****************************************
+* cg_bittorrent_blockdevicemgr_getfileindex
+****************************************/
+
+BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmgr, CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex)
 {
 	int cbmFileCnt;
 	int pieceLength;
@@ -65,7 +110,7 @@ BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg
 	CgInt64 fileLength;
 	int cbmFileIndex;
 
-	if (!bdmrg || !cbm)
+	if (!bdmgr || !cbm)
 		return FALSE;
 
 	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
