@@ -17,6 +17,22 @@
 #include <cybergarage/util/cstring.h>
 #include <cybergarage/io/cfile.h>
 
+BOOL cg_bittorrent_filemgr_addmetainfo(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm)
+{
+}
+
+BOOL cg_bittorrent_filemgr_removemetainfo(CgBittorrentFileMgr *filemgr, char *infoHash)
+{
+}
+
+int cg_bittorrent_filemgr_getmetainfos(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfoList *cbmList)
+{
+}
+
+BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoHash, CgBittorrentMetainfo *cbm)
+{
+}
+
 /****************************************
 * cg_bittorrent_filemgr_readpiece
 ****************************************/

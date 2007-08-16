@@ -292,10 +292,6 @@
 				RelativePath="..\..\..\src\cybergarage\bittorrent\ctracker_fetch.c"
 				>
 			</File>
-			<File
-				RelativePath="..\..\..\src\cybergarage\bittorrent\ctracker_parse.c"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="ヘッダー ファイル"
@@ -360,6 +356,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\cybergarage\bittorrent\ctracker.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\ctracker_parse.c"
 				>
 			</File>
 		</Filter>

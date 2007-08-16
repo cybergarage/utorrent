@@ -10,8 +10,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CDistTestCase);
 
 #define CDIST_TESTCASE_METAINFOURL "http://torrent.fedoraproject.org/torrents/Zod-dvd-i386.torrent"
 
-#include <cybergarage/bittorrent/csha1.h>
-
 ////////////////////////////////////////
 // setUp
 ////////////////////////////////////////
@@ -536,3 +534,33 @@ void CDistTestCase::testPeerHandshake()
 	cg_bittorrent_tracker_delete(cbt);
 	cg_bittorrent_metainfo_delete(cbm);
 }
+
+////////////////////////////////////////
+// testFileMgr
+////////////////////////////////////////
+
+#if defined(WIN32)
+#define CDIST_TEST_FILEMGR_DESTDIR ".\\"
+#else
+#define CDIST_TEST_FILEMGR_DESTDIR "./"
+#endif
+
+void CDistTestCase::testFileMgr()
+{
+	CgBittorrentFileMgr *fileMgr;
+	char *destDir;
+
+	fileMgr = cg_bittorrent_filemgr_new();
+	CPPUNIT_ASSERT(fileMgr);
+
+	CPPUNIT_ASSERT(cg_bittorrent_filemgr_isvalidated(fileMgr));
+
+	destDir = cg_bittorrent_filemgr_getdestinationdirectory(fileMgr);
+	CPPUNIT_ASSERT(cg_strlen(destDir) <= 0);
+	cg_bittorrent_filemgr_setdestinationdirectory(fileMgr, CDIST_TEST_FILEMGR_DESTDIR);
+	destDir = cg_bittorrent_filemgr_getdestinationdirectory(fileMgr);
+	CPPUNIT_ASSERT(cg_streq(destDir, CDIST_TEST_FILEMGR_DESTDIR));
+	
+	cg_bittorrent_filemgr_delete(fileMgr);
+}
+

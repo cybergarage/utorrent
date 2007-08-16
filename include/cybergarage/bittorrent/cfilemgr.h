@@ -76,7 +76,12 @@ void cg_bittorrent_filemgr_setdestinationdirectory(CgBittorrentFileMgr *filemgr,
  */
 char *cg_bittorrent_filemgr_getdestinationdirectory(CgBittorrentFileMgr *filemgr);
 
-/* destinationdirectory */
+
+/****************************************
+* Macros
+****************************************/
+
+#define cg_bittorrent_filemgr_isvalidated(filemgr) cg_bittorrent_blockdevicemgr_isvalidated(filemgr)
 
 #ifdef  __cplusplus
 }
