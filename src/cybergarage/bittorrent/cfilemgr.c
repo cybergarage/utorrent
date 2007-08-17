@@ -17,20 +17,57 @@
 #include <cybergarage/util/cstring.h>
 #include <cybergarage/io/cfile.h>
 
+/****************************************
+* cg_bittorrent_filemgr_addmetainfo
+****************************************/
+
 BOOL cg_bittorrent_filemgr_addmetainfo(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm)
 {
+	char *dstDir;
+
+	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
+	if (cg_strlen(dstDir) <= 0)
+		return FALSE;
+
 }
+
+/****************************************
+* cg_bittorrent_filemgr_removemetainfo
+****************************************/
 
 BOOL cg_bittorrent_filemgr_removemetainfo(CgBittorrentFileMgr *filemgr, char *infoHash)
 {
+	char *dstDir;
+
+	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
+	if (cg_strlen(dstDir) <= 0)
+		return FALSE;
 }
+
+/****************************************
+* cg_bittorrent_filemgr_getmetainfos
+****************************************/
 
 int cg_bittorrent_filemgr_getmetainfos(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfoList *cbmList)
 {
+	char *dstDir;
+
+	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
+	if (cg_strlen(dstDir) <= 0)
+		return 0;
 }
+
+/****************************************
+* cg_bittorrent_filemgr_getmetainfo
+****************************************/
 
 BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoHash, CgBittorrentMetainfo *cbm)
 {
+	char *dstDir;
+
+	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
+	if (cg_strlen(dstDir) <= 0)
+		return FALSE;
 }
 
 /****************************************
@@ -144,6 +181,11 @@ CgBittorrentFileMgr *cg_bittorrent_filemgr_new()
 	}
 
 	cg_bittorrent_blockdevicemgr_setuserdata(filemgr, filemgrData);
+
+	cg_bittorrent_blockdevicemgr_setaddmetainfofunc(filemgr, cg_bittorrent_filemgr_addmetainfo);
+	cg_bittorrent_blockdevicemgr_setremovemetainfofunc(filemgr, cg_bittorrent_filemgr_removemetainfo);
+	cg_bittorrent_blockdevicemgr_setgetmetainfosfunc(filemgr, cg_bittorrent_filemgr_getmetainfos);
+	cg_bittorrent_blockdevicemgr_setgetmetainfofunc(filemgr, cg_bittorrent_filemgr_getmetainfo);
 
 	cg_bittorrent_blockdevicemgr_setreadpiecefunc(filemgr, cg_bittorrent_filemgr_readpiece);
 	cg_bittorrent_blockdevicemgr_setwritepiecefunc(filemgr, cg_bittorrent_filemgr_writepiece);
