@@ -17,6 +17,8 @@
 #define _CG_BITTORRENT_METAINFO_H_
 
 #include <cybergarage/bittorrent/cdictionary.h>
+#include <cybergarage/net/curl.h>
+#include <cybergarage/util/cstring.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -41,6 +43,8 @@ extern "C" {
 #define CG_BITTORRENT_METAINFO_FILES "files"
 #define CG_BITTORRENT_METAINFO_PATH "path"
 
+#define CG_BITTORRENT_METAINFO_ID_DELIM "\\/"
+
 /****************************************
 * Data Type
 ****************************************/
@@ -50,6 +54,9 @@ typedef struct _CgBittorrentMetainfo {
 	struct _CgBittorrentMetainfo *prev;
 	struct _CgBittorrentMetainfo *next;
 	CgBittorrentDictionary *dir;
+	CgString *url;
+	CgString *fileName;
+	CgString *id;
 } CgBittorrentMetainfo, CgBittorrentMetainfoList;
 
 /****************************************
@@ -227,6 +234,60 @@ void cg_bittorrent_metainfo_print(CgBittorrentMetainfo *cbm);
  */
 BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char *infoHash);
 
+/**
+ * Set a URL.
+ *
+ * \param cbm Metainfo in question.
+ * \param value URL to store.
+ *
+ */
+#define cg_bittorrent_metainfo_seturl(cbm, value) cg_string_setvalue(cbm->url, value)
+
+/**
+ * Get a stored URL.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Stored URL.
+ */
+#define cg_bittorrent_metainfo_geturl(cbm) cg_string_getvalue(cbm->url)
+
+/**
+ * Set a file name.
+ *
+ * \param cbm Metainfo in question.
+ * \param value File name to store.
+ *
+ */
+#define cg_bittorrent_metainfo_setfilename(cbm, value) cg_string_setvalue(cbm->fileName, value)
+
+/**
+ * Get a stored file name.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Stored file name.
+ */
+#define cg_bittorrent_metainfo_getfilename(cbm) cg_string_getvalue(cbm->fileName)
+
+/**
+ * Set a ID.
+ *
+ * \param cbm Metainfo in question.
+ * \param value ID to store.
+ *
+ */
+#define cg_bittorrent_metainfo_setid(cbm, value) cg_string_setvalue(cbm->id, value)
+
+/**
+ * Get a stored ID.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Stored ID.
+ */
+#define cg_bittorrent_metainfo_getid(cbm) cg_string_getvalue(cbm->id)
+
 /****************************************
 * Macros
 ****************************************/
@@ -248,7 +309,7 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
 #define cg_bittorrent_metainfo_getinfofiles(cbm) cg_bittorrent_bencodinglist_gets(cg_bittorrent_metainfo_getinfofileslist(cbm))
 
 /****************************************
-* Function (Metainfo)
+* Macros (Metainfo)
 ****************************************/
 
 /**
@@ -281,6 +342,8 @@ CgInt64 cg_bittorrent_metainfo_getfilepropertyinteger(CgBittorrentMetainfo *cbm,
 
 BOOL cg_bittorrent_metainfo_parse(CgBittorrentMetainfo *cbm, char *data, int dataLen);
 BOOL cg_bittorrent_metainfo_save(CgBittorrentMetainfo *cbm, char *fileName);
+
+BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name);
 
 /****************************************
 * Function (Metainfo)

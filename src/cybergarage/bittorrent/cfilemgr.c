@@ -18,17 +18,55 @@
 #include <cybergarage/io/cfile.h>
 
 /****************************************
-* cg_bittorrent_filemgr_addmetainfo
+* cg_bittorrent_filemgr_checkparam
 ****************************************/
 
-BOOL cg_bittorrent_filemgr_addmetainfo(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm)
+static BOOL cg_bittorrent_filemgr_getfilename(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, CgString **buf)
 {
 	char *dstDir;
+	char *id;
+	CgFile *file;
 
 	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
 	if (cg_strlen(dstDir) <= 0)
 		return FALSE;
 
+	id = cg_bittorrent_metainfo_getid(cbm);
+	if (cg_strlen(dstDir) <= 0)
+		return FALSE;
+
+	file = cg_file_new();
+	if (!file)
+		return FALSE;
+
+	cg_file_setpath(file, cg_bittorrent_filemgr_getdestinationdirectory(filemgr));
+	cg_file_setfilename(file, cg_bittorrent_metainfo_getid(cbm));
+
+	*buf = cg_string_new();
+	cg_string_setvalue(*buf, cg_file_getname(file));
+	
+	cg_file_delete(file);
+
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_filemgr_addmetainfo
+****************************************/
+
+BOOL cg_bittorrent_filemgr_addmetainfo(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm)
+{
+	CgString *filename;
+	BOOL isSaved;
+
+	if (!cg_bittorrent_filemgr_getfilename(filemgr, cbm, &filename))
+		return FALSE;
+
+	isSaved = cg_bittorrent_metainfo_save(cbm, cg_string_getvalue(filename));
+
+	cg_string_delete(filename);
+
+	return isSaved;
 }
 
 /****************************************
@@ -68,47 +106,6 @@ BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoH
 	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
 	if (cg_strlen(dstDir) <= 0)
 		return FALSE;
-}
-
-/****************************************
-* cg_bittorrent_filemgr_readpiece
-****************************************/
-
-static char *cg_bittorrent_filemgr_getfilename(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, CgString *filename)
-{
-	char *dstDir;
-	int dstDirLen;
-
-	if (!filemgr || !filename || !cbm)
-		return NULL;
-
-	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
-	dstDirLen = cg_strlen(dstDir);
-	if (dstDirLen <= 0)
-		return NULL;
-	
-	cg_string_addvalue(filename, dstDir);
-
-/*
-	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
-	CPPUNIT_ASSERT(cbm);
-	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
-
-	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getannounce(cbm), "http://torrent.linux.duke.edu:6969/announce"));
-	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getcreationdate(cbm) == 1161640274);
-
-	CgBittorrentBencoding *pathList;
-	CgBittorrentBencoding *pathItem;
-	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getnfiles(cbm) == 2);
-	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getinfoname(cbm), "Zod-dvd-i386"));
-	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfopiecelength(cbm) == 262144);
-	pathList = cg_bittorrent_metainfo_getinfofilepath(cbm, 0);
-	pathItem = cg_bittorrent_bencoding_getlists(pathList);
-	CPPUNIT_ASSERT(cg_streq("FC-6-i386-DVD.iso", cg_bittorrent_bencoding_getstring(pathItem)));
-	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfofilelength(cbm, 0) == 3525195776);
-*/
-
-	return cg_string_getvalue(filename);
 }
 
 /****************************************

@@ -28,6 +28,9 @@ CgBittorrentMetainfo *cg_bittorrent_metainfo_new()
 		return NULL;
 
 	cbm->dir = cg_bittorrent_dictionary_new();
+	cbm->url = cg_string_new();
+	cbm->fileName = cg_string_new();
+	cbm->id = cg_string_new();
 
 	return cbm;
 }
@@ -42,6 +45,9 @@ void cg_bittorrent_metainfo_delete(CgBittorrentMetainfo *cbm)
 		return;
 
 	cg_bittorrent_dictionary_delete(cbm->dir);
+	cg_string_delete(cbm->url);
+	cg_string_delete(cbm->fileName);
+	cg_string_delete(cbm->id);
 
 	free(cbm);
 }
@@ -152,5 +158,25 @@ CgInt64 cg_bittorrent_metainfo_getfilepropertyinteger(CgBittorrentMetainfo *cbm,
 		return 0;
 
 	return cg_bittorrent_bencoding_getinteger(cbb);
+}
+
+/****************************************
+* cg_bittorrent_metainfo_setidfromname
+****************************************/
+
+BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name)
+{
+	int delimIdx;
+
+	if (cg_strlen(name) <= 0)
+		return FALSE;
+
+	delimIdx = cg_strrchr(name, CG_BITTORRENT_METAINFO_ID_DELIM, cg_strlen(CG_BITTORRENT_METAINFO_ID_DELIM));
+	if (0 < delimIdx)
+		cg_bittorrent_metainfo_setid(cbm, name + delimIdx + 1);
+	else
+		cg_bittorrent_metainfo_setid(cbm, name);
+
+	return TRUE;
 }
 

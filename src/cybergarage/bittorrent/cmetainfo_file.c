@@ -74,6 +74,10 @@ BOOL cg_bittorrent_metainfo_load(CgBittorrentMetainfo *cbm, char *fileName)
 	parseResult = cg_bittorrent_metainfo_parse(cbm, dataBuf, fileSize);
 	free(dataBuf);
 
+	cg_bittorrent_metainfo_seturl(cbm, "");
+	cg_bittorrent_metainfo_setfilename(cbm, fileName);
+	cg_bittorrent_metainfo_setidfromname(cbm, fileName);
+
 	return parseResult;
 }
 

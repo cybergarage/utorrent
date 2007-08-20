@@ -237,9 +237,10 @@ void CDistTestCase::testMetainfoFetch()
 
 	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getannounce(cbm), "http://torrent.linux.duke.edu:6969/announce"));
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getcreationdate(cbm) == 1161640274);
+	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getid(cbm), "Zod-dvd-i386.torrent"));
 
-	printf("\n");
-	cg_bittorrent_metainfo_print(cbm);
+	//printf("\n");
+	//cg_bittorrent_metainfo_print(cbm);
 
 	cg_bittorrent_metainfo_delete(cbm);
 }
@@ -283,6 +284,9 @@ void CDistTestCase::testMetainfoLoad()
 	//printf("\n");
 	//cg_bittorrent_metainfo_print(cbm);
 
+	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getid(cbm), "Zod-dvd-i386.torrent"));
+
+	/* Save */
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_save(cbm, CDIST_TEST_METAINFO_FILE ".copy"));
 
 	cg_bittorrent_metainfo_delete(cbm);
@@ -549,18 +553,26 @@ void CDistTestCase::testFileMgr()
 {
 	CgBittorrentFileMgr *fileMgr;
 	char *destDir;
+	CgBittorrentMetainfo *cbm;
 
 	fileMgr = cg_bittorrent_filemgr_new();
 	CPPUNIT_ASSERT(fileMgr);
 
-	CPPUNIT_ASSERT(cg_bittorrent_filemgr_isvalidated(fileMgr));
+	//CPPUNIT_ASSERT(cg_bittorrent_filemgr_isvalidated(fileMgr));
 
+	/* Destination Directory */
 	destDir = cg_bittorrent_filemgr_getdestinationdirectory(fileMgr);
 	CPPUNIT_ASSERT(cg_strlen(destDir) <= 0);
 	cg_bittorrent_filemgr_setdestinationdirectory(fileMgr, CDIST_TEST_FILEMGR_DESTDIR);
 	destDir = cg_bittorrent_filemgr_getdestinationdirectory(fileMgr);
 	CPPUNIT_ASSERT(cg_streq(destDir, CDIST_TEST_FILEMGR_DESTDIR));
-	
+
+	/* Metainfo */
+	cbm = cg_bittorrent_metainfo_new();
+	CPPUNIT_ASSERT(cbm);
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+
+	cg_bittorrent_metainfo_delete(cbm);
+
 	cg_bittorrent_filemgr_delete(fileMgr);
 }
-
