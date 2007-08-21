@@ -89,17 +89,18 @@ BOOL cg_bittorrent_metainfo_save(CgBittorrentMetainfo *cbm, char *fileName)
 {
 	FILE *fp;
 	CgString *str;
-	CgBittorrentDictionary *dir;
 
-	if (!cbm)
-		return FALSE;
-
-	dir = cg_bittorrent_metainfo_getdictionary(cbm);
 	if (!cbm)
 		return FALSE;
 
 	str = cg_string_new();
-	cg_bittorrent_dictionary_tostring(dir, str);
+	if (!str)
+		return FALSE;
+
+	if (cg_bittorrent_metainfo_tostring(cbm, str)) {
+		cg_string_delete(str);
+		return FALSE;
+	}
 
 	fp = fopen(fileName, "wb");
 	if (fp) {

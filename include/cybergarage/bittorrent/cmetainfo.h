@@ -129,6 +129,35 @@ CgBittorrentMetainfo *cg_bittorrent_metainfo_new();
 void cg_bittorrent_metainfo_delete(CgBittorrentMetainfo *cbm);
 
 /**
+ * Get a next metainfo.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Next metainfo if the current metainfo has a next item, otherwise NULL.
+ */
+#define cg_bittorrent_metainfo_next(cbm) (CgBittorrentMetainfo *)cg_list_next((CgList *)cbm)
+
+/**
+ * Load the metainfo from a file.
+ *
+ * \param destCbm Destination metainfo in question.
+ * \param destCbm Source metainfo in question.
+ *
+ * \return TRUE if the task was successful, otherwise FALSE.
+ */
+BOOL cg_bittorrent_metainfo_copy(CgBittorrentMetainfo *destCbm, CgBittorrentMetainfo *srcCbm);
+
+/**
+ * Load the metainfo from a file.
+ *
+ * \param cbm Metainfo in question.
+ * \param buf Buffer to store.
+ *
+ * \return TRUE if the task was successful, otherwise FALSE.
+ */
+BOOL cg_bittorrent_metainfo_tostring(CgBittorrentMetainfo *cbm, CgString *buf);
+
+/**
  * Get a dictionary.
  *
  * \param cbm Metainfo in question.
@@ -143,7 +172,7 @@ void cg_bittorrent_metainfo_delete(CgBittorrentMetainfo *cbm);
  * \param cbm Metainfo in question.
  * \param fileName The file name containing the metainfo.
  *
- * \return TRUE, if the loading was successful; otherwise FALSE.
+ * \return TRUE if the loading was successful, otherwise FALSE.
  */
 BOOL cg_bittorrent_metainfo_load(CgBittorrentMetainfo *cbm, char *fileName);
 

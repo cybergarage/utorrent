@@ -53,6 +53,60 @@ void cg_bittorrent_metainfo_delete(CgBittorrentMetainfo *cbm)
 }
 
 /****************************************
+* cg_bittorrent_metainfo_copy
+****************************************/
+
+BOOL cg_bittorrent_metainfo_copy(CgBittorrentMetainfo *destCbm, CgBittorrentMetainfo *srcCbm)
+{
+	CgString *buf;
+
+	if (!destCbm || !srcCbm)
+		return FALSE;
+
+	buf = cg_string_new();
+	if (!buf)
+		return FALSE;
+
+	if (!cg_bittorrent_metainfo_tostring(srcCbm, buf)) {
+		cg_string_delete(buf);
+		return FALSE;
+	}
+
+	if (!cg_bittorrent_metainfo_parse(destCbm, cg_string_getvalue(buf), cg_string_length(buf))) {
+		cg_string_delete(buf);
+		return FALSE;
+	}
+
+	cg_string_delete(buf);
+
+	cg_string_setvalue(destCbm->url, cg_string_getvalue(srcCbm->url));
+	cg_string_setvalue(destCbm->fileName, cg_string_getvalue(srcCbm->fileName));
+	cg_string_setvalue(destCbm->id, cg_string_getvalue(srcCbm->id));
+
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_tostring
+****************************************/
+
+BOOL cg_bittorrent_metainfo_tostring(CgBittorrentMetainfo *cbm, CgString *buf)
+{
+	CgBittorrentDictionary *dir;
+
+	if (!cbm)
+		return FALSE;
+
+	dir = cg_bittorrent_metainfo_getdictionary(cbm);
+	if (!cbm)
+		return FALSE;
+
+	cg_bittorrent_dictionary_tostring(dir, buf);
+
+	return TRUE;
+}
+
+/****************************************
 * cg_bittorrent_metainfo_getinfohash
 ****************************************/
 
@@ -61,8 +115,6 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
 	CgBittorrentBencoding *infoVal;
 
 	if (!cbm)
-
-
 		return FALSE;
 
 	infoVal = cg_bittorrent_metainfo_getvaluebyname(cbm, CG_BITTORRENT_METAINFO_INFO);
