@@ -73,30 +73,6 @@ BOOL cg_bittorrent_filemgr_addmetainfo(CgBittorrentFileMgr *filemgr, CgBittorren
 }
 
 /****************************************
-* cg_bittorrent_filemgr_removemetainfo
-****************************************/
-
-BOOL cg_bittorrent_filemgr_removemetainfo(CgBittorrentFileMgr *filemgr, char *infoHash)
-{
-	CgString *filename;
-	BOOL isRemoved;
-	CgFile *file;
-/*
-	if (!cg_bittorrent_filemgr_getfilename(filemgr, cbm, &filename))
-		return FALSE;
-	
-	file = cg_file_new();
-	if (!file)
-		return FALSE;
-	cg_file_setname(file, cg_strnig_getvalue(filename));
-	isRemoved = cg_file_remove(file);
-	cg_file_delete(file);
-	cg_string_delete(filename);
-*/
-	return isRemoved;
-}
-
-/****************************************
 * cg_bittorrent_filemgr_getmetainfos
 
 ****************************************/
@@ -134,6 +110,8 @@ int cg_bittorrent_filemgr_getmetainfos(CgBittorrentFileMgr *filemgr, CgBittorren
 			cg_bittorrent_metainfo_delete(cbm);
 			continue;
 		}
+		cg_bittorrent_metainfo_setfilename(cbm, cg_file_getname(cbmFile));
+		cg_bittorrent_metainfo_setid(cbm, cg_file_getname(file));
 		cg_bittorrent_metainfolist_add(cbmList, cbm);
 	}
 	cg_file_delete(cbmFile);
@@ -145,7 +123,7 @@ int cg_bittorrent_filemgr_getmetainfos(CgBittorrentFileMgr *filemgr, CgBittorren
 * cg_bittorrent_filemgr_getmetainfo
 ****************************************/
 
-BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoHash, CgBittorrentMetainfo *cbm)
+BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoHash, CgBittorrentMetainfo **cbm)
 {
 	CgBittorrentMetainfoList *dstCbmList;
 	CgBittorrentMetainfoList *dstCbm;
@@ -171,12 +149,45 @@ BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoH
 		}
 		if (!compFlag)
 			continue;
-		if (!cg_bittorrent_metainfo_copy(cbm, dstCbm))
+		*cbm = cg_bittorrent_metainfo_new();
+		if (!*cbm)
+			return FALSE;
+		if (!cg_bittorrent_metainfo_copy(*cbm, dstCbm))
 			return FALSE;
 		return TRUE;
 	}
 
 	return FALSE;
+}
+
+/****************************************
+* cg_bittorrent_filemgr_removemetainfo
+****************************************/
+
+BOOL cg_bittorrent_filemgr_removemetainfo(CgBittorrentFileMgr *filemgr, char *infoHash)
+{
+	CgBittorrentMetainfo *cbm;
+	CgString *filename;
+	BOOL isRemoved;
+	CgFile *file;
+
+	if (!cg_bittorrent_filemgr_getmetainfo(filemgr, infoHash, &cbm))
+		return FALSE;
+
+	if (!cg_bittorrent_filemgr_getfilename(filemgr, cbm, &filename))
+		return FALSE;
+	
+	cg_bittorrent_metainfo_delete(cbm);
+
+	file = cg_file_new();
+	if (!file)
+		return FALSE;
+	cg_file_setname(file, cg_string_getvalue(filename));
+	isRemoved = cg_file_remove(file);
+	cg_file_delete(file);
+	cg_string_delete(filename);
+
+	return isRemoved;
 }
 
 /****************************************
