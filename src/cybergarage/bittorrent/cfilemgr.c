@@ -36,7 +36,7 @@ static BOOL cg_bittorrent_filemgr_getfilename(CgBittorrentFileMgr *filemgr, CgBi
 		return FALSE;
 
 	*buf = cg_string_new();
-	if (*buf)
+	if (!*buf)
 		return FALSE;
 
 	file = cg_file_new();
@@ -113,18 +113,18 @@ static int cg_bittorrent_filemgr_getmetainfosfunc(CgBittorrentFileMgr *filemgr, 
 		}
 		cg_bittorrent_metainfo_setfilename(cbm, cg_file_getname(cbmFile));
 		cg_bittorrent_metainfo_setid(cbm, cg_file_getname(file));
-		cg_bittorrent_metainfolist_add(cbmList, cbm);
+		cg_bittorrent_metainfolist_add(*cbmList, cbm);
 	}
 	cg_file_delete(cbmFile);
 
-	return cg_bittorrent_metainfolist_size(cbmList);
+	return cg_bittorrent_metainfolist_size(*cbmList);
 }
 
 /****************************************
 * cg_bittorrent_filemgr_getmetainfofunc
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_getmetainfofunc(CgBittorrentFileMgr *filemgr, char *infoHash, CgBittorrentMetainfo **cbm)
+static BOOL cg_bittorrent_filemgr_getmetainfofunc(CgBittorrentFileMgr *filemgr, unsigned char *infoHash, CgBittorrentMetainfo **cbm)
 {
 	CgBittorrentMetainfoList *dstCbmList;
 	CgBittorrentMetainfoList *dstCbm;
@@ -162,7 +162,7 @@ static BOOL cg_bittorrent_filemgr_getmetainfofunc(CgBittorrentFileMgr *filemgr, 
 * cg_bittorrent_filemgr_removemetainfofunc
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_removemetainfofunc(CgBittorrentFileMgr *filemgr, char *infoHash)
+static BOOL cg_bittorrent_filemgr_removemetainfofunc(CgBittorrentFileMgr *filemgr, unsigned char *infoHash)
 {
 	CgBittorrentMetainfo *cbm;
 	CgString *filename;

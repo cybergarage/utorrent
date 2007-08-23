@@ -553,14 +553,10 @@ void CDistTestCase::testFileMgr()
 {
 	CgBittorrentFileMgr *fileMgr;
 	char *destDir;
-	CgBittorrentMetainfoList *metaInfoList;
-
-	CgBittorrentMetainfo *cbm;
-
-	/* Metainfo */
-	cbm = cg_bittorrent_metainfo_new();
-	CPPUNIT_ASSERT(cbm);
-	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+	CgBittorrentMetainfoList *metainfoList;
+	CgBittorrentMetainfo *metainfo;
+	unsigned char infoHash[CG_SHA1_HASH_SIZE];
+	CgBittorrentMetainfo *newMetainfo;
 
 	/* File Manager */
 	fileMgr = cg_bittorrent_filemgr_new();
@@ -575,12 +571,32 @@ void CDistTestCase::testFileMgr()
 	CPPUNIT_ASSERT(cg_streq(destDir, CDIST_TEST_FILEMGR_DESTDIR));
 
 	/* Clean */
-	if (0 < cg_bittorrent_filemgr_getmetainfos(fileMgr, &metaInfoList)) {
-		cg_bittorrent_metainfolist_delete(metaInfoList);
+	if (0 < cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList)) {
+		for (metainfo = cg_bittorrent_metainfolist_gets(metainfoList); metainfo; metainfo = cg_bittorrent_metainfo_next(metainfo)) {
+			if (!cg_bittorrent_metainfo_getinfohash(metainfo, infoHash))
+				continue;
+			CPPUNIT_ASSERT(cg_bittorrent_filemgr_removemetainfo(fileMgr, infoHash));
+		}
+		cg_bittorrent_metainfolist_delete(metainfoList);
 	}
+	CPPUNIT_ASSERT(cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList) == 0);
+
+	/* Metainfo */
+	newMetainfo = cg_bittorrent_metainfo_new();
+	CPPUNIT_ASSERT(newMetainfo);
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(newMetainfo, CDIST_TEST_METAINFO_FILE));
 
 	/* Save */
-	cg_bittorrent_metainfo_delete(cbm);
+	CPPUNIT_ASSERT(cg_bittorrent_filemgr_addmetainfo(fileMgr, newMetainfo));
+	CPPUNIT_ASSERT(cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList) == 1);
+	metainfo = cg_bittorrent_metainfolist_gets(metainfoList);
+	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getid(metainfo), cg_bittorrent_metainfo_getid(newMetainfo)));
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_next(metainfo) == NULL);
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(metainfo, infoHash));
+	CPPUNIT_ASSERT(cg_bittorrent_filemgr_removemetainfo(fileMgr, infoHash));
+	CPPUNIT_ASSERT(cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList) == 0);
+
+	cg_bittorrent_metainfo_delete(newMetainfo);
 
 	cg_bittorrent_filemgr_delete(fileMgr);
 }

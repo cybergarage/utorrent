@@ -28,9 +28,9 @@ extern "C" {
 
 /* Metainfo */
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_ADDMETAINFO)(void *cbdmgr, CgBittorrentMetainfo *cbm);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_REMOVEMETAINFO)(void *cbdmgr, char *infoHash);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_REMOVEMETAINFO)(void *cbdmgr, unsigned char *infoHash);
 typedef int (*CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFOS)(void *cbdmgr, CgBittorrentMetainfoList **cbmList);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFO)(void *cbdmgr, char *infoHash, CgBittorrentMetainfo **cbm);
+typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFO)(void *cbdmgr, unsigned char *infoHash, CgBittorrentMetainfo **cbm);
 
 /* Piece */
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **pieceData, int *pieceLength);
@@ -302,7 +302,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  *
  * \return TRUE if the specifed metainfo is added normally, otherwise FALSE.
  */
-#define cg_bittorrent_blockdevicemgr_addmetainfo(bdmgr, cbm) ((bdmgr->addMetainfoFunc) ? FALSE : bdmgr->addMetainfoFunc(bdmgr, cbm))
+#define cg_bittorrent_blockdevicemgr_addmetainfo(bdmgr, cbm) ((bdmgr->addMetainfoFunc) ? bdmgr->addMetainfoFunc(bdmgr, cbm) : FALSE)
 
 /**
  * Remove a specified metainfo.
@@ -312,7 +312,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  *
  * \return TRUE if the specifed metainfo is removed normally, otherwise FALSE.
  */
-#define cg_bittorrent_blockdevicemgr_removemetainfo(bdmgr, infoHash) ((bdmgr->removeMetainfoFunc) ? FALSE : bdmgr->removeMetainfoFunc(bdmgr, infoHash))
+#define cg_bittorrent_blockdevicemgr_removemetainfo(bdmgr, infoHash) ((bdmgr->removeMetainfoFunc) ? bdmgr->removeMetainfoFunc(bdmgr, infoHash) : FALSE)
 
 /**
  * Get a metainfo list.
@@ -322,7 +322,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  *
  * \return Number of the stored mateinfos.
  */
-#define cg_bittorrent_blockdevicemgr_getmetainfos(bdmgr, cbmList) ((bdmgr->getMetainfosFunc) ? FALSE : bdmgr->getMetainfosFunc(bdmgr, cbmList))
+#define cg_bittorrent_blockdevicemgr_getmetainfos(bdmgr, cbmList) ((bdmgr->getMetainfosFunc) ? bdmgr->getMetainfosFunc(bdmgr, cbmList) : FALSE)
 
 /**
  * Get a metainfo.
@@ -333,7 +333,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  *
  * \return TRUE if the specifed metainfo is stored normally, otherwise FALSE.
  */
-#define cg_bittorrent_blockdevicemgr_getmetainfo(bdmgr, infoHash, cbm) ((bdmgr->getMetainfoFunc) ? FALSE : bdmgr->getMetainfoFunc(bdmgr, infoHash, cbm))
+#define cg_bittorrent_blockdevicemgr_getmetainfo(bdmgr, infoHash, cbm) ((bdmgr->getMetainfoFunc) ? bdmgr->getMetainfoFunc(bdmgr, infoHash, cbm) : FALSE)
 
 /****************************************
 * Function (Piece)
@@ -349,7 +349,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  *
  * \return TRUE if the specifed piece is read normally, otherwise FALSE.
  */
-#define cg_bittorrent_blockdevicemgr_readpiece(bdmgr, cbm, idx, buf) ((bdmgr->readPieceFunc) ? FALSE : bdmgr->readPieceFunc(bdmgr, cbm, idx, buf))
+#define cg_bittorrent_blockdevicemgr_readpiece(bdmgr, cbm, idx, buf) ((bdmgr->readPieceFunc) ? bdmgr->readPieceFunc(bdmgr, cbm, idx, buf) : FALSE)
 
 /**
  * Write a piece.
@@ -361,7 +361,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  *
  * \return TRUE if the specifed piece is worte normally, otherwise FALSE.
  */
-#define cg_bittorrent_blockdevicemgr_writepiece(bdmgr, cbm, idx, buf) ((bdmgr->writePieceFunc) ? FALSE : bdmgr->writePieceFunc(bdmgr, cbm, idx, buf))
+#define cg_bittorrent_blockdevicemgr_writepiece(bdmgr, cbm, idx, buf) ((bdmgr->writePieceFunc) ? bdmgr->writePieceFunc(bdmgr, cbm, idx, buf) : FALSE)
 
 /**
  * Check a piece.
@@ -373,7 +373,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  * \return TRUE if the specifed piece is available, otherwise FALSE.
  .
  */
-#define cg_bittorrent_blockdevicemgr_havepiece(bdmgr, cbm, idx) ((bdmgr->havePieceFunc) ? FALSE : bdmgr->havePieceFunc(bdmgr, cbm, idx))
+#define cg_bittorrent_blockdevicemgr_havepiece(bdmgr, cbm, idx) ((bdmgr->havePieceFunc) ? bdmgr->havePieceFunc(bdmgr, cbm, idx) : FALSE)
 
 /****************************************
 * Function (File)
@@ -389,7 +389,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  * \return TRUE if the specifed file is available, otherwise FALSE.
  .
  */
-#define cg_bittorrent_blockdevicemgr_openfile(bdmgr, cbm, idx) ((bdmgr->openFileFunc) ? FALSE : bdmgr->openFileFunc(bdmgr, cbm, idx))
+#define cg_bittorrent_blockdevicemgr_openfile(bdmgr, cbm, idx) ((bdmgr->openFileFunc) ? bdmgr->openFileFunc(bdmgr, cbm, idx) : FALSE)
 
 /**
  * Read a file.
@@ -402,7 +402,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  * \return TRUE if the specifed file is available, otherwise FALSE.
  .
  */
-#define cg_bittorrent_blockdevicemgr_readfile(bdmgr, buf, bufLen) ((bdmgr->readFileFunc) ? FALSE : bdmgr->readFileFunc(bdmgr, cbm, buf, bufLen))
+#define cg_bittorrent_blockdevicemgr_readfile(bdmgr, buf, bufLen) ((bdmgr->readFileFunc) ? bdmgr->readFileFunc(bdmgr, cbm, buf, bufLen) : FALSE)
 
 /**
  * Close a file.
@@ -413,7 +413,7 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  * \return TRUE if the specifed file is available, otherwise FALSE.
  .
  */
-#define cg_bittorrent_blockdevicemgr_closefile(bdmgr) ((bdmgr->closeFileFunc) ? FALSE : bdmgr->closeFileFunc(bdmgr, cbm, idx))
+#define cg_bittorrent_blockdevicemgr_closefile(bdmgr) ((bdmgr->closeFileFunc) ? bdmgr->closeFileFunc(bdmgr, cbm, idx) : FALSE)
 
 BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg, CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex);
 

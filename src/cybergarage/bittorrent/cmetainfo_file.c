@@ -97,7 +97,7 @@ BOOL cg_bittorrent_metainfo_save(CgBittorrentMetainfo *cbm, char *fileName)
 	if (!str)
 		return FALSE;
 
-	if (cg_bittorrent_metainfo_tostring(cbm, str)) {
+	if (!cg_bittorrent_metainfo_tostring(cbm, str)) {
 		cg_string_delete(str);
 		return FALSE;
 	}
