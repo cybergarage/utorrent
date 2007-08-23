@@ -83,6 +83,11 @@ char *cg_bittorrent_filemgr_getdestinationdirectory(CgBittorrentFileMgr *filemgr
 
 #define cg_bittorrent_filemgr_isvalidated(filemgr) cg_bittorrent_blockdevicemgr_isvalidated(filemgr)
 
+#define cg_bittorrent_filemgr_addmetainfo(bdmgr, cbm) cg_bittorrent_blockdevicemgr_addmetainfo(bdmgr, cbm)
+#define cg_bittorrent_filemgr_removemetainfo(bdmgr, infoHash) cg_bittorrent_blockdevicemgr_removemetainfo(bdmgr, infoHash)
+#define cg_bittorrent_filemgr_getmetainfos(bdmgr, cbmList) cg_bittorrent_blockdevicemgr_getmetainfos(bdmgr, cbmList)
+#define cg_bittorrent_filemgr_getmetainfo(bdmgr, infoHash, cbm) cg_bittorrent_blockdevicemgr_getmetainfo(bdmgr, infoHash, cbm)
+
 #ifdef  __cplusplus
 }
 #endif

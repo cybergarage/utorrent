@@ -54,10 +54,10 @@ static BOOL cg_bittorrent_filemgr_getfilename(CgBittorrentFileMgr *filemgr, CgBi
 }
 
 /****************************************
-* cg_bittorrent_filemgr_addmetainfo
+* cg_bittorrent_filemgr_addmetainfofunc
 ****************************************/
 
-BOOL cg_bittorrent_filemgr_addmetainfo(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm)
+static BOOL cg_bittorrent_filemgr_addmetainfofunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm)
 {
 	CgString *filename;
 	BOOL isSaved;
@@ -73,11 +73,10 @@ BOOL cg_bittorrent_filemgr_addmetainfo(CgBittorrentFileMgr *filemgr, CgBittorren
 }
 
 /****************************************
-* cg_bittorrent_filemgr_getmetainfos
-
+* cg_bittorrent_filemgr_getmetainfosfunc
 ****************************************/
 
-int cg_bittorrent_filemgr_getmetainfos(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfoList *cbmList)
+static int cg_bittorrent_filemgr_getmetainfosfunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfoList **cbmList)
 {
 	char *dstDir;
 	CgFile *dstFile;
@@ -98,6 +97,8 @@ int cg_bittorrent_filemgr_getmetainfos(CgBittorrentFileMgr *filemgr, CgBittorren
 		cg_filelist_delete(fileList);
 		return 0;
 	}
+
+	*cbmList = cg_bittorrent_metainfolist_new();
 
 	cbmFile = cg_file_new();
 	for (file = cg_filelist_gets(fileList); file; file = cg_file_next(file)) {
@@ -120,10 +121,10 @@ int cg_bittorrent_filemgr_getmetainfos(CgBittorrentFileMgr *filemgr, CgBittorren
 }
 
 /****************************************
-* cg_bittorrent_filemgr_getmetainfo
+* cg_bittorrent_filemgr_getmetainfofunc
 ****************************************/
 
-BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoHash, CgBittorrentMetainfo **cbm)
+static BOOL cg_bittorrent_filemgr_getmetainfofunc(CgBittorrentFileMgr *filemgr, char *infoHash, CgBittorrentMetainfo **cbm)
 {
 	CgBittorrentMetainfoList *dstCbmList;
 	CgBittorrentMetainfoList *dstCbm;
@@ -131,11 +132,8 @@ BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoH
 	BOOL compFlag;
 	int n;
 
-	dstCbmList = cg_bittorrent_metainfolist_new();
-	if (cg_bittorrent_filemgr_getmetainfos(filemgr, dstCbmList) <= 0) {
-		cg_bittorrent_metainfolist_delete(dstCbmList);
+	if (cg_bittorrent_filemgr_getmetainfos(filemgr, &dstCbmList) <= 0)
 		return FALSE;
-	}
 
 	for (dstCbm = cg_bittorrent_metainfolist_gets(dstCbmList); dstCbm; dstCbm = cg_bittorrent_metainfo_next(dstCbm)) {
 		if (!cg_bittorrent_metainfo_getinfohash(dstCbm, dstCbmInfoHash))
@@ -161,10 +159,10 @@ BOOL cg_bittorrent_filemgr_getmetainfo(CgBittorrentFileMgr *filemgr, char *infoH
 }
 
 /****************************************
-* cg_bittorrent_filemgr_removemetainfo
+* cg_bittorrent_filemgr_removemetainfofunc
 ****************************************/
 
-BOOL cg_bittorrent_filemgr_removemetainfo(CgBittorrentFileMgr *filemgr, char *infoHash)
+static BOOL cg_bittorrent_filemgr_removemetainfofunc(CgBittorrentFileMgr *filemgr, char *infoHash)
 {
 	CgBittorrentMetainfo *cbm;
 	CgString *filename;
@@ -261,10 +259,10 @@ CgBittorrentFileMgr *cg_bittorrent_filemgr_new()
 
 	cg_bittorrent_blockdevicemgr_setuserdata(filemgr, filemgrData);
 
-	cg_bittorrent_blockdevicemgr_setaddmetainfofunc(filemgr, cg_bittorrent_filemgr_addmetainfo);
-	cg_bittorrent_blockdevicemgr_setremovemetainfofunc(filemgr, cg_bittorrent_filemgr_removemetainfo);
-	cg_bittorrent_blockdevicemgr_setgetmetainfosfunc(filemgr, cg_bittorrent_filemgr_getmetainfos);
-	cg_bittorrent_blockdevicemgr_setgetmetainfofunc(filemgr, cg_bittorrent_filemgr_getmetainfo);
+	cg_bittorrent_blockdevicemgr_setaddmetainfofunc(filemgr, cg_bittorrent_filemgr_addmetainfofunc);
+	cg_bittorrent_blockdevicemgr_setremovemetainfofunc(filemgr, cg_bittorrent_filemgr_removemetainfofunc);
+	cg_bittorrent_blockdevicemgr_setgetmetainfosfunc(filemgr, cg_bittorrent_filemgr_getmetainfosfunc);
+	cg_bittorrent_blockdevicemgr_setgetmetainfofunc(filemgr, cg_bittorrent_filemgr_getmetainfofunc);
 
 	cg_bittorrent_blockdevicemgr_setreadpiecefunc(filemgr, cg_bittorrent_filemgr_readpiece);
 	cg_bittorrent_blockdevicemgr_setwritepiecefunc(filemgr, cg_bittorrent_filemgr_writepiece);

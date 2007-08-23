@@ -93,7 +93,6 @@ CgBittorrentMessage *cg_bittorrent_message_new(void);
 
 /**
  * Destroy a peer.
-
  *
  * \param msg Message to destroy.
  */

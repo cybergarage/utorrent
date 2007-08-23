@@ -553,11 +553,18 @@ void CDistTestCase::testFileMgr()
 {
 	CgBittorrentFileMgr *fileMgr;
 	char *destDir;
+	CgBittorrentMetainfoList *metaInfoList;
+
 	CgBittorrentMetainfo *cbm;
 
+	/* Metainfo */
+	cbm = cg_bittorrent_metainfo_new();
+	CPPUNIT_ASSERT(cbm);
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+
+	/* File Manager */
 	fileMgr = cg_bittorrent_filemgr_new();
 	CPPUNIT_ASSERT(fileMgr);
-
 	//CPPUNIT_ASSERT(cg_bittorrent_filemgr_isvalidated(fileMgr));
 
 	/* Destination Directory */
@@ -567,12 +574,14 @@ void CDistTestCase::testFileMgr()
 	destDir = cg_bittorrent_filemgr_getdestinationdirectory(fileMgr);
 	CPPUNIT_ASSERT(cg_streq(destDir, CDIST_TEST_FILEMGR_DESTDIR));
 
-	/* Metainfo */
-	cbm = cg_bittorrent_metainfo_new();
-	CPPUNIT_ASSERT(cbm);
-	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+	/* Clean */
+	if (0 < cg_bittorrent_filemgr_getmetainfos(fileMgr, &metaInfoList)) {
+		cg_bittorrent_metainfolist_delete(metaInfoList);
+	}
 
+	/* Save */
 	cg_bittorrent_metainfo_delete(cbm);
 
 	cg_bittorrent_filemgr_delete(fileMgr);
 }
+
