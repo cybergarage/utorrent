@@ -382,6 +382,8 @@ BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name)
 #define cg_bittorrent_metainfo_getinfofilelength(cbm, index) cg_bittorrent_metainfo_getfilepropertyinteger(cbm, CG_BITTORRENT_METAINFO_LENGTH, index)
 #define cg_bittorrent_metainfo_getinfofilemd5sum(cbm, index) cg_bittorrent_metainfo_getfilepropertystring(cbm, CG_BITTORRENT_METAINFO_MD5SUM, index)
 
+BOOL cg_bittorrent_metainfo_getfileindexrange(CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex);
+
 #ifdef  __cplusplus
 }
 #endif

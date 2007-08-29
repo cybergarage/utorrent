@@ -207,12 +207,11 @@ static BOOL cg_bittorrent_filemgr_openfile(CgBittorrentFileMgr *filemgr, CgBitto
 * cg_bittorrent_filemgr_readpiece
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_readpiece(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **buf, int *bufLen)
+static BOOL cg_bittorrent_filemgr_readpiecefunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **buf, int *bufLen)
 {
-	char *dstDir;
+	int startFileIndex, endFileIndex;
 
-	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
-	if (cg_strlen(dstDir) <= 0)
+	if (cg_bittorrent_metainfo_getfileindexrange(cbm, pieceIdx, &startFileIndex, &endFileIndex))
 		return FALSE;
 
 	return TRUE;
@@ -222,7 +221,7 @@ static BOOL cg_bittorrent_filemgr_readpiece(CgBittorrentFileMgr *filemgr, CgBitt
 * cg_bittorrent_filemgr_writepiece
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_writepiece(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen)
+static BOOL cg_bittorrent_filemgr_writepiecefunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen)
 {
 	return TRUE;
 }
@@ -231,7 +230,7 @@ static BOOL cg_bittorrent_filemgr_writepiece(CgBittorrentFileMgr *filemgr, CgBit
 * cg_bittorrent_filemgr_havepiece
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_havepiece(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx)
+static BOOL cg_bittorrent_filemgr_havepiecefunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx)
 {
 	return TRUE;
 }
@@ -264,9 +263,9 @@ CgBittorrentFileMgr *cg_bittorrent_filemgr_new()
 	cg_bittorrent_blockdevicemgr_setgetmetainfosfunc(filemgr, cg_bittorrent_filemgr_getmetainfosfunc);
 	cg_bittorrent_blockdevicemgr_setgetmetainfofunc(filemgr, cg_bittorrent_filemgr_getmetainfofunc);
 
-	cg_bittorrent_blockdevicemgr_setreadpiecefunc(filemgr, cg_bittorrent_filemgr_readpiece);
-	cg_bittorrent_blockdevicemgr_setwritepiecefunc(filemgr, cg_bittorrent_filemgr_writepiece);
-	cg_bittorrent_blockdevicemgr_sethavepiecefunc(filemgr, cg_bittorrent_filemgr_havepiece);
+	cg_bittorrent_blockdevicemgr_setreadpiecefunc(filemgr, cg_bittorrent_filemgr_readpiecefunc);
+	cg_bittorrent_blockdevicemgr_setwritepiecefunc(filemgr, cg_bittorrent_filemgr_writepiecefunc);
+	cg_bittorrent_blockdevicemgr_sethavepiecefunc(filemgr, cg_bittorrent_filemgr_havepiecefunc);
 
 	return filemgr;
 }

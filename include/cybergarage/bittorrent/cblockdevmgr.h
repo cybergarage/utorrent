@@ -415,8 +415,6 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  */
 #define cg_bittorrent_blockdevicemgr_closefile(bdmgr) ((bdmgr->closeFileFunc) ? bdmgr->closeFileFunc(bdmgr, cbm, idx) : FALSE)
 
-BOOL cg_bittorrent_blockdevicemgr_getfileindex(CgBittorrentBlockDeviceMgr *bdmrg, CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex);
-
 #ifdef  __cplusplus
 }
 #endif
