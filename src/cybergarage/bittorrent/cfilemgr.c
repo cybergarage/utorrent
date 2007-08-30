@@ -18,10 +18,10 @@
 #include <cybergarage/io/cfile.h>
 
 /****************************************
-* cg_bittorrent_filemgr_checkparam
+* cg_bittorrent_filemgr_getfilenameformetainfo
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_getfilename(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, CgString **buf)
+static BOOL cg_bittorrent_filemgr_getfilenameformetainfo(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, CgString **buf)
 {
 	char *dstDir;
 	char *id;
@@ -54,6 +54,45 @@ static BOOL cg_bittorrent_filemgr_getfilename(CgBittorrentFileMgr *filemgr, CgBi
 }
 
 /****************************************
+* cg_bittorrent_filemgr_getfilenameforfile
+****************************************/
+
+static BOOL cg_bittorrent_filemgr_getfilenameforfile(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int fileIdx, CgString **buf)
+{
+	char *dstDir;
+	CgFile *file;
+	CgBittorrentBencoding *pathList;
+	CgBittorrentBencoding *pathItem;
+
+	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
+	if (cg_strlen(dstDir) <= 0)
+		return FALSE;
+
+	*buf = cg_string_new();
+	if (!*buf)
+		return FALSE;
+
+	file = cg_file_new();
+	if (!file)
+		return FALSE;
+
+	if (cg_bittorrent_metainfo_ismultiplefilemode(cbm)) { /* Info in Multiple File Mode */
+		pathList = cg_bittorrent_metainfo_getinfofilepath(cbm, fileIdx);
+		for (pathItem = cg_bittorrent_bencoding_getlists(pathList); pathItem; pathItem = cg_bittorrent_bencoding_next(pathItem))
+			cg_file_addfilename(file, cg_bittorrent_metainfo_getinfoname(cbm));
+	}
+	else { /* Info in Single File Mode */
+		cg_file_setpath(file, dstDir);
+		cg_file_setfilename(file, cg_bittorrent_metainfo_getinfoname(cbm));
+	}
+
+	cg_string_setvalue(*buf, cg_file_getname(file));
+	cg_file_delete(file);
+
+	return TRUE;
+}
+
+/****************************************
 * cg_bittorrent_filemgr_addmetainfofunc
 ****************************************/
 
@@ -62,7 +101,7 @@ static BOOL cg_bittorrent_filemgr_addmetainfofunc(CgBittorrentFileMgr *filemgr, 
 	CgString *filename;
 	BOOL isSaved;
 
-	if (!cg_bittorrent_filemgr_getfilename(filemgr, cbm, &filename))
+	if (!cg_bittorrent_filemgr_getfilenameformetainfo(filemgr, cbm, &filename))
 		return FALSE;
 
 	isSaved = cg_bittorrent_metainfo_save(cbm, cg_string_getvalue(filename));
@@ -172,7 +211,7 @@ static BOOL cg_bittorrent_filemgr_removemetainfofunc(CgBittorrentFileMgr *filemg
 	if (!cg_bittorrent_filemgr_getmetainfo(filemgr, infoHash, &cbm))
 		return FALSE;
 
-	if (!cg_bittorrent_filemgr_getfilename(filemgr, cbm, &filename))
+	if (!cg_bittorrent_filemgr_getfilenameformetainfo(filemgr, cbm, &filename))
 		return FALSE;
 	
 	cg_bittorrent_metainfo_delete(cbm);
@@ -189,18 +228,52 @@ static BOOL cg_bittorrent_filemgr_removemetainfofunc(CgBittorrentFileMgr *filemg
 }
 
 /****************************************
-* cg_bittorrent_filemgr_readpiece
+* cg_bittorrent_filemgr_openfilefunc
 ****************************************/
 
-static BOOL cg_bittorrent_filemgr_openfile(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int mode, CgFile **file)
+static BOOL cg_bittorrent_filemgr_openfilefunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int fileIdx)
 {
-	char *dstDir;
+	CgString *filename;
+	CgFile *file;
+	BOOL isSuccess;
 
-	dstDir = cg_bittorrent_filemgr_getdestinationdirectory(filemgr);
-	if (cg_strlen(dstDir) <= 0)
+	file = cg_bittorrent_filemgr_getfile(filemgr);
+	if (!file)
 		return FALSE;
 
-	return TRUE;
+	if (!cg_bittorrent_filemgr_getfilenameforfile(filemgr, cbm, fileIdx, &filename))
+		return FALSE;
+
+	cg_file_setname(file, cg_string_getvalue(filename));
+	cg_file_close(file);
+	isSuccess = cg_file_open(file, CG_FILE_OPEN_CREATE);
+
+	cg_string_delete(filename);
+
+	return isSuccess;
+}
+
+/****************************************
+* cg_bittorrent_filemgr_closefilefunc
+****************************************/
+
+static BOOL cg_bittorrent_filemgr_closefilefunc(CgBittorrentFileMgr *filemgr)
+{
+	CgString *filename;
+	CgFile *file;
+	BOOL isSuccess;
+
+	file = cg_bittorrent_filemgr_getfile(filemgr);
+	if (!file)
+		return FALSE;
+
+	isSuccess = cg_file_close(file);
+	if (isSuccess)
+		cg_file_setname(file, "");
+
+	cg_string_delete(filename);
+
+	return isSuccess;
 }
 
 /****************************************
@@ -209,10 +282,37 @@ static BOOL cg_bittorrent_filemgr_openfile(CgBittorrentFileMgr *filemgr, CgBitto
 
 static BOOL cg_bittorrent_filemgr_readpiecefunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **buf, int *bufLen)
 {
-	int startFileIndex, endFileIndex;
+	int startFileIdx, endFileIdx;
+	CgInt64 fileFrom, fileTo;
+	int fileIdx;
+	CgString *filename;
+	CgFile *file;
 
-	if (cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIndex, &endFileIndex))
+	if (!cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIdx, &endFileIdx))
 		return FALSE;
+
+	for (fileIdx=startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
+		if (!cg_bittorrent_metainfo_getfilerangebypieceindex(cbm, pieceIdx, fileIdx, &fileFrom, &fileTo))
+			return FALSE;
+		if (!cg_bittorrent_filemgr_getfilenameforfile(filemgr, cbm, fileIdx, &filename))
+			return FALSE;
+		file = cg_file_new();
+		if (!file)  {
+			cg_string_delete(filename);
+			return FALSE;
+		}
+		cg_file_setname(file, cg_string_getvalue(filename));
+		cg_string_delete(filename);
+		if (!cg_file_open(file, CG_FILE_OPEN_CREATE)) {
+			cg_file_delete(file);
+			return FALSE;
+		}
+		if (!cg_file_seek(file, fileFrom, CG_FILE_SEEK_SET)) {
+			cg_file_delete(file);
+			return FALSE;
+		}
+		// if (cg_file_write(file, CgByte *buf, int bufLen);
+	}
 
 	return TRUE;
 }
@@ -248,7 +348,9 @@ CgBittorrentFileMgr *cg_bittorrent_filemgr_new()
 	filemgrData = (CgBittorrentFileMgrData *)malloc(sizeof(CgBittorrentFileMgrData));
 	if (!filemgrData)
 		return NULL;
-	filemgrData->dstDir = NULL;
+
+	filemgrData->dstDir = cg_string_new();
+	filemgrData->file = cg_file_new();
 
 	filemgr = cg_bittorrent_blockdevicemgr_new();
 	if (!filemgr) {
@@ -285,6 +387,9 @@ void cg_bittorrent_filemgr_delete(CgBittorrentFileMgr *filemgr)
 	if (filemgrData)
 		free(filemgrData);
 
+	cg_string_delete(filemgrData->dstDir);
+	cg_file_delete(filemgrData->file);
+
 	free(filemgr);
 }
 
@@ -304,9 +409,7 @@ void cg_bittorrent_filemgr_setdestinationdirectory(CgBittorrentFileMgr *filemgr,
 		return;
 
 	if (filemgrData->dstDir)
-		free(filemgrData->dstDir);
-
-	filemgrData->dstDir = cg_strdup(value);
+		cg_string_setvalue(filemgrData->dstDir, value);
 }
 
 /****************************************
@@ -324,5 +427,26 @@ char *cg_bittorrent_filemgr_getdestinationdirectory(CgBittorrentFileMgr *filemgr
 	if (!filemgrData)
 		return NULL;
 
-		return filemgrData->dstDir;
+	if (!filemgrData->dstDir)
+		return NULL;
+
+	return cg_string_getvalue(filemgrData->dstDir);
+}
+
+/****************************************
+* cg_bittorrent_filemgr_getfile
+****************************************/
+
+CgFile *cg_bittorrent_filemgr_getfile(CgBittorrentFileMgr *filemgr)
+{
+	CgBittorrentFileMgrData *filemgrData;
+
+	if (!filemgr)
+		return NULL;
+
+	filemgrData = cg_bittorrent_blockdevicemgr_getuserdata(filemgr);
+	if (!filemgrData)
+		return NULL;
+
+	return filemgrData->file;
 }

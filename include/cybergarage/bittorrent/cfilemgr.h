@@ -17,6 +17,8 @@
 #define _CG_BITTORRENT_FILEMGR_H_
 
 #include <cybergarage/bittorrent/cblockdevmgr.h>
+#include <cybergarage/util/cstring.h>
+#include <cybergarage/io/cfile.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -29,7 +31,8 @@ extern "C" {
 typedef CgBittorrentBlockDeviceMgr CgBittorrentFileMgr;
 
 typedef struct _CgBittorrentFileMgrData {
-	char *dstDir;
+	CgString *dstDir;
+	CgFile *file;
 } CgBittorrentFileMgrData;
 
 /****************************************
@@ -75,6 +78,15 @@ void cg_bittorrent_filemgr_setdestinationdirectory(CgBittorrentFileMgr *filemgr,
  * \return Stored destination directory.
  */
 char *cg_bittorrent_filemgr_getdestinationdirectory(CgBittorrentFileMgr *filemgr);
+
+/**
+ * Return a stored file.
+ *
+ * \param filemgr File manager in question.
+ *
+ * \return Stored file.
+ */
+CgFile *cg_bittorrent_filemgr_getfile(CgBittorrentFileMgr *filemgr);
 
 /****************************************
 * Macros

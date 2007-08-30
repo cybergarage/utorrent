@@ -233,7 +233,7 @@ BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name)
 }
 
 /****************************************
-* cg_bittorrent_metainfo_getfileindexrange
+* cg_bittorrent_metainfo_getfileindexbypieceindex
 ****************************************/
 
 BOOL cg_bittorrent_metainfo_getfileindexbypieceindex(CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex)
@@ -340,4 +340,3 @@ BOOL cg_bittorrent_metainfo_getfilerangebypieceindex(CgBittorrentMetainfo *cbm, 
 
 	return TRUE;
 }
-

@@ -336,6 +336,9 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char
 #define cg_bittorrent_metainfo_getinfomd5sum(cbm) cg_bittorrent_dictionary_getstringbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_MD5SUM)
 #define cg_bittorrent_metainfo_getinfofileslist(cbm) cg_bittorrent_dictionary_getlistbyname(cg_bittorrent_metainfo_getinfo(cbm), CG_BITTORRENT_METAINFO_FILES)
 #define cg_bittorrent_metainfo_getinfofiles(cbm) cg_bittorrent_bencodinglist_gets(cg_bittorrent_metainfo_getinfofileslist(cbm))
+#define cg_bittorrent_metainfo_getinfofilepath(cbm, index) cg_bittorrent_metainfo_getfileproperty(cbm, CG_BITTORRENT_METAINFO_PATH, index)
+#define cg_bittorrent_metainfo_getinfofilelength(cbm, index) cg_bittorrent_metainfo_getfilepropertyinteger(cbm, CG_BITTORRENT_METAINFO_LENGTH, index)
+#define cg_bittorrent_metainfo_getinfofilemd5sum(cbm, index) cg_bittorrent_metainfo_getfilepropertystring(cbm, CG_BITTORRENT_METAINFO_MD5SUM, index)
 
 /****************************************
 * Macros (Metainfo)
@@ -377,10 +380,6 @@ BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name)
 /****************************************
 * Function (Metainfo)
 ****************************************/
-
-#define cg_bittorrent_metainfo_getinfofilepath(cbm, index) cg_bittorrent_metainfo_getfileproperty(cbm, CG_BITTORRENT_METAINFO_PATH, index)
-#define cg_bittorrent_metainfo_getinfofilelength(cbm, index) cg_bittorrent_metainfo_getfilepropertyinteger(cbm, CG_BITTORRENT_METAINFO_LENGTH, index)
-#define cg_bittorrent_metainfo_getinfofilemd5sum(cbm, index) cg_bittorrent_metainfo_getfilepropertystring(cbm, CG_BITTORRENT_METAINFO_MD5SUM, index)
 
 BOOL cg_bittorrent_metainfo_getfileindexbypieceindex(CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex);
 BOOL cg_bittorrent_metainfo_getfilerangebypieceindex(CgBittorrentMetainfo *cbm, int pieceIdx, int fileIdx,  CgInt64 *fileFrom, CgInt64 *fileTo);
