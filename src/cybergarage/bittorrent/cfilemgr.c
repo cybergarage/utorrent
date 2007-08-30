@@ -211,7 +211,7 @@ static BOOL cg_bittorrent_filemgr_readpiecefunc(CgBittorrentFileMgr *filemgr, Cg
 {
 	int startFileIndex, endFileIndex;
 
-	if (cg_bittorrent_metainfo_getfileindexrange(cbm, pieceIdx, &startFileIndex, &endFileIndex))
+	if (cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIndex, &endFileIndex))
 		return FALSE;
 
 	return TRUE;

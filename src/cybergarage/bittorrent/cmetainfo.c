@@ -236,7 +236,7 @@ BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name)
 * cg_bittorrent_metainfo_getfileindexrange
 ****************************************/
 
-BOOL cg_bittorrent_metainfo_getfileindexrange(CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex)
+BOOL cg_bittorrent_metainfo_getfileindexbypieceindex(CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex)
 {
 	int cbmFileCnt;
 	int pieceLength;
@@ -254,6 +254,9 @@ BOOL cg_bittorrent_metainfo_getfileindexrange(CgBittorrentMetainfo *cbm, int pie
 		return FALSE;
 
 	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+	if (pieceLength <= 0)
+		return FALSE;
+
 	pieceStartOffset = (CgInt64)pieceIdx * (CgInt64)pieceLength;
 
 	if (cg_bittorrent_metainfo_ismultiplefilemode(cbm)) { /* Info in Multiple File Mode */
@@ -292,3 +295,49 @@ BOOL cg_bittorrent_metainfo_getfileindexrange(CgBittorrentMetainfo *cbm, int pie
 
 	return TRUE;
 }
+
+/****************************************
+* cg_bittorrent_metainfo_getfilerangebypieceindex
+****************************************/
+
+BOOL cg_bittorrent_metainfo_getfilerangebypieceindex(CgBittorrentMetainfo *cbm, int pieceIdx, int fileIdx,  CgInt64 *fileFrom, CgInt64 *fileTo)
+{
+	int startFileIndex;
+	int endFileIndex;
+	int pieceLength;
+	CgInt64 pieceStartOffset ;
+	CgInt64 pieceEndOffset ;
+	CgInt64 fileLength ;
+
+	if (!cbm)
+		return FALSE;
+
+	if (pieceIdx < 0)
+		return FALSE;
+
+	if (!cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIndex, &endFileIndex))
+		return FALSE;
+
+	if (fileIdx < startFileIndex || endFileIndex < fileIdx)
+		return FALSE;
+
+	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+	if (pieceLength <= 0)
+		return FALSE;
+	
+	pieceStartOffset = (CgInt64)pieceIdx * (CgInt64)pieceLength;
+	pieceEndOffset = pieceStartOffset + (CgInt64)pieceLength;
+
+	if (cg_bittorrent_metainfo_ismultiplefilemode(cbm)) { /* Info in Multiple File Mode */
+	}
+	else { /* Info in Single File Mode */
+		fileLength = cg_bittorrent_metainfo_getinfolength(cbm);
+		if (fileLength < pieceStartOffset)
+			return FALSE;
+		*fileFrom = pieceStartOffset;
+		*fileTo = (pieceEndOffset < fileLength )? pieceEndOffset : fileLength;
+	}
+
+	return TRUE;
+}
+

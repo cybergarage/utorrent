@@ -432,7 +432,7 @@ void CDistTestCase::testBlockDevice()
 		for (int n=0; n<cbmFileCnt; n++) { /* Info in Multiple File Mode */
 			cbmFileOffset += cg_bittorrent_metainfo_getinfofilelength(cbm, n);
 			float pieceIdx = (float)cbmFileOffset / (float)pieceLength;
-			cg_bittorrent_metainfo_getfileindexrange(cbm, (int)pieceIdx, &startFileIndex, &endFileIndex);
+			cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, (int)pieceIdx, &startFileIndex, &endFileIndex);
 			//CPPUNIT_ASSERT(startFileIndex == n);
 			//CPPUNIT_ASSERT(endFileIndex == n);
 		}
