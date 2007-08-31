@@ -283,7 +283,8 @@ static BOOL cg_bittorrent_filemgr_closefilefunc(CgBittorrentFileMgr *filemgr)
 static BOOL cg_bittorrent_filemgr_readpiecefunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **buf, int *bufLen)
 {
 	int startFileIdx, endFileIdx;
-	CgInt64 fileFrom, fileTo;
+	int pieceOffet, pieceSize;
+	CgInt64 fileOffset, fileSize;
 	int fileIdx;
 	CgString *filename;
 	CgFile *file;
@@ -292,7 +293,7 @@ static BOOL cg_bittorrent_filemgr_readpiecefunc(CgBittorrentFileMgr *filemgr, Cg
 		return FALSE;
 
 	for (fileIdx=startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
-		if (!cg_bittorrent_metainfo_getfilerangebypieceindex(cbm, pieceIdx, fileIdx, &fileFrom, &fileTo))
+		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &pieceSize, &fileOffset, &fileSize))
 			return FALSE;
 		if (!cg_bittorrent_filemgr_getfilenameforfile(filemgr, cbm, fileIdx, &filename))
 			return FALSE;
@@ -307,7 +308,7 @@ static BOOL cg_bittorrent_filemgr_readpiecefunc(CgBittorrentFileMgr *filemgr, Cg
 			cg_file_delete(file);
 			return FALSE;
 		}
-		if (!cg_file_seek(file, fileFrom, CG_FILE_SEEK_SET)) {
+		if (!cg_file_seek(file, fileOffset, CG_FILE_SEEK_SET)) {
 			cg_file_delete(file);
 			return FALSE;
 		}

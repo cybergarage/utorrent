@@ -300,7 +300,7 @@ BOOL cg_bittorrent_metainfo_getfileindexbypieceindex(CgBittorrentMetainfo *cbm, 
 * cg_bittorrent_metainfo_getfilerangebypieceindex
 ****************************************/
 
-BOOL cg_bittorrent_metainfo_getfilerangebypieceindex(CgBittorrentMetainfo *cbm, int pieceIdx, int fileIdx,  CgInt64 *fileFrom, CgInt64 *fileTo)
+BOOL cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(CgBittorrentMetainfo *cbm, int pieceIdx, int fileIdx, int *pieceOffset, int *pieceSize, CgInt64 *fileOffset, CgInt64 *fileSize)
 {
 	int startFileIndex;
 	int endFileIndex;
@@ -308,6 +308,10 @@ BOOL cg_bittorrent_metainfo_getfilerangebypieceindex(CgBittorrentMetainfo *cbm, 
 	CgInt64 pieceStartOffset ;
 	CgInt64 pieceEndOffset ;
 	CgInt64 fileLength ;
+	int fileMax;
+	int n;
+	CgInt64 prevAllFileOffset;
+	CgInt64 targetAllFileOffset;
 
 	if (!cbm)
 		return FALSE;
@@ -329,14 +333,26 @@ BOOL cg_bittorrent_metainfo_getfilerangebypieceindex(CgBittorrentMetainfo *cbm, 
 	pieceEndOffset = pieceStartOffset + (CgInt64)pieceLength;
 
 	if (cg_bittorrent_metainfo_ismultiplefilemode(cbm)) { /* Info in Multiple File Mode */
+		prevAllFileOffset = 0;
+		fileMax = cg_bittorrent_metainfo_getnfiles(cbm);
+		for (n=0; n < fileIdx; n++)
+			prevAllFileOffset += cg_bittorrent_metainfo_getinfofilelength(cbm, n);
+		*fileOffset = prevAllFileOffset - pieceStartOffset;
+		targetAllFileOffset = prevAllFileOffset +  cg_bittorrent_metainfo_getinfofilelength(cbm, fileIdx);
+		*fileSize = (pieceEndOffset < targetAllFileOffset )? pieceEndOffset : targetAllFileOffset;
+		*fileSize -= pieceStartOffset;
 	}
 	else { /* Info in Single File Mode */
 		fileLength = cg_bittorrent_metainfo_getinfolength(cbm);
 		if (fileLength < pieceStartOffset)
 			return FALSE;
-		*fileFrom = pieceStartOffset;
-		*fileTo = (pieceEndOffset < fileLength )? pieceEndOffset : fileLength;
+		*fileOffset = pieceStartOffset;
+		*fileSize = (pieceEndOffset < fileLength )? pieceEndOffset : fileLength;
+		*fileSize -= pieceStartOffset;
 	}
+
+	if (*fileOffset < 0 || *fileSize  <= 0)
+		return FALSE;
 
 	return TRUE;
 }
