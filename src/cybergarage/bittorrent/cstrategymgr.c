@@ -23,23 +23,33 @@
 
 CgBittorrentStrategyMgr *cg_bittorrent_strategymgr_new()
 {
-	CgBittorrentStrategyMgr *stgMrg;
+	CgBittorrentStrategyMgr *stgMgr;
 
-	stgMrg = (CgBittorrentStrategyMgr *)malloc(sizeof(CgBittorrentStrategyMgr));
-	if (!stgMrg)
+	stgMgr = (CgBittorrentStrategyMgr *)malloc(sizeof(CgBittorrentStrategyMgr));
+	if (!stgMgr)
 		return NULL;
 
-	return stgMrg;
+	stgMgr->name = cg_string_new();
+
+	cg_bittorrent_strategymgr_settype(stgMgr, 0);
+	cg_bittorrent_strategymgr_setname(stgMgr, "");
+	cg_bittorrent_strategymgr_setuserdata(stgMgr, NULL);
+
+	return stgMgr;
 }
 
 /****************************************
 * cg_bittorrent_strategymgr_delete
 ****************************************/
 
-void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgMrg)
+void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgMgr)
 {
-	if (!stgMrg)
+	if (!stgMgr)
 		return;
 
-	free(stgMrg);
+	if (stgMgr->name)
+		cg_string_delete(stgMgr->name);
+
+	free(stgMgr);
 }
+

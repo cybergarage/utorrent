@@ -337,18 +337,20 @@ BOOL cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(CgBittorrent
 		fileMax = cg_bittorrent_metainfo_getnfiles(cbm);
 		for (n=0; n < fileIdx; n++)
 			prevAllFileOffset += cg_bittorrent_metainfo_getinfofilelength(cbm, n);
-		*fileOffset = prevAllFileOffset - pieceStartOffset;
 		targetAllFileOffset = prevAllFileOffset +  cg_bittorrent_metainfo_getinfofilelength(cbm, fileIdx);
-		*fileSize = (pieceEndOffset < targetAllFileOffset )? pieceEndOffset : targetAllFileOffset;
-		*fileSize -= pieceStartOffset;
+		*pieceOffset = (int)((prevAllFileOffset < pieceStartOffset) ? 0 : (prevAllFileOffset - pieceStartOffset));
+		*pieceSize = (int)(min(pieceEndOffset, targetAllFileOffset) - max(pieceStartOffset, prevAllFileOffset));
+		*fileOffset = (pieceStartOffset < prevAllFileOffset) ? 0 : (pieceStartOffset - prevAllFileOffset);
+		*fileSize = *pieceSize;
 	}
 	else { /* Info in Single File Mode */
 		fileLength = cg_bittorrent_metainfo_getinfolength(cbm);
 		if (fileLength < pieceStartOffset)
 			return FALSE;
+		*pieceOffset = 0;
+		*pieceSize = (int)(min(pieceEndOffset, fileLength ) - pieceStartOffset);
 		*fileOffset = pieceStartOffset;
-		*fileSize = (pieceEndOffset < fileLength )? pieceEndOffset : fileLength;
-		*fileSize -= pieceStartOffset;
+		*fileSize = *pieceSize;
 	}
 
 	if (*fileOffset < 0 || *fileSize  <= 0)

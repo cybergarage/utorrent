@@ -288,12 +288,80 @@ static BOOL cg_bittorrent_filemgr_readpiecefunc(CgBittorrentFileMgr *filemgr, Cg
 	int fileIdx;
 	CgString *filename;
 	CgFile *file;
+	int readSize;
+	char *newBuf;
+
+	if (!cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIdx, &endFileIdx))
+		return FALSE;
+
+	*buf = NULL;
+	*bufLen = 0;
+
+	for (fileIdx=startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
+		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &pieceSize, &fileOffset, &fileSize))
+			goto FILEMGR_READPIECE_ERROR;
+		if (*bufLen < (fileOffset + fileSize))
+			goto FILEMGR_READPIECE_ERROR;
+		*bufLen += pieceSize;
+		newBuf = realloc(*buf, *bufLen);
+		if (!newBuf)
+			goto FILEMGR_READPIECE_ERROR;
+		*buf = newBuf;
+		if (!cg_bittorrent_filemgr_getfilenameforfile(filemgr, cbm, fileIdx, &filename))
+			goto FILEMGR_READPIECE_ERROR;
+		file = cg_file_new();
+		if (!file)  {
+			cg_string_delete(filename);
+			goto FILEMGR_READPIECE_ERROR;
+		}
+		cg_file_setname(file, cg_string_getvalue(filename));
+		cg_string_delete(filename);
+		if (!cg_file_open(file, CG_FILE_OPEN_CREATE)) {
+			cg_file_delete(file);
+			goto FILEMGR_READPIECE_ERROR;
+		}
+		if (!cg_file_seek(file, fileOffset, CG_FILE_SEEK_SET)) {
+			cg_file_delete(file);
+			goto FILEMGR_READPIECE_ERROR;
+		}
+		readSize = cg_file_read(file, *buf+pieceOffet, pieceSize);
+		cg_file_close(file);
+		if (readSize != pieceSize)
+			goto FILEMGR_READPIECE_ERROR;
+	}
+
+	return TRUE;
+
+FILEMGR_READPIECE_ERROR:
+
+	if (*buf)
+		free(*buf);
+	*bufLen = 0;
+
+	return FALSE;
+}
+
+/****************************************
+* cg_bittorrent_filemgr_writepiece
+****************************************/
+
+static BOOL cg_bittorrent_filemgr_writepiecefunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen)
+{
+	int startFileIdx, endFileIdx;
+	int pieceOffet, pieceSize;
+	CgInt64 fileOffset, fileSize;
+	int fileIdx;
+	CgString *filename;
+	CgFile *file;
+	int wroteSize;
 
 	if (!cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIdx, &endFileIdx))
 		return FALSE;
 
 	for (fileIdx=startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
 		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &pieceSize, &fileOffset, &fileSize))
+			return FALSE;
+		if (bufLen < (fileSize-fileOffset))
 			return FALSE;
 		if (!cg_bittorrent_filemgr_getfilenameforfile(filemgr, cbm, fileIdx, &filename))
 			return FALSE;
@@ -312,18 +380,12 @@ static BOOL cg_bittorrent_filemgr_readpiecefunc(CgBittorrentFileMgr *filemgr, Cg
 			cg_file_delete(file);
 			return FALSE;
 		}
-		// if (cg_file_write(file, CgByte *buf, int bufLen);
+		wroteSize = cg_file_write(file, buf+fileOffset, pieceSize);
+		cg_file_close(file);
+		if (wroteSize != pieceSize)
+			return FALSE;
 	}
 
-	return TRUE;
-}
-
-/****************************************
-* cg_bittorrent_filemgr_writepiece
-****************************************/
-
-static BOOL cg_bittorrent_filemgr_writepiecefunc(CgBittorrentFileMgr *filemgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen)
-{
 	return TRUE;
 }
 
