@@ -43,6 +43,35 @@ BOOL cg_bittorrent_peer_connect(CgBittorrentPeer *peer)
 }
 
 /****************************************
+* cg_bittorrent_peer_open
+****************************************/
+
+BOOL cg_bittorrent_peer_open(CgBittorrentPeer *peer, CgByte *infoHash, CgByte *peerId)
+{
+	CgBittorrentHandshake *hsSend;
+	CgBittorrentHandshake *hsRecv;
+	BOOL isConnected;
+
+	if (cg_bittorrent_peer_connect(peer) == FALSE)
+		return FALSE;
+
+	hsSend = cg_bittorrent_handshake_new();
+	hsRecv = cg_bittorrent_handshake_new();
+	cg_bittorrent_handshake_setinfohash(hsSend, infoHash);
+	cg_bittorrent_handshake_setpeerid(hsSend, peerId);
+	
+	isConnected = cg_bittorrent_peer_handshake(peer, hsSend, hsRecv);
+
+	cg_bittorrent_handshake_delete(hsSend);
+	cg_bittorrent_handshake_delete(hsRecv);
+
+	if (isConnected)
+		cg_bittorrent_peer_setid(peer, cg_bittorrent_handshake_getpeerid(hsRecv));
+
+	return isConnected;
+}
+
+/****************************************
 * cg_bittorrent_peer_close
 ****************************************/
 

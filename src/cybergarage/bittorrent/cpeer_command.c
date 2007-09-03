@@ -81,3 +81,37 @@ BOOL cg_bittorrent_peer_request(CgBittorrentPeer *peer, int index, int begin, in
 	return resultFlag;
 }
 
+/****************************************
+* cg_bittorrent_peer_message_request
+****************************************/
+
+BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int index, int begin, int length)
+{
+	CgBittorrentMessage *msg;
+	BOOL resultFlag;
+	CgBittorrentInteger *payload;
+	
+	if (!peer)
+		return FALSE;
+
+	msg = cg_bittorrent_message_new();
+	if (!msg)
+		return FALSE;
+
+	cg_bittorrent_message_settype(msg, CG_BITTORRENT_MESSAGE_REQUEST);
+	cg_bittorrent_message_setlength(msg, 13);
+
+	/* Payload */
+	payload = (CgBittorrentInteger *)malloc(sizeof(CgBittorrentInteger) * 3);
+	payload[0] = htonl(index);
+	payload[1] = htonl(begin);
+	payload[2] = htonl(length);
+	cg_bittorrent_message_setpayload(msg, (CgByte *)payload);
+
+	resultFlag = cg_bittorrent_peer_sendmsg(peer, msg);
+	free(payload);
+	cg_bittorrent_message_delete(msg);
+
+	return resultFlag;
+}
+

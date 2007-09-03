@@ -598,6 +598,62 @@ void CDistTestCase::testFileMgr()
 	CPPUNIT_ASSERT(cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList) == 0);
 
 	/**** Piece ****/
+	unsigned char infoValHash[CG_SHA1_HASH_SIZE];
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(cbm, infoValHash));
+	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
+	cg_bittorrent_tracker_load(
+		cbt , 
+		metainfo,
+		(unsigned char *)CDIST_TEST_TRACKER_PEERID,
+		"",
+		CDIST_TEST_TRACKER_PORT,
+		CDIST_TEST_TRACKER_UPLOADED,
+		CDIST_TEST_TRACKER_DOWNLOADED,
+		CDIST_TEST_TRACKER_LEFT,
+		TRUE,
+		CG_BITTORRENT_TRACKER_EVENT_STARTED,
+		CDIST_TEST_TRACKER_NUMWANT
+		);
+	CgBittorrentPeer *cbp = cg_bittorrent_tracker_getpeers(cbt);
+	while(cbp) {
+		if (cg_bittorrent_peer_open(cbp, infoValHash, CDIST_TEST_TRACKER_PEERID) == TRUE)
+			break;
+		cbp = cg_bittorrent_peer_next(cbp);
+	}
+	CPPUNIT_ASSERT(cbp);
+
+	/* Bitfield */
+	CgBittorrentMessage *msg = cg_bittorrent_message_new();
+	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgheader(cbp, msg));
+	char msgType = cg_bittorrent_message_gettype(msg);
+	//CPPUNIT_ASSERT(msgType == CG_BITTORRENT_MESSAGE_BITFIELD);
+	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgbody(cbp, msg));
+	CgInt64 msgLength = cg_bittorrent_message_getlength(msg);
+	cg_bittorrent_peer_setbitfield(cbp, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getlength(msg));
+
+	/*
+	while (cg_bittorrent_peer_recvmsgheader(cbp, msg)) {
+		switch (cg_bittorrent_message_gettype(msg)) {
+			default:
+				{
+					cg_bittorrent_peer_recvmsgbody(cbp, msg);
+					int msgType = cg_bittorrent_message_gettype(msg);
+				}
+				break;
+		}
+	}
+*/
+	// 3525195776 / 262144 / 8 = 1680.9443359375
+	//msgLength = 1682;
+	cg_bittorrent_message_delete(msg);
+
+	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
+
+	cg_bittorrent_tracker_delete(cbt);
+	cg_bittorrent_metainfo_delete(cbm);
+
+
+
 
 	cg_bittorrent_metainfo_delete(newMetainfo);
 

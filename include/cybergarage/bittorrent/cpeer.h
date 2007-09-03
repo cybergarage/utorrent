@@ -21,6 +21,7 @@
 #include <cybergarage/net/csocket.h>
 #include <cybergarage/bittorrent/chandshake.h>
 #include <cybergarage/bittorrent/cmessage.h>
+#include <cybergarage/bittorrent/csha1.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -29,6 +30,8 @@ extern "C" {
 /****************************************
 * Define
 ****************************************/
+
+#define CG_BITTORRENT_PEERID_SIZE CG_SHA1_HASH_SIZE
 
 /****************************************
 * Data Type
@@ -42,6 +45,7 @@ typedef struct _CgBittorrentPeer {
 	char *addr;
 	int port;
 	CgSocket *sock;
+	CgByte id[CG_BITTORRENT_PEERID_SIZE];
 	CgByte *bitfield;
 	int bitfieldLength;
 } CgBittorrentPeer, CgBittorrentPeerList;
@@ -176,6 +180,23 @@ void cg_bittorrent_peer_setaddress(CgBittorrentPeer *peer, char *addr);
 #define cg_bittorrent_peer_getport(peer) (peer->port)
 
 /**
+ * Set a peer peerid.
+ *
+ * \param peer Peer in question.
+ * \param peerid Peer id to set.
+ */
+#define cg_bittorrent_peer_setid(peer, value) memcpy(peer->id, value, CG_BITTORRENT_PEERID_SIZE)
+
+ /**
+ * Get a peer peerid.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Peed id of the peer.
+ */
+#define cg_bittorrent_peer_getid(peer) (peer->id)
+
+/**
  * Set a peer bitfield.
  *
  * \param peer Peer in question.
@@ -221,6 +242,17 @@ void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, in
 BOOL cg_bittorrent_peer_connect(CgBittorrentPeer *peer);
 
  /**
+ * Connect the specified peer.
+ *
+ * \param peer Peer in question.
+ * \param infoHash InfoHash in question.
+ * \param peerid Peer id in question.
+ *
+ * \return TRUE when the connection is succeeded, otherwise FALSE.
+ */
+BOOL cg_bittorrent_peer_open(CgBittorrentPeer *peer, CgByte *infoHash, CgByte *peerid);
+
+ /**
  * Close a connection of the specified peer.
  *
  * \param peer Peer in question.
@@ -257,12 +289,12 @@ BOOL cg_bittorrent_peer_close(CgBittorrentPeer *peer);
  * Handshake with the current peer.
  *
  * \param peer Peer in question.
- * \param hsIn Handshake infomation of the client.
- * \param hsOut Handshake infomation of the connected peer.
+ * \param hsSend Handshake infomation of the client.
+ * \param hsRecv Handshake infomation of the connected peer.
  *
  * \return TRUE when the connection is closed normally, otherwise FALSE.
  */
-BOOL cg_bittorrent_peer_handshake(CgBittorrentPeer *peer, CgBittorrentHandshake *hsIn, CgBittorrentHandshake *hsOut);
+BOOL cg_bittorrent_peer_handshake(CgBittorrentPeer *peer, CgBittorrentHandshake *hsSend, CgBittorrentHandshake *hsRecv);
 
 /**
  * Check if a peer has the specfied piece.
@@ -282,7 +314,7 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index);
  *
  * \return TRUE if the peer has the specified piece, otherwise FALSE.
  */
-BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *peerId, int index, int offset, CgByte *buf, int bufLen);
+BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *peerid, int index, int offset, CgByte *buf, int bufLen);
 
 /**
  * Request the specfied piece.

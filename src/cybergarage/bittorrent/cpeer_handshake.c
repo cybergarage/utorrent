@@ -19,36 +19,36 @@
 * cg_bittorrent_peer_handshake
 ****************************************/
 
-BOOL cg_bittorrent_peer_handshake(CgBittorrentPeer *peer, CgBittorrentHandshake *hsIn, CgBittorrentHandshake *hsOut)
+BOOL cg_bittorrent_peer_handshake(CgBittorrentPeer *peer, CgBittorrentHandshake *hsSend, CgBittorrentHandshake *hsRecv)
 {
 	if (!peer)
 		return FALSE;
 
 	/* Send Handshake message */
-	if (cg_bittorrent_peer_write(peer, &hsIn->pstrlen, sizeof(hsIn->pstrlen)) != sizeof(hsIn->pstrlen))
+	if (cg_bittorrent_peer_write(peer, &hsSend->pstrlen, sizeof(hsSend->pstrlen)) != sizeof(hsSend->pstrlen))
 		return FALSE;
-	if (cg_bittorrent_peer_write(peer, hsIn->pstr, hsIn->pstrlen) != hsIn->pstrlen)
+	if (cg_bittorrent_peer_write(peer, hsSend->pstr, hsSend->pstrlen) != hsSend->pstrlen)
 		return FALSE;
-	if (cg_bittorrent_peer_write(peer, hsIn->reserved, sizeof(hsIn->reserved)) != sizeof(hsIn->reserved))
+	if (cg_bittorrent_peer_write(peer, hsSend->reserved, sizeof(hsSend->reserved)) != sizeof(hsSend->reserved))
 		return FALSE;
-	if (cg_bittorrent_peer_write(peer, hsIn->infoHash, sizeof(hsIn->infoHash)) != sizeof(hsIn->infoHash))
+	if (cg_bittorrent_peer_write(peer, hsSend->infoHash, sizeof(hsSend->infoHash)) != sizeof(hsSend->infoHash))
 		return FALSE;
-	if (cg_bittorrent_peer_write(peer, hsIn->peerId, sizeof(hsIn->peerId)) != sizeof(hsIn->peerId))
+	if (cg_bittorrent_peer_write(peer, hsSend->peerId, sizeof(hsSend->peerId)) != sizeof(hsSend->peerId))
 		return FALSE;
 
 	/* Read Handshake message */
-	if (cg_bittorrent_peer_read(peer, &hsOut->pstrlen, sizeof(hsOut->pstrlen)) != sizeof(hsOut->pstrlen))
+	if (cg_bittorrent_peer_read(peer, &hsRecv->pstrlen, sizeof(hsRecv->pstrlen)) != sizeof(hsRecv->pstrlen))
 		return FALSE;
-	if (hsOut->pstr)
-		free(hsOut->pstr);
-	hsOut->pstr = (char *)malloc(hsOut->pstrlen);
-	if (cg_bittorrent_peer_read(peer, hsOut->pstr, hsOut->pstrlen) != hsOut->pstrlen)
+	if (hsRecv->pstr)
+		free(hsRecv->pstr);
+	hsRecv->pstr = (char *)malloc(hsRecv->pstrlen);
+	if (cg_bittorrent_peer_read(peer, hsRecv->pstr, hsRecv->pstrlen) != hsRecv->pstrlen)
 		return FALSE;
-	if (cg_bittorrent_peer_read(peer, hsOut->reserved, sizeof(hsOut->reserved)) != sizeof(hsOut->reserved))
+	if (cg_bittorrent_peer_read(peer, hsRecv->reserved, sizeof(hsRecv->reserved)) != sizeof(hsRecv->reserved))
 		return FALSE;
-	if (cg_bittorrent_peer_read(peer, hsOut->infoHash, sizeof(hsOut->infoHash)) != sizeof(hsOut->infoHash))
+	if (cg_bittorrent_peer_read(peer, hsRecv->infoHash, sizeof(hsRecv->infoHash)) != sizeof(hsRecv->infoHash))
 		return FALSE;
-	if (cg_bittorrent_peer_read(peer, hsOut->peerId, sizeof(hsOut->peerId)) != sizeof(hsOut->peerId))
+	if (cg_bittorrent_peer_read(peer, hsRecv->peerId, sizeof(hsRecv->peerId)) != sizeof(hsRecv->peerId))
 		return FALSE;
 
 	return TRUE;

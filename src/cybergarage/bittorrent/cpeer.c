@@ -23,6 +23,7 @@
 CgBittorrentPeer *cg_bittorrent_peer_new(void)
 {
 	CgBittorrentPeer *peer;
+	int n;
 
 	peer = (CgBittorrentPeer *)malloc(sizeof(CgBittorrentPeer));
 	if (!peer)
@@ -36,6 +37,9 @@ CgBittorrentPeer *cg_bittorrent_peer_new(void)
 	peer->bitfield = NULL;
 	peer->bitfieldLength = 0;
 	peer->tracker = NULL;
+
+	for (n=0; n<CG_BITTORRENT_PEERID_SIZE; n++)
+		peer->id[n] = 0;
 
 	return peer;
 }
@@ -121,8 +125,8 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index)
 
 BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *peerId, int index, int offset, CgByte *buf, int bufLen)
 {
-	CgBittorrentHandshake *hsIn;
-	CgBittorrentHandshake *hsOut;
+	CgBittorrentHandshake *hsSend;
+	CgBittorrentHandshake *hsRecv;
 	CgBittorrentMessage *msg;
 	char *msgType;
 
@@ -141,16 +145,16 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *p
 		return FALSE;
 
 	/* Hand Shake */
-	hsIn = cg_bittorrent_handshake_new();
-	cg_bittorrent_handshake_setinfohash(hsIn, infoHash);
-	cg_bittorrent_handshake_setpeerid(hsIn, peerId);
-	hsOut = cg_bittorrent_handshake_new();
-	if (cg_bittorrent_peer_handshake(peer, hsIn, hsOut) == TRUE) {
+	hsSend = cg_bittorrent_handshake_new();
+	cg_bittorrent_handshake_setinfohash(hsSend, infoHash);
+	cg_bittorrent_handshake_setpeerid(hsSend, peerId);
+	hsRecv = cg_bittorrent_handshake_new();
+	if (cg_bittorrent_peer_handshake(peer, hsSend, hsRecv) == TRUE) {
 		cg_bittorrent_peer_close(peer);
 		return FALSE;
 	}
-	cg_bittorrent_handshake_delete(hsIn);
-	cg_bittorrent_handshake_delete(hsOut);
+	cg_bittorrent_handshake_delete(hsSend);
+	cg_bittorrent_handshake_delete(hsRecv);
 
 	/* Bitfield */
 	msg = cg_bittorrent_message_new();
