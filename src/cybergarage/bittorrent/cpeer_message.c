@@ -132,6 +132,7 @@ BOOL cg_bittorrent_peer_sendmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg
 {
 	unsigned int pstrlen;
 	unsigned int npstrlen;
+	unsigned int payloadLen;
 
 	if (!peer)
 		return FALSE;
@@ -143,8 +144,9 @@ BOOL cg_bittorrent_peer_sendmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg
 		return FALSE;
 	if (cg_bittorrent_peer_write(peer, &msg->type, sizeof(msg->type)) != sizeof(msg->type))
 		return FALSE;
-	if (0 < pstrlen && msg->payload) {
-		if (cg_bittorrent_peer_write(peer, msg->payload, pstrlen) != pstrlen)
+	payloadLen = cg_bittorrent_message_getpayloadlength(msg);
+	if (msg->payload && 0 < payloadLen) {
+		if (cg_bittorrent_peer_write(peer, msg->payload, payloadLen) != payloadLen)
 			return FALSE;
 	}
 

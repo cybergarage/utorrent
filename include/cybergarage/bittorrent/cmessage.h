@@ -150,6 +150,15 @@ void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value);
 #define cg_bittorrent_message_getpayload(msg) (msg->payload)
 
 /**
+ * Get a length of payload.
+ *
+ * \param msg Message in question.
+ *
+ * \return Length of payload.
+ */
+#define cg_bittorrent_message_getpayloadlength(msg) (msg->payload - sizeof(msg->length) - sizeof(msg->type))
+
+/**
  * Get a integer value of the specified message.
  *
  * \param msg Message in question.

@@ -296,7 +296,7 @@ void CDistTestCase::testMetainfoLoad()
 // testTrackerLoad
 ////////////////////////////////////////
 
-#define CDIST_TEST_TRACKER_PEERID "A9993E364706816ABA3E25717850C26C9CD0D89D"
+#define CDIST_TEST_TRACKER_PEERID ((CgByte *)"A9993E364706816ABA3E25717850C26C9CD0D89D")
 #define CDIST_TEST_TRACKER_PORT 6889
 #define CDIST_TEST_TRACKER_UPLOADED 0
 #define CDIST_TEST_TRACKER_DOWNLOADED 0
@@ -599,10 +599,10 @@ void CDistTestCase::testFileMgr()
 
 	/**** Piece ****/
 	unsigned char infoValHash[CG_SHA1_HASH_SIZE];
-	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(cbm, infoValHash));
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(metainfo, infoValHash));
 	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
 	cg_bittorrent_tracker_load(
-		cbt , 
+		cbt,
 		metainfo,
 		(unsigned char *)CDIST_TEST_TRACKER_PEERID,
 		"",
@@ -650,7 +650,7 @@ void CDistTestCase::testFileMgr()
 	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
 
 	cg_bittorrent_tracker_delete(cbt);
-	cg_bittorrent_metainfo_delete(cbm);
+	cg_bittorrent_metainfo_delete(matainfo);
 
 
 
