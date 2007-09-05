@@ -517,20 +517,6 @@ void CDistTestCase::testPeerHandshake()
 	CgInt64 msgLength = cg_bittorrent_message_getlength(msg);
 	cg_bittorrent_peer_setbitfield(cbp, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getlength(msg));
 
-	/*
-	while (cg_bittorrent_peer_recvmsgheader(cbp, msg)) {
-		switch (cg_bittorrent_message_gettype(msg)) {
-			default:
-				{
-					cg_bittorrent_peer_recvmsgbody(cbp, msg);
-					int msgType = cg_bittorrent_message_gettype(msg);
-				}
-				break;
-		}
-	}
-*/
-	// 3525195776 / 262144 / 8 = 1680.9443359375
-	//msgLength = 1682;
 	cg_bittorrent_message_delete(msg);
 
 	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
@@ -622,7 +608,7 @@ void CDistTestCase::testFileMgr()
 			break;
 		cbp = cg_bittorrent_peer_next(cbp);
 	}
-\	CPPUNIT_ASSERT(cbp);
+	CPPUNIT_ASSERT(cbp);
 
 	int pieceLen = cg_bittorrent_metainfo_getinfopiecelength(metainfo);
 	CgByte *pieceBuf = (CgByte *)malloc(pieceLen);
