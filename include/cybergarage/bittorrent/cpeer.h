@@ -314,7 +314,7 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index);
  *
  * \return TRUE if the peer has the specified piece, otherwise FALSE.
  */
-BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *peerId, int pieceIdx, int pieceOffset, CgByte *buf, int bufLen, int *pieceLen);
+BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int pieceOffset, CgByte *buf, int bufLen, int *pieceLen);
 
 /**
  * Request the specfied piece.

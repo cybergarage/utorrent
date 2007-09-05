@@ -114,7 +114,7 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index)
 	bitfieldNum = index / 8;
 	bitfieldOffset = index % 8;
 	bitfieldMask = 1 << (7 - bitfieldOffset); 
-	if (cg_bittorrent_peer_getbitfieldlength(peer) < (CgBittorrentInteger)bitfieldNum)
+	if (cg_bittorrent_peer_getbitfieldlength(peer) < bitfieldNum)
 		return FALSE;
 	return (peer->bitfield[bitfieldNum] & bitfieldMask) ? TRUE : FALSE;
 }
@@ -123,13 +123,18 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index)
 * cg_bittorrent_peer_getpiece
 ****************************************/
 
-BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *peerId, int pieceIdx, int pieceOffset, CgByte *buf, int bufLen, int *pieceLen)
+BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int pieceOffset, CgByte *buf, int bufLen, int *pieceLen)
 {
 	CgBittorrentMessage *msg;
 	CgByte msgType;
 
 	if (!peer)
 		return FALSE;
+
+	if (cg_bittorrent_peer_hasbitfield(peer)) {
+		if (cg_bittorrent_peer_haspiece(peer, pieceIdx) == FALSE)
+			return FALSE;
+	}
 
 	if (!cg_bittorrent_peer_request(peer, pieceIdx, pieceOffset, bufLen))
 		return FALSE;
@@ -144,8 +149,15 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *p
 			*pieceLen = cg_bittorrent_peer_recvmsgbody(peer, msg, buf, bufLen);
 			break;
 		}
-		else
+		else {
 			cg_bittorrent_peer_recvmsgbodynobuf(peer, msg);
+			if (cg_bittorrent_peer_hasbitfield(peer)) {
+				if (cg_bittorrent_peer_haspiece(peer, pieceIdx) == FALSE) {
+					cg_bittorrent_message_delete(msg);
+					return FALSE;
+				}
+			}
+		}
 	}
 
 	cg_bittorrent_message_delete(msg);
