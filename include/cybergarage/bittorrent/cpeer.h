@@ -314,7 +314,7 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index);
  *
  * \return TRUE if the peer has the specified piece, otherwise FALSE.
  */
-BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *peerid, int index, int offset, CgByte *buf, int bufLen);
+BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *peerId, int pieceIdx, int pieceOffset, CgByte *buf, int bufLen, int *pieceLen);
 
 /**
  * Request the specfied piece.
@@ -329,9 +329,10 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, char *infoHash, char *p
 BOOL cg_bittorrent_peer_request(CgBittorrentPeer *peer, int index, int begin, int length);
 
 BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
-int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
-BOOL cg_bittorrent_peer_recvmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
+int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CgByte *buf, int bufLen);
+#define cg_bittorrent_peer_recvmsgbodynobuf(peer, msg) cg_bittorrent_peer_recvmsgbody(peer, msg, NULL, 0)
 int cg_bittorrent_peer_recvmsgbodyasync(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CG_BITTORRENT_MESSAGE_READ_FUNC func, void *userData, char *buf, int bufSize);
+BOOL cg_bittorrent_peer_recvmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
 BOOL cg_bittorrent_peer_sendmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
 
 #ifdef  __cplusplus

@@ -114,12 +114,23 @@ BOOL cg_bittorrent_client_start(CgBittorrentClient *cbc);
 
 /**
  * Stop the specified client.
- *
+  *
  * \param cbc Client to stop.
  *
  * \return TRUE when the client is stopped normally, otherwise FALSE.
  */
 BOOL cg_bittorrent_client_stop(CgBittorrentClient *cbc);
+
+/****************************************
+* Function (Download)
+****************************************/
+
+/**
+ * Destroy a instance of the bittorrent client.
+ *
+ * \param cbc Client to destory.
+ */
+void cg_bittorrent_client_startdownlod(CgBittorrentClient *cbc, CgBittorrentMetainfo *cbm);
 
 #ifdef  __cplusplus
 }

@@ -66,7 +66,7 @@ extern "C" {
 
 typedef struct _CgBittorrentMessage {
 	CgBittorrentInteger length;
-	unsigned char type;
+	CgByte type;
 	CgByte *payload;
 } CgBittorrentMessage;
 
@@ -141,6 +141,23 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg);
 void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value);
 
 /**
+ * Alloc a specified memory of payload .
+ *
+ * \param msg Message in question.
+ * \param size Size to allocate.
+ *
+ * \return TRUE if the allocation is successful, othrewith FALSE.
+ */
+BOOL cg_bittorrent_message_allocpayload(CgBittorrentMessage *msg, int size);
+
+/**
+ * Alloc a specified memory of payload .
+ *
+ * \param msg Message in question.
+ */
+void cg_bittorrent_message_freepayload(CgBittorrentMessage *msg);
+
+/**
  * Get a payload of the specified message.
  *
  * \param msg Message in question.
@@ -156,7 +173,7 @@ void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value);
  *
  * \return Length of payload.
  */
-#define cg_bittorrent_message_getpayloadlength(msg) (msg->payload - sizeof(msg->length) - sizeof(msg->type))
+#define cg_bittorrent_message_getpayloadlength(msg) (msg->length - sizeof(msg->length) - sizeof(msg->type))
 
 /**
  * Get a integer value of the specified message.

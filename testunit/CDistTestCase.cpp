@@ -513,7 +513,7 @@ void CDistTestCase::testPeerHandshake()
 	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgheader(cbp, msg));
 	char msgType = cg_bittorrent_message_gettype(msg);
 	//CPPUNIT_ASSERT(msgType == CG_BITTORRENT_MESSAGE_BITFIELD);
-	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgbody(cbp, msg));
+	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgbodynobuf(cbp, msg));
 	CgInt64 msgLength = cg_bittorrent_message_getlength(msg);
 	cg_bittorrent_peer_setbitfield(cbp, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getlength(msg));
 
@@ -627,7 +627,7 @@ void CDistTestCase::testFileMgr()
 	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgheader(cbp, msg));
 	char msgType = cg_bittorrent_message_gettype(msg);
 	//CPPUNIT_ASSERT(msgType == CG_BITTORRENT_MESSAGE_BITFIELD);
-	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgbody(cbp, msg));
+	CPPUNIT_ASSERT(cg_bittorrent_peer_recvmsgbodynobuf(cbp, msg));
 	CgInt64 msgLength = cg_bittorrent_message_getlength(msg);
 	cg_bittorrent_peer_setbitfield(cbp, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getlength(msg));
 

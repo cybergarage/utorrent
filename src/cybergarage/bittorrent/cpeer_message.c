@@ -43,14 +43,18 @@ BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessag
 * cg_bittorrent_peer_recvmsgbody
 ****************************************/
 
-int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *msg)
+int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CgByte *buf, int bufLen)
 {
 	int pstrlen;
 	int readlen;
 	int nread;
+	int skiplen;
+	CgByte skipBuf[32];
 
 	if (!peer || !msg)
 		return 0;
+
+	cg_bittorrent_message_freepayload(msg);
 
 	if (msg->payload) {
 		free(msg->payload);
@@ -61,14 +65,34 @@ int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *
 	if (pstrlen <=0)
 		return 0;
 
-	msg->payload = (char *)malloc(pstrlen);
+	if (!buf || bufLen < 0) {
+		if (!cg_bittorrent_message_allocpayload(msg, pstrlen))
+			return 0;
+		buf = cg_bittorrent_message_getpayload(msg);
+		bufLen = pstrlen;
+	}
 
 	readlen = 0;
-	while (readlen < pstrlen) {
-		nread = cg_bittorrent_peer_read(peer, (msg->payload + readlen), (pstrlen - readlen));
+	while (readlen < bufLen) {
+		nread = cg_bittorrent_peer_read(peer, (buf + readlen), (bufLen - readlen));
 		if (nread <= 0)
-			return readlen;
+			readlen;
 		readlen += nread;
+	}
+	skiplen = 0;
+	while ((readlen +  skiplen)< pstrlen) {
+		nread = cg_bittorrent_peer_read(peer, skipBuf, (sizeof(skipBuf) < (pstrlen - readlen- skiplen)) ? sizeof(skipBuf) : (pstrlen - readlen- skiplen));
+		if (nread <= 0)
+			break;
+		skiplen += nread;
+	}
+
+	switch (cg_bittorrent_message_gettype(msg)) {
+		case CG_BITTORRENT_MESSAGE_BITFIELD:
+			{
+					cg_bittorrent_peer_setbitfield(peer, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getpayloadlength(msg));
+			}
+			break;
 	}
 
 	return readlen;
@@ -119,7 +143,7 @@ BOOL cg_bittorrent_peer_recvmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg
 {
 	if (cg_bittorrent_peer_recvmsgheader(peer, msg) == FALSE)
 		return FALSE;
-	if (cg_bittorrent_peer_recvmsgbody(peer, msg) != cg_bittorrent_message_getlength(msg))
+	if (cg_bittorrent_peer_recvmsgbodynobuf(peer, msg) != cg_bittorrent_message_getlength(msg))
 		return FALSE;
 	return TRUE;
 }
