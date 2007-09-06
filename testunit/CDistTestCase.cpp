@@ -497,10 +497,10 @@ void CDistTestCase::testPeerHandshake()
 	while(cbp) {
 		CPPUNIT_ASSERT(0< cg_strlen(cg_bittorrent_peer_getaddress(cbp)));
 		CPPUNIT_ASSERT(0 < cg_bittorrent_peer_getport(cbp));
-		if (cg_bittorrent_peer_connect(cbp) == FALSE)
-			cbp = cg_bittorrent_peer_next(cbp);
-		if (cg_bittorrent_peer_handshake(cbp, hsIn, hsOut) == TRUE)
-			break;
+		if (cg_bittorrent_peer_connect(cbp)) {
+			if (cg_bittorrent_peer_handshake(cbp, hsIn, hsOut) == TRUE)
+				break;
+		}
 		cbp = cg_bittorrent_peer_next(cbp);
 	}
 	cg_bittorrent_handshake_delete(hsIn);

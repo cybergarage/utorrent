@@ -261,7 +261,7 @@ void cg_bittorrent_metainfo_print(CgBittorrentMetainfo *cbm);
  *
  * \return TRUE when the info hash was generated normally, otherwise NULL.
  */
-BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char *infoHash);
+BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, CgByte *infoHash);
 
 /**
  * Set a URL.

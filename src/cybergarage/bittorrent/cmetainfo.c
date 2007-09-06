@@ -110,7 +110,7 @@ BOOL cg_bittorrent_metainfo_tostring(CgBittorrentMetainfo *cbm, CgString *buf)
 * cg_bittorrent_metainfo_getinfohash
 ****************************************/
 
-BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, unsigned char *infoHash)
+BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, CgByte *infoHash)
 {
 	CgBittorrentBencoding *infoVal;
 
