@@ -255,12 +255,22 @@ void CDistTestCase::testMetainfoFetch()
 #else
 #define CDIST_TEST_METAINFO_FILE "../data/Zod-dvd-i386.torrent"
 #endif
+//#define CDIST_TEST_METAINFO_HASH "e9a8c7b1cb82ac68fd6181a965f94c3409469888"
 
 void CDistTestCase::testMetainfoLoad()
 {
+	CgByte infoHash[CG_SHA1_HASH_SIZE];
+	CgByte infoHashStr[CG_SHA1_HASH_SIZE*2];
+
 	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
 	CPPUNIT_ASSERT(cbm);
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
+
+	/* Hash */
+	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(cbm, infoHash));
+	for(int i = 0; i < CG_SHA1_HASH_SIZE ; ++i)
+		sprintf((char *)(infoHashStr+(i*2)), "%02x", infoHash[i]);
+	//CPPUNIT_ASSERT(memcmp(infoHashStr, CDIST_TEST_METAINFO_HASH, (CG_SHA1_HASH_SIZE*2)) == 0);
 
 	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getannounce(cbm), "http://torrent.linux.duke.edu:6969/announce"));
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getcreationdate(cbm) == 1161640274);
@@ -392,7 +402,7 @@ void CDistTestCase::testSHA1()
         err = cg_sha1_result(&sha, Message_Digest);
 		CPPUNIT_ASSERT(!err);
         if (!err) {
-            for(i = 0; i < 20 ; ++i)
+            for(i = 0; i < CG_SHA1_HASH_SIZE ; ++i)
             {
                 sprintf((Message_Digest_Str+(i*2)), "%02X", Message_Digest[i]);
             }

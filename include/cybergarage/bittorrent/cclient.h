@@ -21,6 +21,7 @@ extern "C" {
 #endif
 
 #include <cybergarage/http/chttp.h>
+#include <cybergarage/bittorrent/cmetainfo.h>
 #include <cybergarage/bittorrent/cblockdevmgr.h>
 #include <cybergarage/bittorrent/cstrategymgr.h>
 
@@ -48,6 +49,7 @@ extern "C" {
 typedef struct _CgBittorrentClient {
 	CgBittorrentBlockDeviceMgr *blockDevMgr;
 	CgBittorrentStrategyMgr *stgyMgr;
+	CgBittorrentMetainfoList *metaInfoList;
 	CgHttpServer *httpServer;
 } CgBittorrentClient;
 
@@ -68,6 +70,23 @@ CgBittorrentClient *cg_bittorrent_client_new();
  * \param cbc Client to destory.
  */
 void cg_bittorrent_client_delete(CgBittorrentClient *cbc);
+
+/**
+ * Set a matainfo list.
+ *
+ * \param cbc  Client in question.
+ * \param value matainfo list to set.
+ */
+#define cg_bittorrent_client_setmetainfolist(cbc, value) (cbc->metaInfoList = value)
+
+/**
+ * Return a  matainfo list of the specified download manager.
+ *
+ * \param cbc  Client in question.
+ *
+ * \return Stored matainfo list.
+ */
+#define cg_bittorrent_client_getmetainfolist(cbc) (cbc->metaInfoList)
 
 /**
  * Set a block device manager.
@@ -106,6 +125,15 @@ void cg_bittorrent_client_delete(CgBittorrentClient *cbc);
 /**
  * Start the specified client.
  *
+ * \param cbc Client to check.
+ *
+ * \return TRUE when the client is avairable, otherwise FALSE.
+ */
+BOOL cg_bittorrent_client_isready(CgBittorrentClient *cbc);
+
+/**
+ * Start the specified client.
+ *
  * \param cbc Client to start.
  *
  * \return TRUE when the client is started normally, otherwise FALSE.
@@ -130,7 +158,8 @@ BOOL cg_bittorrent_client_stop(CgBittorrentClient *cbc);
  *
  * \param cbc Client to destory.
  */
-void cg_bittorrent_client_startdownlod(CgBittorrentClient *cbc, CgBittorrentMetainfo *cbm);
+BOOL cg_bittorrent_client_addmetainfo(CgBittorrentClient *cbc, CgBittorrentMetainfo *cbm);
+BOOL cg_bittorrent_client_removemetainfo(CgBittorrentClient *cbc, CgByte *infoHash);
 
 #ifdef  __cplusplus
 }

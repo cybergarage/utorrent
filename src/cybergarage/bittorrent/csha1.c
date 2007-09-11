@@ -124,7 +124,6 @@ int cg_sha1_result( CgSHA1Context *context,
         context->Length_Low = 0;    /* and clear length */
         context->Length_High = 0;
         context->Computed = 1;
-
     }
 
     for(i = 0; i < CG_SHA1_HASH_SIZE; ++i)

@@ -181,7 +181,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cclient_download.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cclient_http.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cclient_metainfo.c"
 				>
 			</File>
 			<File

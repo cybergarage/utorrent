@@ -153,7 +153,7 @@ void cg_bittorrent_bencoding_setdictionary(CgBittorrentBencoding *cbb, void *val
 * cg_bittorrent_bencoding_tosha1
 ****************************************/
 
-BOOL cg_bittorrent_bencoding_tosha1(CgBittorrentBencoding *cbb, unsigned char *buf)
+BOOL cg_bittorrent_bencoding_tosha1(CgBittorrentBencoding *cbb, CgByte *buf)
 {
 	CgString *str;
 	CgSHA1Context sha;

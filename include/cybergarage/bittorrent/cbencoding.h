@@ -311,7 +311,7 @@ void cg_bittorrent_bencoding_setdictionary(CgBittorrentBencoding *cbb, void *val
 BOOL cg_bittorrent_bencoding_parse(char *data, CgBittorrentBencoding **cbb, int *offset);
 void cg_bittorrent_bencoding_print(CgBittorrentBencoding *cbb);
 int cg_bittorrent_bencoding_tostring(CgBittorrentBencoding *cbb, CgString *str);
-BOOL cg_bittorrent_bencoding_tosha1(CgBittorrentBencoding *cbb, unsigned char *buf);
+BOOL cg_bittorrent_bencoding_tosha1(CgBittorrentBencoding *cbb, CgByte *buf);
 
 #ifdef  __cplusplus
 }
