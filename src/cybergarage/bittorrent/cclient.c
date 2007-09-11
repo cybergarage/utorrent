@@ -36,6 +36,13 @@ CgBittorrentClient *cg_bittorrent_client_new()
 	if (!cbc)
 		return NULL;
 
+	/* Mutex */
+	cbc->mutex = cg_mutex_new();
+	if (!cbc->mutex) {
+		free(cbc);
+		return NULL;
+	}
+
 	/* Metainfo */
 	cbmList = cg_bittorrent_metainfolist_new();
 	if (!cbmList) {
@@ -72,6 +79,11 @@ void cg_bittorrent_client_delete(CgBittorrentClient *cbc)
 	cg_bittorrent_client_stop(cbc);
 	cg_bittorrent_client_clean(cbc);
 
+	/* Mutex */
+	if (cbc->mutex)
+		cg_mutex_delete(cbc->mutex);
+
+	/* HTTP Server */
 	if (cbc->httpServer)
 		cg_http_server_delete(cbc->httpServer);
 
@@ -105,8 +117,11 @@ static BOOL cg_bittorrent_client_isready(CgBittorrentClient *cbc)
 
 static BOOL cg_bittorrent_client_initialize(CgBittorrentClient *cbc)
 {
-	CgBittorrentMetainfoList *cbmList;
-	CgBittorrentBlockDeviceMgr *blockDevMgr;
+	CgBittorrentMetainfoList *metainfoList;
+	CgBittorrentBlockDeviceMgr *blkDevMgr;
+	CgBittorrentMetainfoList *blkDevMetainfoList;
+	CgByte infoHash[CG_BITTORRENT_METAINFO_INFOHASH_SIZE];
+	CgBittorrentMetainfo *metainfo, *cbm;
 
 	if (!cg_bittorrent_client_isready(cbc))
 		return FALSE;
@@ -114,15 +129,25 @@ static BOOL cg_bittorrent_client_initialize(CgBittorrentClient *cbc)
 	if (!cg_bittorrent_client_clean(cbc))
 		return FALSE;
 
-	cbmList = cg_bittorrent_client_getmetainfolist(cbc);
-	if (!cbmList)
+	metainfoList = cg_bittorrent_client_getmetainfolist(cbc);
+	if (!metainfoList)
 		return FALSE;
 
-	blockDevMgr = cg_bittorrent_client_getblockdevicemgr(cbc);
-	if (!blockDevMgr)
+	blkDevMgr = cg_bittorrent_client_getblockdevicemgr(cbc);
+	if (!blkDevMgr)
 		return FALSE;
 
-	cg_bittorrent_blockdevicemgr_getmetainfos(blockDevMgr, &cbmList);
+	/* Loading Metainfos */
+	if (!cg_bittorrent_blockdevicemgr_getmetainfos(blkDevMgr, &blkDevMetainfoList))
+		return FALSE;
+
+	for (cbm=cg_bittorrent_metainfolist_gets(blkDevMetainfoList); cbm; cbm=cg_bittorrent_metainfo_next(cbm)) {
+		if (!cg_bittorrent_metainfo_getinfohash(cbm, infoHash))
+			continue;
+		if (!cg_bittorrent_blockdevicemgr_getmetainfo(blkDevMgr, infoHash, &metainfo))
+			continue;
+		cg_bittorrent_client_addmetainfo(cbc, metainfo);
+	}
 
 	return TRUE;
 }

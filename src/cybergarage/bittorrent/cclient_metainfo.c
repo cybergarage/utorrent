@@ -19,14 +19,31 @@
 * cg_bittorrent_client_addmetainfo
 ****************************************/
 
-BOOL cg_bittorrent_client_addmetainfo(CgBittorrentClient *cbc, CgBittorrentMetainfo *cbm)
+BOOL cg_bittorrent_client_addmetainfo(CgBittorrentClient *cbc, CgBittorrentMetainfo *metainfo)
 {
-	if (!cg_bittorrent_client_isready(cbc))
+	CgBittorrentBlockDeviceMgr *blockDevMgr;
+	CgBittorrentMetainfoList *metainfoList;
+
+	if (!metainfo)
 		return FALSE;
 
-	if (!cbc->httpServer)
-		cg_http_server_start(cbc->httpServer);
-	
+	blockDevMgr = cg_bittorrent_client_getblockdevicemgr(cbc);
+	if (!blockDevMgr)
+		return FALSE;
+
+	if (!cg_bittorrent_blockdevicemgr_addmetainfo(blockDevMgr, metainfo))
+		return FALSE;
+
+	metainfoList = cg_bittorrent_client_getmetainfolist(cbc);
+	if (!metainfoList)
+		return FALSE;
+
+	cg_bittorrent_client_lock(cbc);
+
+	cg_bittorrent_metainfolist_add(metainfoList, metainfo);
+
+	cg_bittorrent_client_unlock(cbc);
+
 	return TRUE;
 }
 
@@ -36,8 +53,29 @@ BOOL cg_bittorrent_client_addmetainfo(CgBittorrentClient *cbc, CgBittorrentMetai
 
 BOOL cg_bittorrent_client_removemetainfo(CgBittorrentClient *cbc, CgByte *infoHash)
 {
-	if (cbc->httpServer)
-		cg_http_server_stop(cbc->httpServer);
+	CgBittorrentBlockDeviceMgr *blockDevMgr;
+	CgBittorrentMetainfoList *metainfoList;
+
+	if (!cbc)
+		return FALSE;
+
+	blockDevMgr = cg_bittorrent_client_getblockdevicemgr(cbc);
+	if (!blockDevMgr)
+		return FALSE;
+
+	if (!cg_bittorrent_blockdevicemgr_removemetainfo(blockDevMgr, infoHash))
+		return FALSE;
+
+	metainfoList = cg_bittorrent_client_getmetainfolist(cbc);
+	if (!metainfoList)
+		return FALSE;
+
+	cg_bittorrent_client_lock(cbc);
+
+	cg_bittorrent_metainfolist_remove(metainfoList, infoHash);
+
+	cg_bittorrent_client_unlock(cbc);
 
 	return TRUE;
 }
+

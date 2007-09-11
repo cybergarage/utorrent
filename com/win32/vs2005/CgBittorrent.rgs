@@ -1,0 +1,27 @@
+HKCR
+{
+	CyberGarage.Bittorrent.1 = s 'CgBittorrent Class'
+	{
+		CLSID = s '{7CEB7149-A608-4CF1-A873-A7EF3286654F}'
+	}
+	CyberGarage.Bittorrent = s 'CgBittorrent Class'
+	{
+		CLSID = s '{7CEB7149-A608-4CF1-A873-A7EF3286654F}'
+		CurVer = s 'CyberGarage.Bittorrent.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7CEB7149-A608-4CF1-A873-A7EF3286654F} = s 'CgBittorrent Class'
+		{
+			ProgID = s 'CyberGarage.Bittorrent.1'
+			VersionIndependentProgID = s 'CyberGarage.Bittorrent'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{38C9815B-281C-492B-BD95-CFA72F1CF5FD}'
+		}
+	}
+}

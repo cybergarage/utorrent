@@ -21,6 +21,7 @@ extern "C" {
 #endif
 
 #include <cybergarage/http/chttp.h>
+#include <cybergarage/util/cmutex.h>
 #include <cybergarage/bittorrent/cmetainfo.h>
 #include <cybergarage/bittorrent/cblockdevmgr.h>
 #include <cybergarage/bittorrent/cstrategymgr.h>
@@ -51,6 +52,7 @@ typedef struct _CgBittorrentClient {
 	CgBittorrentStrategyMgr *stgyMgr;
 	CgBittorrentMetainfoList *metaInfoList;
 	CgHttpServer *httpServer;
+	CgMutex *mutex;
 } CgBittorrentClient;
 
 /****************************************
@@ -70,6 +72,20 @@ CgBittorrentClient *cg_bittorrent_client_new();
  * \param cbc Client to destory.
  */
 void cg_bittorrent_client_delete(CgBittorrentClient *cbc);
+
+/**
+ * Lock the specified instance.
+ *
+ * \param cbc Client to destory.
+ */
+#define cg_bittorrent_client_lock(cbc) cg_mutex_lock(cbc->mutex);
+
+/**
+ * Unlock the specified instance.
+ *
+ * \param cbc Client to destory.
+ */
+#define cg_bittorrent_client_unlock(cbc) cg_mutex_unlock(cbc->mutex);
 
 /**
  * Set a matainfo list.

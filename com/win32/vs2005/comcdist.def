@@ -1,0 +1,9 @@
+; comcdist.def : モジュール パラメータを宣言します。
+
+LIBRARY      "comcdist.DLL"
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE

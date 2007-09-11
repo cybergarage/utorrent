@@ -1,0 +1,36 @@
+// comcdist.idl : comcdist の IDL ソース
+//
+
+// このファイルは、タイプ ライブラリ (comcdist.tlb) およびマーシャリング コードを
+// 作成するために MIDL ツールによって処理されます。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(3E9A862E-6F01-422E-B359-7971908A3423),
+	dual,
+	nonextensible,
+	helpstring("ICgBittorrent インターフェイス"),
+	pointer_default(unique)
+]
+interface ICgBittorrent : IDispatch{
+};
+[
+	uuid(38C9815B-281C-492B-BD95-CFA72F1CF5FD),
+	version(1.0),
+	helpstring("comcdist 1.0 タイプ ライブラリ")
+]
+library comcdistLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(7CEB7149-A608-4CF1-A873-A7EF3286654F),
+		helpstring("CgBittorrent Class")
+	]
+	coclass CgBittorrent
+	{
+		[default] interface ICgBittorrent;
+	};
+};

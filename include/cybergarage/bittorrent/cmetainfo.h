@@ -16,9 +16,10 @@
 #ifndef _CG_BITTORRENT_METAINFO_H_
 #define _CG_BITTORRENT_METAINFO_H_
 
-#include <cybergarage/bittorrent/cdictionary.h>
 #include <cybergarage/net/curl.h>
 #include <cybergarage/util/cstring.h>
+#include <cybergarage/bittorrent/cdictionary.h>
+#include <cybergarage/bittorrent/csha1.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -44,6 +45,8 @@ extern "C" {
 #define CG_BITTORRENT_METAINFO_PATH "path"
 
 #define CG_BITTORRENT_METAINFO_ID_DELIM "\\/"
+
+#define CG_BITTORRENT_METAINFO_INFOHASH_SIZE CG_SHA1_HASH_SIZE
 
 /****************************************
 * Data Type
@@ -110,6 +113,16 @@ void cg_bittorrent_metainfolist_delete(CgBittorrentMetainfoList *cbmList);
  */
 #define cg_bittorrent_metainfolist_add(cbmList, cbm) cg_list_add((CgList *)cbmList, (CgList *)cbm)
 
+/**
+ * Remove a metainfo from the specifeid list.
+ *
+ * \param cbmList Metainfo list to destory.
+ * \param hashInfo HashInfo of the metainfo to remove.
+ *
+ * \return TRUE when the specified metainfo is removed normally, othrewise FALSE;
+*/
+BOOL cg_bittorrent_metainfolist_remove(CgBittorrentMetainfoList *cbmList, CgByte *infoHash);
+
 /****************************************
 * Function (Metainfo)
 ****************************************/
@@ -136,6 +149,15 @@ void cg_bittorrent_metainfo_delete(CgBittorrentMetainfo *cbm);
  * \return Next metainfo if the current metainfo has a next item, otherwise NULL.
  */
 #define cg_bittorrent_metainfo_next(cbm) (CgBittorrentMetainfo *)cg_list_next((CgList *)cbm)
+
+/**
+ * Remove the specified matainfo form the list.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return TRUE when the specified metainfo is removed norrmally, otherwise FALSE.
+ */
+#define cg_bittorrent_metainfo_remove(cbm) cg_list_remove((CgList *)cbm)
 
 /**
  * Load the metainfo from a file.
