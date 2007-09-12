@@ -635,4 +635,21 @@ void CDistTestCase::testFileMgr()
 	cg_bittorrent_filemgr_delete(fileMgr);
 }
 
+////////////////////////////////////////
+// testClientID
+////////////////////////////////////////
+
+void CDistTestCase::testClientID()
+{
+	CgByte peerId[CG_BITTORRENT_CLIENT_PEERID_SIZE];
+
+	CgBittorrentClient *cbc = cg_bittorrent_client_new();
+	
+	cg_bittorrent_client_createpeerid(cbc, peerId);
+
+//for (int n=14; n<CG_BITTORRENT_CLIENT_PEERID_SIZE; n++)
+//	CPPUNIT_ASSERT(peerId[n] != 0);
+
+	cg_bittorrent_client_delete(cbc);
+}
 

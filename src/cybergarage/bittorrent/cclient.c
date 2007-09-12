@@ -14,6 +14,7 @@
 ******************************************************************/
 
 #include <cybergarage/bittorrent/cclient.h>
+#include <cybergarage/net/cinterface.h>
 
 /****************************************
 * Prototype
@@ -198,3 +199,52 @@ BOOL cg_bittorrent_client_stop(CgBittorrentClient *cbc)
 
 	return TRUE;
 }
+
+/****************************************
+* cg_bittorrent_client_createpeerid
+****************************************/
+
+BOOL cg_bittorrent_client_createpeerid(CgBittorrentClient *cbc, CgByte *peerId)
+{
+	CgNetworkInterfaceList *netIfList;
+	CgNetworkInterface *netIf;
+	char hostName[CG_HTTP_SEVERNAME_MAXLEN];
+	CgByte hostNameHash[CG_SHA1_HASH_SIZE];
+	CgSHA1Context sha;
+	int err;
+
+	memset(peerId, 0, CG_BITTORRENT_CLIENT_PEERID_SIZE);
+
+	/* Client ID/Vertion */
+	peerId[0] = '-';
+	memcpy(peerId + 1, CG_BITTORRENT_CLIENT_ID, 2);
+	memcpy(peerId + 3, CG_BITTORRENT_CLIENT_VER, 4);
+
+	/* Host Name */
+	cg_http_getservername(hostName, CG_HTTP_SEVERNAME_MAXLEN);
+	err = cg_sha1_reset(&sha);
+	if (!err) {
+		err = cg_sha1_input(&sha, hostName, cg_strlen(hostName));
+		if (!err)
+			err = cg_sha1_result(&sha, hostNameHash);
+	}
+	if (err)
+		return FALSE;
+	memcpy(peerId + 7, hostNameHash, 7);
+	
+	/* Mac Address */
+	netIfList = cg_net_interfacelist_new();
+	if (!netIfList)
+		return FALSE;
+	cg_net_gethostinterfaces(netIfList);
+	netIf =cg_net_interfacelist_gets(netIfList);
+	if (!netIf) {
+		cg_net_interfacelist_delete(netIfList);
+		return FALSE;
+	}
+	cg_net_interface_getmacaddress(netIf, (peerId + 14));
+	cg_net_interfacelist_delete(netIfList);
+
+	return FALSE;
+}
+

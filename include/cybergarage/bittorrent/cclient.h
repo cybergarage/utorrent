@@ -25,10 +25,15 @@ extern "C" {
 #include <cybergarage/bittorrent/cmetainfo.h>
 #include <cybergarage/bittorrent/cblockdevmgr.h>
 #include <cybergarage/bittorrent/cstrategymgr.h>
+#include <cybergarage/bittorrent/csha1.h>
 
 /****************************************
 * Define
 ****************************************/
+
+#define CG_BITTORRENT_CLIENT_ID "CG"
+#define CG_BITTORRENT_CLIENT_VER "0500"
+#define CG_BITTORRENT_CLIENT_PEERID_SIZE CG_SHA1_HASH_SIZE
 
 #define CG_BITTORRENT_CLIENT_REST_VERSION1 "V1"
 
@@ -169,11 +174,7 @@ BOOL cg_bittorrent_client_stop(CgBittorrentClient *cbc);
 * Function (Download)
 ****************************************/
 
-/**
- * Destroy a instance of the bittorrent client.
- *
- * \param cbc Client to destory.
- */
+BOOL cg_bittorrent_client_createpeerid(CgBittorrentClient *cbc, CgByte *peerid);
 BOOL cg_bittorrent_client_addmetainfo(CgBittorrentClient *cbc, CgBittorrentMetainfo *cbm);
 BOOL cg_bittorrent_client_removemetainfo(CgBittorrentClient *cbc, CgByte *infoHash);
 

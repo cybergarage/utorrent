@@ -18,7 +18,7 @@
 
 #include <cybergarage/bittorrent/ctracker.h>
 #include <cybergarage/bittorrent/cdownloadmgr.h>
-#include <cybergarage/bittorrent/csha1.h>
+#include <cybergarage/bittorrent/cclient.h>
 
 #ifdef  __cplusplus
 extern "C" {
