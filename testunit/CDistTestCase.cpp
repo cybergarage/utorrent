@@ -261,7 +261,7 @@ void CDistTestCase::testMetainfoFetch()
 void CDistTestCase::testMetainfoLoad()
 {
 	CgByte infoHash[CG_SHA1_HASH_SIZE];
-	CgByte infoHashStr[CG_SHA1_HASH_SIZE*2];
+	CgByte infoHashStr[CG_SHA1_HASH_SIZE*2+1];
 
 	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
 	CPPUNIT_ASSERT(cbm);
@@ -269,7 +269,7 @@ void CDistTestCase::testMetainfoLoad()
 
 	/* Hash */
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(cbm, infoHash));
-	for(int i = 0; i < CG_SHA1_HASH_SIZE ; ++i)
+	for(int i = 0; i < CG_SHA1_HASH_SIZE ; i++)
 		sprintf((char *)(infoHashStr+(i*2)), "%02x", infoHash[i]);
 	CPPUNIT_ASSERT(memcmp(infoHashStr, CDIST_TEST_METAINFO_HASH, (CG_SHA1_HASH_SIZE*2)) == 0);
 
@@ -307,7 +307,6 @@ void CDistTestCase::testMetainfoLoad()
 // testTrackerLoad
 ////////////////////////////////////////
 
-#define CDIST_TEST_TRACKER_PEERID ((CgByte *)"A9993E364706816ABA3E25717850C26C9CD0D89D")
 #define CDIST_TEST_TRACKER_PORT 6889
 #define CDIST_TEST_TRACKER_UPLOADED 0
 #define CDIST_TEST_TRACKER_DOWNLOADED 0
@@ -325,13 +324,18 @@ void CDistTestCase::testTrackerLoad()
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, "../data/Zod-dvd-i386.torrent"));
 #endif
 
+	CgByte peerId[CG_BITTORRENT_CLIENT_PEERID_SIZE];
+	CgBittorrentClient *cbc = cg_bittorrent_client_new();
+	cg_bittorrent_client_createpeerid(cbc, peerId);
+	cg_bittorrent_client_delete(cbc);
+
 	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
 	CPPUNIT_ASSERT(cbt);
 	CPPUNIT_ASSERT(
 		cg_bittorrent_tracker_load(
 		cbt , 
 		cbm,
-		(unsigned char *)CDIST_TEST_TRACKER_PEERID,
+		peerId,
 		"",
 		CDIST_TEST_TRACKER_PORT,
 		CDIST_TEST_TRACKER_UPLOADED,
@@ -463,7 +467,7 @@ void CDistTestCase::testPeerHandshake()
 {
 	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
-	cg_bittorrent_metainfo_print(cbm);
+	//cg_bittorrent_metainfo_print(cbm);
 	CgBittorrentDictionary *info = cg_bittorrent_metainfo_getinfo(cbm);
 	CPPUNIT_ASSERT(info);
 
@@ -478,11 +482,16 @@ void CDistTestCase::testPeerHandshake()
 
 	CgInt64 pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
 
+	CgByte peerId[CG_BITTORRENT_CLIENT_PEERID_SIZE];
+	CgBittorrentClient *cbc = cg_bittorrent_client_new();
+	cg_bittorrent_client_createpeerid(cbc, peerId);
+	cg_bittorrent_client_delete(cbc);
+
 	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
 	cg_bittorrent_tracker_load(
 		cbt , 
 		cbm,
-		(unsigned char *)CDIST_TEST_TRACKER_PEERID,
+		peerId,
 		"",
 		CDIST_TEST_TRACKER_PORT,
 		CDIST_TEST_TRACKER_UPLOADED,
@@ -504,16 +513,24 @@ void CDistTestCase::testPeerHandshake()
 	CgBittorrentHandshake *hsIn = cg_bittorrent_handshake_new();
 	CgBittorrentHandshake *hsOut = cg_bittorrent_handshake_new();
 	cg_bittorrent_handshake_setinfohash(hsIn, infoValHash);
-	cg_bittorrent_handshake_setpeerid(hsIn, CDIST_TEST_TRACKER_PEERID);
+	cg_bittorrent_handshake_setpeerid(hsIn, peerId);
+	printf("\n");
 	while(cbp) {
 		CPPUNIT_ASSERT(0< cg_strlen(cg_bittorrent_peer_getaddress(cbp)));
 		CPPUNIT_ASSERT(0 < cg_bittorrent_peer_getport(cbp));
+		printf("%s:%d -> ", cg_bittorrent_peer_getaddress(cbp), cg_bittorrent_peer_getport(cbp));
+		printf("Connecting -> ");
 		if (cg_bittorrent_peer_connect(cbp)) {
-			if (cg_bittorrent_peer_handshake(cbp, hsIn, hsOut) == TRUE)
+			printf("Done -> ");
+			if (cg_bittorrent_peer_handshake(cbp, hsIn, hsOut) == TRUE) {
+				printf("OK\n");
 				break;
+			}
 		}
+		printf("FALSE\n");
 		cbp = cg_bittorrent_peer_next(cbp);
 	}
+	printf("\n");
 	cg_bittorrent_handshake_delete(hsIn);
 	cg_bittorrent_handshake_delete(hsOut);
 
@@ -596,6 +613,11 @@ void CDistTestCase::testFileMgr()
 	/* Clean */
 	cg_bittorrent_metainfo_delete(newMetainfo);
 
+	CgByte peerId[CG_BITTORRENT_CLIENT_PEERID_SIZE];
+	CgBittorrentClient *cbc = cg_bittorrent_client_new();
+	cg_bittorrent_client_createpeerid(cbc, peerId);
+	cg_bittorrent_client_delete(cbc);
+
 	/**** Piece ****/
 	unsigned char infoValHash[CG_SHA1_HASH_SIZE];
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(metainfo, infoValHash));
@@ -603,7 +625,7 @@ void CDistTestCase::testFileMgr()
 	cg_bittorrent_tracker_load(
 		cbt,
 		metainfo,
-		(unsigned char *)CDIST_TEST_TRACKER_PEERID,
+		peerId,
 		"",
 		CDIST_TEST_TRACKER_PORT,
 		CDIST_TEST_TRACKER_UPLOADED,
@@ -615,7 +637,7 @@ void CDistTestCase::testFileMgr()
 		);
 	CgBittorrentPeer *cbp = cg_bittorrent_tracker_getpeers(cbt);
 	while(cbp) {
-		if (cg_bittorrent_peer_open(cbp, infoValHash, CDIST_TEST_TRACKER_PEERID) == TRUE)
+		if (cg_bittorrent_peer_open(cbp, infoValHash, peerId) == TRUE)
 			break;
 		cbp = cg_bittorrent_peer_next(cbp);
 	}

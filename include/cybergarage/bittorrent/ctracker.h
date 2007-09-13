@@ -158,7 +158,7 @@ BOOL cg_bittorrent_tracker_fetch(CgBittorrentTracker *cbt, char *url);
 BOOL cg_bittorrent_tracker_load(
 CgBittorrentTracker *cbt,
 CgBittorrentMetainfo *cbm,
-unsigned char *peer_id,
+CgByte *peer_id,
 char *ip,
 int port,
 CgInt64 uploaded,

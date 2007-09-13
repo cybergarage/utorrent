@@ -56,7 +56,7 @@ void cg_bittorrent_tracker_delete(CgBittorrentTracker *cbt)
 BOOL cg_bittorrent_tracker_load(
 CgBittorrentTracker *cbt,
 CgBittorrentMetainfo *cbm,
-unsigned char *peer_id,
+CgByte *peer_id,
 char *ip,
 int port,
 CgInt64 uploaded,

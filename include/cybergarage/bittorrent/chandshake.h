@@ -21,6 +21,7 @@ extern "C" {
 #endif
 
 #include <cybergarage/typedef.h>
+#include <cybergarage/bittorrent/csha1.h>
 
 /****************************************
 * Define
@@ -36,8 +37,8 @@ typedef struct _CgBittorrentHandshake {
 	CgByte pstrlen;
 	char *pstr;
 	CgByte reserved[8];
-	CgByte infoHash[20];
-	CgByte peerId[20];
+	CgByte infoHash[CG_SHA1_HASH_SIZE];
+	CgByte peerId[CG_SHA1_HASH_SIZE];
 } CgBittorrentHandshake;
 
 /****************************************
