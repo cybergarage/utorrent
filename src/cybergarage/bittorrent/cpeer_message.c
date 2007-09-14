@@ -33,6 +33,8 @@ BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessag
 	pstrlen = ntohl(npstrlen);
 	cg_bittorrent_message_setlength(msg, pstrlen);
 
+	printf("Msg Length : %d\n", cg_bittorrent_message_getlength(msg));
+
 	if (pstrlen < 0)
 		return FALSE;
 
@@ -44,6 +46,8 @@ BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessag
 	if (cg_bittorrent_peer_read(peer, &msg->type, sizeof(msg->type)) != sizeof(msg->type))
 		return FALSE;
 
+	printf("Msg Type : %d\n", (int)cg_bittorrent_message_gettype(msg));
+
 	return TRUE;
 }
 
@@ -53,7 +57,7 @@ BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessag
 
 int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CgByte *buf, int bufLen)
 {
-	int pstrlen;
+	int payloadLen;
 	int readlen;
 	int nread;
 	int skiplen;
@@ -69,27 +73,27 @@ int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *
 		msg->payload = NULL;
 	}
 
-	pstrlen = cg_bittorrent_message_getlength(msg);
-	if (pstrlen <=0)
+	payloadLen = cg_bittorrent_message_getpayloadlength(msg);
+	if (payloadLen <=0)
 		return 0;
 
 	if (!buf || bufLen < 0) {
-		if (!cg_bittorrent_message_allocpayload(msg, pstrlen))
+		if (!cg_bittorrent_message_allocpayload(msg, payloadLen))
 			return 0;
 		buf = cg_bittorrent_message_getpayload(msg);
-		bufLen = pstrlen;
+		bufLen = payloadLen;
 	}
 
 	readlen = 0;
-	while (readlen < bufLen) {
-		nread = cg_bittorrent_peer_read(peer, (buf + readlen), (bufLen - readlen));
+	while ((readlen < bufLen) && (readlen < payloadLen)) {
+		nread = cg_bittorrent_peer_read(peer, (buf + readlen), min((bufLen - readlen),  (readlen < payloadLen)));
 		if (nread <= 0)
 			readlen;
 		readlen += nread;
 	}
 	skiplen = 0;
-	while ((readlen +  skiplen)< pstrlen) {
-		nread = cg_bittorrent_peer_read(peer, skipBuf, (sizeof(skipBuf) < (pstrlen - readlen- skiplen)) ? sizeof(skipBuf) : (pstrlen - readlen- skiplen));
+	while ((readlen +  skiplen)< payloadLen) {
+		nread = cg_bittorrent_peer_read(peer, skipBuf, (sizeof(skipBuf) < (payloadLen - readlen- skiplen)) ? sizeof(skipBuf) : (payloadLen - readlen- skiplen));
 		if (nread <= 0)
 			break;
 		skiplen += nread;
@@ -112,7 +116,7 @@ int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *
 
 int cg_bittorrent_peer_recvmsgbodyasync(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CG_BITTORRENT_MESSAGE_READ_FUNC func, void *userData, char *buf, int bufSize)
 {
-	int pstrlen;
+	int payloadLen;
 	int readlen;
 	int nread;
 
@@ -124,13 +128,13 @@ int cg_bittorrent_peer_recvmsgbodyasync(CgBittorrentPeer *peer, CgBittorrentMess
 		msg->payload = NULL;
 	}
 
-	pstrlen = cg_bittorrent_message_getlength(msg);
-	if (pstrlen <=0)
+	payloadLen = cg_bittorrent_message_getlength(msg);
+	if (payloadLen <=0)
 		return 0;
 
 	readlen = 0;
-	while (readlen < pstrlen) {
-		nread = pstrlen - readlen;
+	while (readlen < payloadLen) {
+		nread = payloadLen - readlen;
 		if (bufSize < nread)
 			nread = bufSize;
 		nread = cg_bittorrent_peer_read(peer, buf, nread);

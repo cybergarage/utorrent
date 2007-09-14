@@ -43,7 +43,7 @@ extern "C" {
 #define CG_BITTORRENT_MESSAGE_NOT_INTERESTED '3'
 
 /* have: <len=0005><id=4><piece index> */
-#define CG_BITTORRENT_MESSAGE_NOT_HAVE '4'
+#define CG_BITTORRENT_MESSAGE_HAVE '4'
 
 /* bitfield: <len=0001+X><id=5><bitfield> */
 #define CG_BITTORRENT_MESSAGE_BITFIELD '5'
@@ -173,7 +173,7 @@ void cg_bittorrent_message_freepayload(CgBittorrentMessage *msg);
  *
  * \return Length of payload.
  */
-#define cg_bittorrent_message_getpayloadlength(msg) (msg->length - sizeof(msg->length) - sizeof(msg->type))
+#define cg_bittorrent_message_getpayloadlength(msg)  max((msg->length - 1), 0)
 
 /**
  * Get a integer value of the specified message.
