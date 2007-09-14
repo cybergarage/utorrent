@@ -150,7 +150,8 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 			break;
 		}
 		else {
-			cg_bittorrent_peer_recvmsgbodynobuf(peer, msg);
+			if (!cg_bittorrent_peer_recvmsgbodynobuf(peer, msg))
+				continue;
 			if (cg_bittorrent_peer_hasbitfield(peer)) {
 				if (cg_bittorrent_peer_haspiece(peer, pieceIdx) == FALSE) {
 					cg_bittorrent_message_delete(msg);

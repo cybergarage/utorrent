@@ -21,7 +21,7 @@ class CDistTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( testBlockDevice );
   CPPUNIT_TEST( testTrackerLoad);
   //CPPUNIT_TEST( testSHA1 );
-  CPPUNIT_TEST( testPeerHandshake );
+  //CPPUNIT_TEST( testPeerHandshake );
   CPPUNIT_TEST( testFileMgr );
 
   CPPUNIT_TEST_SUITE_END();

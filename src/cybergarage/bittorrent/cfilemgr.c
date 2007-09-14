@@ -447,11 +447,11 @@ void cg_bittorrent_filemgr_delete(CgBittorrentFileMgr *filemgr)
 		return;
 
 	filemgrData = cg_bittorrent_blockdevicemgr_getuserdata(filemgr);
-	if (filemgrData)
+	if (filemgrData) {
+		cg_string_delete(filemgrData->dstDir);
+		cg_file_delete(filemgrData->file);
 		free(filemgrData);
-
-	cg_string_delete(filemgrData->dstDir);
-	cg_file_delete(filemgrData->file);
+	}
 
 	free(filemgr);
 }

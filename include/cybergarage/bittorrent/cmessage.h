@@ -28,7 +28,7 @@ extern "C" {
 ****************************************/
 
 /* keep-alive: <len=0000>*/
-#define CG_BITTORRENT_BENCODING_KEEP_ALIVE 
+#define CG_BITTORRENT_BENCODING_KEEP_ALIVE 0
 
 /* choke: <len=0001><id=0>*/
 #define CG_BITTORRENT_MESSAGE_CHOKE '0'

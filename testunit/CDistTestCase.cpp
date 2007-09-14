@@ -636,9 +636,15 @@ void CDistTestCase::testFileMgr()
 		CDIST_TEST_TRACKER_NUMWANT
 		);
 	CgBittorrentPeer *cbp = cg_bittorrent_tracker_getpeers(cbt);
+	printf("\n");
 	while(cbp) {
-		if (cg_bittorrent_peer_open(cbp, infoValHash, peerId) == TRUE)
+		printf("%s:%d -> ", cg_bittorrent_peer_getaddress(cbp), cg_bittorrent_peer_getport(cbp));
+		printf("Connecting -> ");
+		if (cg_bittorrent_peer_open(cbp, infoValHash, peerId) == TRUE) {
+			printf("OK\n");
 			break;
+		}
+		printf("FALSE\n");
 		cbp = cg_bittorrent_peer_next(cbp);
 	}
 	CPPUNIT_ASSERT(cbp);

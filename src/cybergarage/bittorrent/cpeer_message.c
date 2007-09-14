@@ -33,6 +33,14 @@ BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessag
 	pstrlen = ntohl(npstrlen);
 	cg_bittorrent_message_setlength(msg, pstrlen);
 
+	if (pstrlen < 0)
+		return FALSE;
+
+	if (pstrlen == 0) {
+		cg_bittorrent_message_settype(msg, CG_BITTORRENT_BENCODING_KEEP_ALIVE);
+		return TRUE;
+	}
+
 	if (cg_bittorrent_peer_read(peer, &msg->type, sizeof(msg->type)) != sizeof(msg->type))
 		return FALSE;
 
