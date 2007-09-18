@@ -130,5 +130,5 @@ CgBittorrentInteger cg_bittorrent_message_getpayloadinteger(CgBittorrentMessage 
 
 	intVal = (CgBittorrentInteger *)(msg->payload + index);
 
-	return *intVal;
+	return ntohl(*intVal);
 }

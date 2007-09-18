@@ -28,12 +28,31 @@ void cg_bittorrent_message_print(CgBittorrentMessage *msg)
 	if (!msg)
 		return;
 
-	printf("%d : %d : ", 
-		cg_bittorrent_message_getlength(msg),
-		(int)cg_bittorrent_message_gettype(msg)
-		);
-
 	msgType = cg_bittorrent_message_gettype(msg);
+
+	printf("%d : ", cg_bittorrent_message_getlength(msg));
+
+	switch (msgType) {
+	case CG_BITTORRENT_MESSAGE_CHOKE:
+		printf("choke : "); break;
+	case CG_BITTORRENT_MESSAGE_UNCHOKE:
+		printf("unchoke : "); break;
+	case CG_BITTORRENT_MESSAGE_INTERESTED:
+		printf("intersted : "); break;
+	case CG_BITTORRENT_MESSAGE_NOT_INTERESTED:
+		printf("not interested : "); break;
+	case CG_BITTORRENT_MESSAGE_HAVE:
+		printf("have : "); break;
+	case CG_BITTORRENT_MESSAGE_BITFIELD:
+		printf("bitfield : "); break;
+	case CG_BITTORRENT_MESSAGE_REQUEST:
+		printf("request : "); break;
+	case CG_BITTORRENT_MESSAGE_PIECE:
+		printf("piece : "); break;
+	case CG_BITTORRENT_MESSAGE_PORT:
+		printf("port : "); break;
+	}
+
 	switch (msgType) {
 	case CG_BITTORRENT_MESSAGE_HAVE:
 		{

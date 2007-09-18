@@ -31,34 +31,34 @@ extern "C" {
 #define CG_BITTORRENT_BENCODING_KEEP_ALIVE 0
 
 /* choke: <len=0001><id=0>*/
-#define CG_BITTORRENT_MESSAGE_CHOKE '0'
+#define CG_BITTORRENT_MESSAGE_CHOKE 0
 
 /* unchoke: <len=0001><id=1> */
-#define CG_BITTORRENT_MESSAGE_UNCHOKE '1'
+#define CG_BITTORRENT_MESSAGE_UNCHOKE 1
 
 /* interested: <len=0001><id=2> */
-#define CG_BITTORRENT_MESSAGE_INTERESTED '2'
+#define CG_BITTORRENT_MESSAGE_INTERESTED 2
 
 /* not interested: <len=0001><id=3> */
-#define CG_BITTORRENT_MESSAGE_NOT_INTERESTED '3'
+#define CG_BITTORRENT_MESSAGE_NOT_INTERESTED 3
 
 /* have: <len=0005><id=4><piece index> */
-#define CG_BITTORRENT_MESSAGE_HAVE '4'
+#define CG_BITTORRENT_MESSAGE_HAVE 4
 
 /* bitfield: <len=0001+X><id=5><bitfield> */
-#define CG_BITTORRENT_MESSAGE_BITFIELD '5'
+#define CG_BITTORRENT_MESSAGE_BITFIELD 5
 
 /* request: <len=0013><id=6><index><begin><length> */
-#define CG_BITTORRENT_MESSAGE_REQUEST '6'
+#define CG_BITTORRENT_MESSAGE_REQUEST 6
 
 /* piece: <len=0009+X><id=7><index><begin><block> */
-#define CG_BITTORRENT_MESSAGE_PIECE '7'
+#define CG_BITTORRENT_MESSAGE_PIECE 7
 
 /* cancel: <len=0013><id<=8><index><begin><length> */
-#define CG_BITTORRENT_MESSAGE_CANCEL '8'
+#define CG_BITTORRENT_MESSAGE_CANCEL 8
 
 /* port: <len=0003><id=9><listen-port> */
-#define CG_BITTORRENT_MESSAGE_PORT '9'
+#define CG_BITTORRENT_MESSAGE_PORT 9
 
 /****************************************
 * Data Type
