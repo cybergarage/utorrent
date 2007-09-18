@@ -143,20 +143,30 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 	if (!msg)
 		return FALSE;
 
+	*pieceLen = 0;
+
 	while (cg_bittorrent_peer_recvmsgheader(peer, msg)) {
 		msgType = cg_bittorrent_message_gettype(msg);
 		if (msgType == CG_BITTORRENT_MESSAGE_PIECE) {
 			*pieceLen = cg_bittorrent_peer_recvmsgbody(peer, msg, buf, bufLen);
+			cg_bittorrent_message_print(msg);
 			break;
 		}
 		else {
 			if (!cg_bittorrent_peer_recvmsgbodynobuf(peer, msg))
 				continue;
-			if (cg_bittorrent_peer_hasbitfield(peer)) {
-				if (cg_bittorrent_peer_haspiece(peer, pieceIdx) == FALSE) {
-					cg_bittorrent_message_delete(msg);
-					return FALSE;
+			cg_bittorrent_message_print(msg);
+			switch (msgType) {
+			case CG_BITTORRENT_MESSAGE_BITFIELD:
+				{
+					if (cg_bittorrent_peer_hasbitfield(peer)) {
+						if (cg_bittorrent_peer_haspiece(peer, pieceIdx) == FALSE) {
+							cg_bittorrent_message_delete(msg);
+							return FALSE;
+						}
+					}
 				}
+				break;
 			}
 		}
 	}

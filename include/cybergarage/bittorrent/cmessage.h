@@ -138,7 +138,18 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg);
  * \param msg Message in question.
  * \param value Payload to set.
  */
-void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value);
+void cg_bittorrent_message_setpayloadpointer(CgBittorrentMessage *msg, CgByte *value);
+
+/**
+ * Alloc a specified memory of payload .
+ *
+ * \param msg Message in question.
+ * \param data Data to set.
+ * \param dataSize Size to set.
+ *
+ * \return TRUE if the allocation is successful, othrewith FALSE.
+ */
+BOOL cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *data, int dataSize);
 
 /**
  * Alloc a specified memory of payload .
@@ -148,7 +159,7 @@ void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value);
  *
  * \return TRUE if the allocation is successful, othrewith FALSE.
  */
-BOOL cg_bittorrent_message_allocpayload(CgBittorrentMessage *msg, int size);
+BOOL cg_bittorrent_message_allocatepayload(CgBittorrentMessage *msg, int dataSsize);
 
 /**
  * Alloc a specified memory of payload .
@@ -183,6 +194,13 @@ void cg_bittorrent_message_freepayload(CgBittorrentMessage *msg);
  * \return Integer of the message.
  */
 CgBittorrentInteger cg_bittorrent_message_getpayloadinteger(CgBittorrentMessage *msg, int index);
+
+/**
+ * Print the message to console.
+ *
+ * \param msg Message in question.
+ */
+void cg_bittorrent_message_print(CgBittorrentMessage *msg);
 
 /****************************************
 * Message

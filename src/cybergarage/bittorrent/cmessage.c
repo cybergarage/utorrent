@@ -49,10 +49,10 @@ void cg_bittorrent_message_delete(CgBittorrentMessage *msg)
 }
 
 /****************************************
-* cg_bittorrent_message_setpayload
+* cg_bittorrent_message_setpayloadpointer
 ****************************************/
 
-void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value)
+void cg_bittorrent_message_setpayloadpointer(CgBittorrentMessage *msg, CgByte *value)
 {
 	if (!msg)
 		return;
@@ -63,23 +63,38 @@ void cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *value)
 }
 
 /****************************************
-* cg_bittorrent_message_freepayload
+* cg_bittorrent_message_setpayload
 ****************************************/
 
-BOOL cg_bittorrent_message_allocpayload(CgBittorrentMessage *msg, int size)
+BOOL cg_bittorrent_message_setpayload(CgBittorrentMessage *msg, CgByte *data, int dataSize)
+{
+	if (!cg_bittorrent_message_allocatepayload(msg, dataSize))
+		return FALSE;
+
+	memcpy(msg->payload, data, dataSize);
+
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_message_allocatepayload
+****************************************/
+
+BOOL cg_bittorrent_message_allocatepayload(CgBittorrentMessage *msg, int dataSize)
 {
 	if (!msg)
 		return FALSE;
 	
-	if (size < 0)
+	if (dataSize < 0)
 		return FALSE;
 
 	cg_bittorrent_message_freepayload(msg);
 
-	msg->payload = (CgByte *)malloc(size);
+	msg->payload = (CgByte *)malloc(dataSize);
 
 	return (msg->payload) ? TRUE : FALSE;
 }
+
 
 /****************************************
 * cg_bittorrent_message_freepayload

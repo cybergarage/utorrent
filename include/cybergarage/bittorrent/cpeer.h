@@ -32,6 +32,7 @@ extern "C" {
 ****************************************/
 
 #define CG_BITTORRENT_PEERID_SIZE CG_SHA1_HASH_SIZE
+#define CG_BITTORRENT_PIECE_MAX_SIZE (1<<14)
 
 /****************************************
 * Data Type

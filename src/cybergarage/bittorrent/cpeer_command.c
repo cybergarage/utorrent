@@ -71,7 +71,7 @@ BOOL cg_bittorrent_peer_request(CgBittorrentPeer *peer, int index, int begin, in
 	payload[0] = htonl(index);
 	payload[1] = htonl(begin);
 	payload[2] = htonl(length);
-	cg_bittorrent_message_allocpayload(msg, sizeof(payload));
+	cg_bittorrent_message_setpayload(msg, (CgByte *)&payload[0], sizeof(payload));
 
 	resultFlag = cg_bittorrent_peer_sendmsg(peer, msg);
 

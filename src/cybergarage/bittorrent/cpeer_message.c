@@ -33,8 +33,6 @@ BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessag
 	pstrlen = ntohl(npstrlen);
 	cg_bittorrent_message_setlength(msg, pstrlen);
 
-	printf("Msg Length : %d\n", cg_bittorrent_message_getlength(msg));
-
 	if (pstrlen < 0)
 		return FALSE;
 
@@ -45,8 +43,6 @@ BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessag
 
 	if (cg_bittorrent_peer_read(peer, &msg->type, sizeof(msg->type)) != sizeof(msg->type))
 		return FALSE;
-
-	printf("Msg Type : %d\n", (int)cg_bittorrent_message_gettype(msg));
 
 	return TRUE;
 }
@@ -78,7 +74,7 @@ int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *
 		return 0;
 
 	if (!buf || bufLen < 0) {
-		if (!cg_bittorrent_message_allocpayload(msg, payloadLen))
+		if (!cg_bittorrent_message_allocatepayload(msg, payloadLen))
 			return 0;
 		buf = cg_bittorrent_message_getpayload(msg);
 		bufLen = payloadLen;
@@ -100,11 +96,11 @@ int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *
 	}
 
 	switch (cg_bittorrent_message_gettype(msg)) {
-		case CG_BITTORRENT_MESSAGE_BITFIELD:
-			{
-					cg_bittorrent_peer_setbitfield(peer, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getpayloadlength(msg));
-			}
-			break;
+	case CG_BITTORRENT_MESSAGE_BITFIELD:
+		{
+				cg_bittorrent_peer_setbitfield(peer, cg_bittorrent_message_getpayload(msg), cg_bittorrent_message_getpayloadlength(msg));
+		}
+		break;
 	}
 
 	return readlen;
