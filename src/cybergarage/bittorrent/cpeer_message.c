@@ -112,6 +112,8 @@ int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *
 
 int cg_bittorrent_peer_recvmsgbodyasync(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CG_BITTORRENT_MESSAGE_READ_FUNC func, void *userData, char *buf, int bufSize)
 {
+	/* Not implemented yet */
+
 	int payloadLen;
 	int readlen;
 	int nread;

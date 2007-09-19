@@ -136,8 +136,8 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 			return FALSE;
 	}
 
-	//if (!cg_bittorrent_peer_request(peer, pieceIdx, pieceOffset, bufLen))
-	//	return FALSE;
+	if (!cg_bittorrent_peer_request(peer, pieceIdx, pieceOffset, bufLen))
+		return FALSE;
 
 	msg = cg_bittorrent_message_new();
 	if (!msg)
@@ -165,8 +165,6 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 							return FALSE;
 						}
 					}
-	if (!cg_bittorrent_peer_request(peer, pieceIdx, pieceOffset, bufLen))
-		return FALSE;
 				}
 				break;
 			}
