@@ -4,7 +4,7 @@
 *
 *	Copyright (C) Satoshi Konno 2007
 *
-*	File: cclient_http.c
+*	File: cclient_http_server.c
 *
 *	Revision:
 *

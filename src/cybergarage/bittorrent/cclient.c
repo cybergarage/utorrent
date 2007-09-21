@@ -52,18 +52,32 @@ CgBittorrentClient *cg_bittorrent_client_new()
 	}
 	cg_bittorrent_client_setmetainfolist(cbc, cbmList);
 
+	/* Socket Server */
+	cbc->serverSock = cg_socket_stream_new();
+	if (!cbc->serverSock) {
+		free(cbc);
+		return NULL;
+	}
+	cg_bittorrent_client_setserverport(cbc, CG_BITTORRENT_CLIENT_DEFAULT_SERVER_PORT);
+
 	/* HTTP Server */
 	cbc->httpServer = cg_http_server_new();
 	if (!cbc->httpServer) {
 		free(cbc);
+		cg_socket_delete(cbc->serverSock );
 		return NULL;
 	}
 	cg_http_server_setlistener(cbc->httpServer, cg_bittorrent_client_httplistener);
 	cg_http_server_setuserdata(cbc->httpServer, cbc);
+	cg_bittorrent_client_sethttpserverport(cbc, CG_BITTORRENT_CLIENT_DEFAULT_HTTP_PORT);
 
 	/* Manager */
 	cg_bittorrent_client_setblockdevicemgr(cbc, NULL);
 	cg_bittorrent_client_setstrategymgr(cbc, NULL);
+
+	/* Other Settings */
+	cg_bittorrent_client_setmaxuploadconnections(cbc, CG_BITTORRENT_CLIENT_DEFAULT_MAX_UPLOAD_CONNECTIONS);
+	cg_bittorrent_client_setmaxdownloadconnections(cbc, CG_BITTORRENT_CLIENT_DEFAULT_MAX_DOWNLOAD_CONNECTIONS);
 
 	return cbc;
 }
@@ -83,6 +97,10 @@ void cg_bittorrent_client_delete(CgBittorrentClient *cbc)
 	/* Mutex */
 	if (cbc->mutex)
 		cg_mutex_delete(cbc->mutex);
+
+	/* Socket Server */
+	if (cbc->serverSock)
+		cg_socket_delete(cbc->serverSock );
 
 	/* HTTP Server */
 	if (cbc->httpServer)

@@ -185,11 +185,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\cybergarage\bittorrent\cclient_http.c"
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cclient_http_server.c"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cclient_metainfo.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cclient_socket_server.c"
 				>
 			</File>
 			<File
