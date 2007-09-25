@@ -71,6 +71,9 @@ typedef struct _CgBittorrentClient {
 	int serverPort;
 	int maxUploadConnections;
 	int maxDownloadConnections;
+	/* Thread */
+	CgThread *acceptThread;
+	CgThread *clientThreads;
 } CgBittorrentClient;
 
 /****************************************
