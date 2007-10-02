@@ -15,9 +15,45 @@
 
 #include <cybergarage/bittorrent/cclient.h>
 
+static void cg_bittorrent_client_accept_thread(CgThread *thread)
+{
+	CgBittorrentClient *cbc;
+
+	cbc = (CgBittorrentClient *)cg_thread_getuserdata(thread);
+
+	cg_bittorrent_client_lock(cbc);
+	cg_thread_remove(thread);
+	cg_bittorrent_client_unlock(cbc);
+
+	cg_thread_delete(thread);
+}
+
 static void cg_bittorrent_client_server_thread(CgThread *thread)
 {
-/*
+	CgBittorrentClient *cbc;
+	CgThread *clientThread;
+	CgSocket *clientSock;
+
+	cbc = (CgBittorrentClient *)cg_thread_getuserdata(thread);
+
+	while (cg_thread_isrunnable(thread) == TRUE) {
+		clientSock = cg_socket_stream_new();
+		if (cg_socket_accept(cbc->serverSock, clientSock) == FALSE) {
+			cg_socket_delete(clientSock);
+			break;
+		}
+
+		clientThread = cg_thread_new();
+		cg_thread_setaction(clientThread, cg_bittorrent_client_accept_thread);
+		cg_thread_setuserdata(clientThread, cbc);
+		
+		cg_bittorrent_client_lock(cbc);
+		cg_threadlist_add(cbc->clientThreads, clientThread);
+		cg_bittorrent_client_unlock(cbc);
+
+		cg_thread_start(clientThread);		
+	}
+	/*
 	CgHttpServer *httpServer;
 	CgThread *httpClientThread;
 	CgHttpServerClientData *clientData;
@@ -79,19 +115,19 @@ BOOL cg_bittorrent_client_server_start(CgBittorrentClient *cbc)
 	}
 
 	/* Thread */
-	/*
 	cbc->acceptThread = cg_thread_new();
-	cg_thread_setaction(httpServer->cbc, cg_http_server_thread);
-	cg_thread_setuserdata(httpServer->acceptThread, httpServer);
-	httpServer->clientThreads = cg_threadlist_new();
-	if (cg_thread_start(httpServer->acceptThread) == FALSE) {
-		cg_thread_delete(httpServer->acceptThread);
-		httpServer->acceptThread = NULL;
-		cg_threadlist_delete(httpServer->clientThreads);
-		httpServer->clientThreads = NULL;
+	cg_thread_setaction(cbc->acceptThread, cg_bittorrent_client_server_thread);
+	cg_thread_setuserdata(cbc->acceptThread, cbc);
+	cbc->clientThreads = cg_threadlist_new();
+	if (cg_thread_start(cbc->acceptThread) == FALSE) {
+		cg_thread_stop(cbc->acceptThread);
+		cg_thread_delete(cbc->acceptThread);
+		cbc->acceptThread = NULL;
+		cg_threadlist_stop(cbc->clientThreads);
+		cg_threadlist_delete(cbc->clientThreads);
+		cbc->clientThreads = NULL;
 		return FALSE;
 	}
-	*/
 
 	return TRUE;
 }

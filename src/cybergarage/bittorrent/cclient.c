@@ -215,6 +215,18 @@ BOOL cg_bittorrent_client_stop(CgBittorrentClient *cbc)
 	if (cbc->httpServer)
 		cg_http_server_stop(cbc->httpServer);
 
+	if (cbc->acceptThread) {
+		cg_thread_stop(cbc->acceptThread);
+		cg_thread_delete(cbc->acceptThread);
+		cbc->acceptThread = NULL;
+	}
+
+	if (cbc->clientThreads) {
+		cg_threadlist_stop(cbc->clientThreads);
+		cg_threadlist_delete(cbc->clientThreads);
+		cbc->clientThreads = NULL;
+	}
+
 	return TRUE;
 }
 
