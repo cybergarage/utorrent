@@ -21,6 +21,56 @@ static void cg_bittorrent_client_accept_thread(CgThread *thread)
 
 	cbc = (CgBittorrentClient *)cg_thread_getuserdata(thread);
 
+/*
+	CgBittorrentMessage *msg;
+	CgByte msgType;
+
+	if (!peer)
+		return FALSE;
+
+	if (cg_bittorrent_peer_hasbitfield(peer)) {
+		if (cg_bittorrent_peer_haspiece(peer, pieceIdx) == FALSE)
+			return FALSE;
+	}
+
+	if (!cg_bittorrent_peer_request(peer, pieceIdx, pieceOffset, bufLen))
+		return FALSE;
+
+	msg = cg_bittorrent_message_new();
+	if (!msg)
+		return FALSE;
+
+	*pieceLen = 0;
+
+	while (cg_bittorrent_peer_recvmsgheader(peer, msg)) {
+		msgType = cg_bittorrent_message_gettype(msg);
+		if (msgType == CG_BITTORRENT_MESSAGE_PIECE) {
+			*pieceLen = cg_bittorrent_peer_recvmsgbody(peer, msg, buf, bufLen);
+			cg_bittorrent_message_print(msg);
+			break;
+		}
+		else {
+			if (!cg_bittorrent_peer_recvmsgbodynobuf(peer, msg))
+				continue;
+			cg_bittorrent_message_print(msg);
+			switch (msgType) {
+			case CG_BITTORRENT_MESSAGE_BITFIELD:
+				{
+					if (cg_bittorrent_peer_hasbitfield(peer)) {
+						if (cg_bittorrent_peer_haspiece(peer, pieceIdx) == FALSE) {
+							cg_bittorrent_message_delete(msg);
+							return FALSE;
+						}
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	cg_bittorrent_message_delete(msg);
+*/
+
 	cg_bittorrent_client_lock(cbc);
 	cg_thread_remove(thread);
 	cg_bittorrent_client_unlock(cbc);
@@ -53,40 +103,6 @@ static void cg_bittorrent_client_server_thread(CgThread *thread)
 
 		cg_thread_start(clientThread);		
 	}
-	/*
-	CgHttpServer *httpServer;
-	CgThread *httpClientThread;
-	CgHttpServerClientData *clientData;
-	CgSocket *serverSock;
-	CgSocket *clientSock;
-			 
-	cg_log_debug_l4("Entering...\n");
-
-	httpServer = (CgHttpServer *)cg_thread_getuserdata(thread);
-	
-	if (cg_http_server_isopened(httpServer) == FALSE)
-		return;
-		
-	serverSock = httpServer->sock;
-	while (cg_thread_isrunnable(thread) == TRUE) {
-		clientSock = cg_socket_stream_new();
-		if (cg_socket_accept(serverSock, clientSock) == FALSE) {
-			cg_socket_delete(clientSock);
-			break;
-		}
-		cg_socket_settimeout(clientSock, cg_http_server_gettimeout(httpServer));
-		clientData = cg_http_server_clientdata_new(httpServer, clientSock);
-		httpClientThread = cg_thread_new();
-		cg_thread_setaction(httpClientThread, cg_http_server_clientthread);
-		cg_thread_setuserdata(httpClientThread, clientData);
-		
-		cg_threadlist_add(httpServer->clientThreads, httpClientThread);
-		
-		cg_thread_start(httpClientThread);		
-	}
-
-	cg_log_debug_l4("Leaving...\n");
-*/
 }
 
 /****************************************
