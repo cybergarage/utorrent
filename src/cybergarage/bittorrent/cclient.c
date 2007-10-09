@@ -79,6 +79,10 @@ CgBittorrentClient *cg_bittorrent_client_new()
 	cg_bittorrent_client_setmaxuploadconnections(cbc, CG_BITTORRENT_CLIENT_DEFAULT_MAX_UPLOAD_CONNECTIONS);
 	cg_bittorrent_client_setmaxdownloadconnections(cbc, CG_BITTORRENT_CLIENT_DEFAULT_MAX_DOWNLOAD_CONNECTIONS);
 
+	/* Thread */
+	cbc->acceptThread = NULL;
+	cbc->clientThreads = NULL;
+
 	return cbc;
 }
 

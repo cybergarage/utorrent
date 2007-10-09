@@ -336,6 +336,11 @@ int cg_bittorrent_peer_recvmsgbodyasync(CgBittorrentPeer *peer, CgBittorrentMess
 BOOL cg_bittorrent_peer_recvmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
 BOOL cg_bittorrent_peer_sendmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
 
+BOOL cg_bittorrent_peer_choke(CgBittorrentPeer *peer);
+BOOL cg_bittorrent_peer_unchoke(CgBittorrentPeer *peer);
+BOOL cg_bittorrent_peer_interested(CgBittorrentPeer *peer);
+BOOL cg_bittorrent_peer_notinterested(CgBittorrentPeer *peer);
+
 #ifdef  __cplusplus
 }
 #endif

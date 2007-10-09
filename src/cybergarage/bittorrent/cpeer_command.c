@@ -17,6 +17,68 @@
 #include <cybergarage/bittorrent/cbencoding.h>
 
 /****************************************
+* cg_bittorrent_peer_singlemessage
+****************************************/
+
+static BOOL cg_bittorrent_peer_singlemessage(CgBittorrentPeer *peer, char msgId)
+{
+	CgBittorrentMessage *msg;
+	BOOL resultFlag;
+	
+	if (!peer)
+		return FALSE;
+
+	msg = cg_bittorrent_message_new();
+	if (!msg)
+		return FALSE;
+
+	cg_bittorrent_message_settype(msg, msgId);
+	cg_bittorrent_message_setlength(msg, 1);
+
+	resultFlag = cg_bittorrent_peer_sendmsg(peer, msg);
+
+	cg_bittorrent_message_delete(msg);
+
+	return resultFlag;
+}
+
+/****************************************
+* cg_bittorrent_peer_choke
+****************************************/
+
+BOOL cg_bittorrent_peer_choke(CgBittorrentPeer *peer)
+{
+	return cg_bittorrent_peer_singlemessage(peer, CG_BITTORRENT_MESSAGE_CHOKE);
+}
+
+/****************************************
+* cg_bittorrent_peer_unchoke
+****************************************/
+
+BOOL cg_bittorrent_peer_unchoke(CgBittorrentPeer *peer)
+{
+	return cg_bittorrent_peer_singlemessage(peer, CG_BITTORRENT_MESSAGE_UNCHOKE);
+}
+
+/****************************************
+* cg_bittorrent_peer_interested
+****************************************/
+
+BOOL cg_bittorrent_peer_interested(CgBittorrentPeer *peer)
+{
+	return cg_bittorrent_peer_singlemessage(peer, CG_BITTORRENT_MESSAGE_INTERESTED);
+}
+
+/****************************************
+* cg_bittorrent_peer_uninterested
+****************************************/
+
+BOOL cg_bittorrent_peer_notinterested(CgBittorrentPeer *peer)
+{
+	return cg_bittorrent_peer_singlemessage(peer, CG_BITTORRENT_MESSAGE_NOTINTERESTED);
+}
+
+/****************************************
 * cg_bittorrent_peer_message_request
 ****************************************/
 

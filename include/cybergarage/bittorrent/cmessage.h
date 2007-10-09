@@ -40,7 +40,7 @@ extern "C" {
 #define CG_BITTORRENT_MESSAGE_INTERESTED 2
 
 /* not interested: <len=0001><id=3> */
-#define CG_BITTORRENT_MESSAGE_NOT_INTERESTED 3
+#define CG_BITTORRENT_MESSAGE_NOTINTERESTED 3
 
 /* have: <len=0005><id=4><piece index> */
 #define CG_BITTORRENT_MESSAGE_HAVE 4

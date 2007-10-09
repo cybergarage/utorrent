@@ -39,7 +39,7 @@ void cg_bittorrent_message_print(CgBittorrentMessage *msg)
 		printf("unchoke : "); break;
 	case CG_BITTORRENT_MESSAGE_INTERESTED:
 		printf("intersted : "); break;
-	case CG_BITTORRENT_MESSAGE_NOT_INTERESTED:
+	case CG_BITTORRENT_MESSAGE_NOTINTERESTED:
 		printf("not interested : "); break;
 	case CG_BITTORRENT_MESSAGE_HAVE:
 		printf("have : "); break;
