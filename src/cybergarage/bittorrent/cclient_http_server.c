@@ -14,6 +14,26 @@
 ******************************************************************/
 
 #include <cybergarage/bittorrent/cclient.h>
+#include <cybergarage/soap/csoap.h>
+
+/****************************************
+* cg_bittorrent_client_getrequestrecieved
+****************************************/
+
+static void cg_bittorrent_client_badrequestrecieved(CgBittorrentClient *cbc, CgHttpRequest *httpReq)
+{
+	CgSoapResponse *soapRes;
+	CgHttpResponse *httpRes;
+/*
+	httpReq = cg_soap_request_gethttprequest(soapReq);
+	
+	soapRes = cg_soap_response_new();
+	cg_upnp_control_soap_response_setfaultresponse(soapRes, code, cg_upnp_status_code2string(code));
+	httpRes = cg_soap_response_gethttpresponse(soapRes);
+	cg_http_request_postresponse(httpReq, httpRes);
+	cg_soap_response_delete(soapRes);
+*/
+}
 
 /****************************************
 * cg_bittorrent_client_getrequestrecieved
