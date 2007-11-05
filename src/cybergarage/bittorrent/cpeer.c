@@ -164,10 +164,10 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 							cg_bittorrent_message_delete(msg);
 							return FALSE;
 						}
-						//if (!cg_bittorrent_peer_interested(peer))
-						//	return FALSE;
-						if (!cg_bittorrent_peer_unchoke(peer))
+						if (!cg_bittorrent_peer_interested(peer))
 							return FALSE;
+						//if (!cg_bittorrent_peer_unchoke(peer))
+						//	return FALSE;
 					}
 				}
 				break;
