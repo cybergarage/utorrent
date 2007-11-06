@@ -153,7 +153,7 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 			break;
 		}
 		else {
-			if (!cg_bittorrent_peer_recvmsgbodynobuf(peer, msg))
+			if (cg_bittorrent_peer_recvmsgbodynobuf(peer, msg) != cg_bittorrent_message_getpayloadlength(msg))
 				continue;
 			cg_bittorrent_message_print(msg);
 			switch (msgType) {
@@ -177,6 +177,8 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 						return FALSE;
 				}
 				break;
+			case CG_BITTORRENT_MESSAGE_CHOKE:
+				return FALSE;
 			}
 		}
 	}

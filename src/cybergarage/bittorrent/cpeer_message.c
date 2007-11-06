@@ -107,45 +107,6 @@ int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *
 }
 
 /****************************************
-* cg_bittorrent_peer_recvmsgbodyasync
-****************************************/
-
-int cg_bittorrent_peer_recvmsgbodyasync(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CG_BITTORRENT_MESSAGE_READ_FUNC func, void *userData, char *buf, int bufSize)
-{
-	/* Not implemented yet */
-
-	int payloadLen;
-	int readlen;
-	int nread;
-
-	if (!peer || !msg || !func)
-		return 0;
-
-	if (msg->payload) {
-		free(msg->payload);
-		msg->payload = NULL;
-	}
-
-	payloadLen = cg_bittorrent_message_getlength(msg);
-	if (payloadLen <=0)
-		return 0;
-
-	readlen = 0;
-	while (readlen < payloadLen) {
-		nread = payloadLen - readlen;
-		if (bufSize < nread)
-			nread = bufSize;
-		nread = cg_bittorrent_peer_read(peer, buf, nread);
-		if (nread <= 0)
-			return readlen;
-		func(userData, buf, nread);
-		readlen += nread;
-	}
-
-	return readlen;
-}
-
-/****************************************
 * cg_bittorrent_peer_recvmsg
 ****************************************/
 
@@ -153,7 +114,7 @@ BOOL cg_bittorrent_peer_recvmsg(CgBittorrentPeer *peer, CgBittorrentMessage *msg
 {
 	if (cg_bittorrent_peer_recvmsgheader(peer, msg) == FALSE)
 		return FALSE;
-	if (cg_bittorrent_peer_recvmsgbodynobuf(peer, msg) != cg_bittorrent_message_getlength(msg))
+	if (cg_bittorrent_peer_recvmsgbodynobuf(peer, msg) != cg_bittorrent_message_getpayloadlength(msg))
 		return FALSE;
 	return TRUE;
 }
