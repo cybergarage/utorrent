@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme>
+  <styles>
+    <!-- Common items -->
+    <image id="imgTransparent" src="1x1Transp.png"/>
+    <image id="imgBlack" src="1x1Black.png"/>
+    <image id="imgWhite" src="1x1White.png"/>
+    <image id="imgGrey50" src="1x1Grey50.png"/>
+
+    <!-- Button -->
+    <image id="imgButtonMiddle" src="ButtonMiddle.png"/>
+    <image id="imgButtonLeft" src="ButtonLeft.png"/>
+    <image id="imgButtonRight" src="ButtonRight.png"/>
+    <label id="lblButton" color="#FFFFFF" truncation="end" size="12"/>
+
+    <!-- CheckBox -->
+    <image id="imgCheckBoxBackground" src="CheckBoxBg.png"/>
+    <image id="imgCheckBoxCheck" src="CheckBoxCheck.png" colorize="#FFFFFF"/>
+    <label id="lblCheckBox" color="#000000" truncation="end" size="12"/>
+
+    <!-- CheckedListBox -->
+    <image id="imgListBoxBackground" src="ListBoxBackground.png"/>
+    <image id="imgListBoxBorderTop" src="ListBoxBT.png"/>
+    <image id="imgListBoxBorderBottom" src="ListBoxBB.png"/>
+    <image id="imgListBoxBorderLeft" src="ListBoxBL.png"/>
+    <image id="imgListBoxBorderRight" src="ListBoxBR.png"/>
+    <image id="imgListBoxCornerTopLeft" src="ListBoxCTL.png"/>
+    <image id="imgListBoxCornerTopRight" src="ListBoxCTR.png"/>
+    <image id="imgListBoxCornerBottomLeft" src="ListBoxCBL.png"/>
+    <image id="imgListBoxCornerBottomRight" src="ListBoxCBR.png"/>
+    <label id="lblCheckedListBox" color="#000000" truncation="end" size="12"/>
+
+    <!-- ComboBox -->
+    <image id="imgComboBoxBackground" src="ComboBoxBg.png"/>
+    <image id="imgComboBoxBorderTop" src="ComboBoxBT.png"/>
+    <image id="imgComboBoxBorderBottom" src="ComboBoxBB.png"/>
+    <image id="imgComboBoxBorderLeft" src="ComboBoxBL.png"/>
+    <image id="imgComboBoxBorderRight" src="ComboBoxBR.png"/>
+    <image id="imgComboBoxCornerTopLeft" src="ComboBoxCTL.png"/>
+    <image id="imgComboBoxCornerTopRight" src="ComboBoxCTR.png"/>
+    <image id="imgComboBoxCornerBottomLeft" src="ComboBoxCBL.png"/>
+    <image id="imgComboBoxCornerBottomRight" src="ComboBoxCBR.png"/>
+    <label id="lblComboBox" color="#000000" truncation="end" size="12"/>
+    <image id="imgComboBoxButton" src="ComboBoxBtn.png"/>
+
+    <!-- Form: Regular border -->
+    <image id="imgFormBorderTop" src="FormBT.png"/>
+    <image id="imgFormBorderBottom" src="FormBB.png"/>
+    <image id="imgFormBorderLeft" src="FormBL.png"/>
+    <image id="imgFormBorderRight" src="FormBR.png"/>
+    <image id="imgFormCornerTopLeft" src="FormCTL.png"/>
+    <image id="imgFormCornerTopRight" src="FormCTR.png"/>
+    <image id="imgFormCornerBottomLeft" src="FormCBL.png"/>
+    <image id="imgFormCornerBottomRight" src="FormCBR.png"/>
+    <label id="lblFormCaption" alignment="left" color="#FFFFFF" font-family="Arial" font-weight="bold" kon-text-truncation="end" font-size="13px"/>
+    <image id="imgFormButtonClose" src="FormButtonClose.png"/>
+    <image id="imgFormButtonMaximize" src="FormButtonMax.png"/>
+    <image id="imgFormButtonMinimize" src="FormButtonMin.png"/>
+
+    <!-- ImageComboBox -->
+    <image id="imgImageComboBoxButton" src="ImgCboButton.png"/>
+
+    <!-- Label -->
+    <label id="lblLabel"/>
+
+    <!-- ProgressBar -->
+    <image id="imgProgressBarBorderTop" src="ProgressBarBT.png"/>
+    <image id="imgProgressBarBorderBottom" src="ProgressBarBB.png"/>
+    <image id="imgProgressBarBorderLeft" src="ProgressBarBL.png"/>
+    <image id="imgProgressBarBorderRight" src="ProgressBarBR.png"/>
+    <image id="imgProgressBarCornerTopLeft" src="ProgressBarCTL.png"/>
+    <image id="imgProgressBarCornerTopRight" src="ProgressBarCTR.png"/>
+    <image id="imgProgressBarCornerBottomLeft" src="ProgressBarCBL.png"/>
+    <image id="imgProgressBarCornerBottomRight" src="ProgressBarCBR.png"/>
+    <image id="imgProgressBarFill" src="ProgressBarFill.png"/>
+
+    <!-- Statusbar -->
+    <image id="imgStatusBarBG" src="StatusBarBG.png"/>
+
+    <!-- TextBox -->
+    <image id="imgTextBoxBackground" src="TextBoxBg.png"/>
+    <image id="imgTextBoxBorderTop" src="TextBoxBT.png"/>
+    <image id="imgTextBoxBorderBottom" src="TextBoxBB.png"/>
+    <image id="imgTextBoxBorderLeft" src="TextBoxBL.png"/>
+    <image id="imgTextBoxBorderRight" src="TextBoxBR.png"/>
+    <image id="imgTextBoxCornerTopLeft" src="TextBoxCTL.png"/>
+    <image id="imgTextBoxCornerTopRight" src="TextBoxCTR.png"/>
+    <image id="imgTextBoxCornerBottomLeft" src="TextBoxCBL.png"/>
+    <image id="imgTextBoxCornerBottomRight" src="TextBoxCBR.png"/>
+
+  </styles>
+  <items>
+    <!-- Button -->
+    <buttonLabel style="lblButton" zOrder="3"/>
+    <buttonMiddle style="imgButtonMiddle" zOrder="1"/>
+    <buttonLeft style="imgButtonLeft" zOrder="1"/>
+    <buttonRight style="imgButtonRight" zOrder="1"/>
+
+    <!-- CheckBox -->
+    <checkBoxLabel style="lblCheckBox" zOrder="3"/>
+    <checkBoxBackground style="imgCheckBoxBackground" zOrder="1"/>
+    <checkBoxCheck style="imgCheckBoxCheck" zOrder="3"/>
+
+    <!-- CheckedListBox -->
+    <checkedListBoxBackground style="imgGrey50" colorize="#FFFFFF" zOrder="1"/>
+    <checkedListBoxBorderBottom style="imgListBoxBorderBottom" colorize="#FFFFFF" zOrder="2"/>
+    <checkedListBoxBorderTop style="imgListBoxBorderTop" colorize="#FFFFFF" zOrder="2"/>
+    <checkedListBoxBorderLeft style="imgListBoxBorderLeft" colorize="#FFFFFF" zOrder="2"/>
+    <checkedListBoxBorderRight style="imgListBoxBorderRight" colorize="#FFFFFF" zOrder="2"/>
+    <checkedListBoxCornerTopLeft style="imgListBoxCornerTopLeft" colorize="#FFFFFF" zOrder="2"/>
+    <checkedListBoxCornerTopRight style="imgListBoxCornerTopRight" colorize="#FFFFFF" zOrder="2"/>
+    <checkedListBoxCornerBottomLeft style="imgListBoxCornerBottomLeft" colorize="#FFFFFF" zOrder="2"/>
+    <checkedListBoxCornerBottomRight style="imgListBoxCornerBottomRight" colorize="#FFFFFF" zOrder="2"/>
+    <checkedListBoxLabel style="lblCheckedListBox"/>
+
+    <!-- ComboBox -->
+    <comboBoxBackground style="imgComboBoxBackground" zOrder="1"/>
+    <comboBoxBorderBottom style="imgComboBoxBorderBottom" zOrder="2"/>
+    <comboBoxBorderTop style="imgComboBoxBorderTop" zOrder="2"/>
+    <comboBoxBorderLeft style="imgComboBoxBorderLeft" zOrder="2"/>
+    <comboBoxBorderRight style="imgComboBoxBorderRight" zOrder="2"/>
+    <comboBoxCornerTopLeft style="imgComboBoxCornerTopLeft" zOrder="2"/>
+    <comboBoxCornerTopRight style="imgComboBoxCornerTopRight" zOrder="2"/>
+    <comboBoxCornerBottomLeft style="imgComboBoxCornerBottomLeft" zOrder="2"/>
+    <comboBoxCornerBottomRight style="imgComboBoxCornerBottomRight" zOrder="2"/>
+    <comboBoxLabel style="lblComboBox" zOrder="3"/>
+    <comboBoxButtonDisabled style="imgComboBoxButton" zOrder="4" hslAdjustment="" hslTinting="0,0,20" opacity="200"/>
+    <comboBoxButtonDown style="imgComboBoxButton" zOrder="4" hslAdjustment="" hslTinting="" opacity="255" />
+    <comboBoxButtonNormal style="imgComboBoxButton" zOrder="4" hslAdjustment="" hslTinting="" opacity="255" />
+    <comboBoxButtonOver style="imgComboBoxButton" zOrder="4" hslAdjustment="0,0,15" hslTinting="" opacity="255" />
+
+    <!-- Form -->
+    <formBackground style="imgWhite"/>
+
+    <!-- Form: Regular border -->
+    <formBorderBottom style="imgFormBorderBottom"/>
+    <formBorderTop style="imgFormBorderTop"/>
+    <formBorderLeft style="imgFormBorderLeft"/>
+    <formBorderRight style="imgFormBorderRight"/>
+    <formCornerTopLeft style="imgFormCornerTopLeft"/>
+    <formCornerTopRight style="imgFormCornerTopRight"/>
+    <formCornerBottomLeft style="imgFormCornerBottomLeft"/>
+    <formCornerBottomRight style="imgFormCornerBottomRight"/>
+    <formCaption style="lblFormCaption"/>
+    <formButtonCloseDisabled style="imgFormButtonClose" colorize="" hslAdjustment="" hslTinting="0,0,20" opacity="200" />
+    <formButtonCloseDown style="imgFormButtonClose" colorize="#FF0000" hslAdjustment="" hslTinting="" opacity="255" />
+    <formButtonCloseNormal style="imgFormButtonClose" colorize="" hslAdjustment="" hslTinting="" opacity="255" />
+    <formButtonCloseOver style="imgFormButtonClose" colorize="" hslAdjustment="0,0,15" hslTinting="" opacity="255" />
+    <formButtonMaximize style="imgFormButtonMaximize"/>
+    <formButtonMinimize style="imgFormButtonMinimize"/>
+
+    <!-- Form: Single border -->
+    <formSingleBackground style="imgFormBackground"/>
+    <formSingleBorderBottom style="imgGrey50"/>
+    <formSingleBorderTop style="imgGrey50"/>
+    <formSingleBorderLeft style="imgGrey50"/>
+    <formSingleBorderRight style="imgGrey50"/>
+    <formSingleCornerTopLeft style="imgGrey50"/>
+    <formSingleCornerTopRight style="imgGrey50"/>
+    <formSingleCornerBottomLeft style="imgGrey50"/>
+    <formSingleCornerBottomRight style="imgGrey50"/>
+    <formSingleCaption style="lblFormCaption"/>
+    <formSingleButtonCloseDisabled style="imgFormButtonClose" hslAdjustment="" hslTinting="0,0,20" opacity="200" />
+    <formSingleButtonCloseDown style="imgFormButtonClose" hslAdjustment="" hslTinting="" opacity="255" />
+    <formSingleButtonCloseNormal style="imgFormButtonClose" hslAdjustment="" hslTinting="" opacity="255" />
+    <formSingleButtonCloseOver style="imgFormButtonClose" hslAdjustment="0,0,15" hslTinting="" opacity="255" />
+    <formSingleButtonMaximize style="imgFormButtonMaximize"/>
+    <formSingleButtonMinimize style="imgFormButtonMinimize"/>
+
+    <!-- ImageComboButton -->
+    <imageComboBoxDisabled style="imgImageComboBoxButton" hslAdjustment="" hslTinting="0,0,20" opacity="200"/>
+    <imageComboBoxDown style="imgImageComboBoxButton" hslAdjustment="" hslTinting="" opacity="255" />
+    <imageComboBoxNormal style="imgImageComboBoxButton" hslAdjustment="" hslTinting="" opacity="255" />
+    <imageComboBoxOver style="imgImageComboBoxButton" hslAdjustment="0,0,15" hslTinting="" opacity="255" />
+
+    <!-- Label -->
+    <labelLabel style="lblLabel" color="#000000" size="12" zOrder="1"/>
+
+    <!-- ProgressBar -->
+    <progressBarBackground style="imgTransparent" zOrder="1"/>
+    <progressBarBorderBottom style="imgProgressBarBorderBottom" zOrder="3"/>
+    <progressBarBorderTop style="imgProgressBarBorderTop" zOrder="3"/>
+    <progressBarBorderLeft style="imgProgressBarBorderLeft" zOrder="3"/>
+    <progressBarBorderRight style="imgProgressBarBorderRight" zOrder="3"/>
+    <progressBarCornerTopLeft style="imgProgressBarCornerTopLeft" zOrder="3"/>
+    <progressBarCornerTopRight style="imgProgressBarCornerTopRight" zOrder="3"/>
+    <progressBarCornerBottomLeft style="imgProgressBarCornerBottomLeft" zOrder="3"/>
+    <progressBarCornerBottomRight style="imgProgressBarCornerBottomRight" zOrder="3"/>
+    <progressBarFill style="imgProgressBarFill" zOrder="2"/>
+
+    <!-- Statusbar -->
+    <statusBarBackground style="imgStatusBarBG"/>
+
+    <!-- TextBox -->
+    <textBoxBackground style="imgTextBoxBackground" zOrder="1"/>
+    <textBoxBorderBottom style="imgTextBoxBorderBottom" zOrder="2"/>
+    <textBoxBorderTop style="imgTextBoxBorderTop" zOrder="2"/>
+    <textBoxBorderLeft style="imgTextBoxBorderLeft" zOrder="2"/>
+    <textBoxBorderRight style="imgTextBoxBorderRight" zOrder="2"/>
+    <textBoxCornerTopLeft style="imgTextBoxCornerTopLeft" zOrder="2"/>
+    <textBoxCornerTopRight style="imgTextBoxCornerTopRight" zOrder="2"/>
+    <textBoxCornerBottomLeft style="imgTextBoxCornerBottomLeft" zOrder="2"/>
+    <textBoxCornerBottomRight style="imgTextBoxCornerBottomRight" zOrder="2"/>
+
+  </items>
+
+  <parameters>
+    <!-- Button -->
+    <buttonTextMargins left="4" top="2" right="4" bottom="2" />
+    <buttonDisabled colorize="#000000" hslAdjustment="" hslTinting="0,0,20" opacity="200" />
+    <buttonDown colorize="#7B0099" hslAdjustment="" hslTinting="" opacity="255" />
+    <buttonNormal colorize="#000000" hslAdjustment="" hslTinting="" opacity="255" />
+    <buttonOver colorize="#000000" hslAdjustment="0,0,15" hslTinting="" opacity="255" />
+
+    <!-- CheckBox -->
+    <checkBoxCheckMargins left="2" top="3" right="2" bottom="1" />
+    <checkBoxTextMargins left="4" top="2" right="0" bottom="0" />
+    <checkBoxDisabled colorize="#000000" hslAdjustment="" hslTinting="0,0,20" opacity="200" />
+    <checkBoxDown colorize="#7B0099" hslAdjustment="" hslTinting="" opacity="255" />
+    <checkBoxNormal colorize="#000000" hslAdjustment="" hslTinting="" opacity="255" />
+    <checkBoxOver colorize="#101010" hslAdjustment="0,0,15" hslTinting="" opacity="255" />
+
+    <!-- CheckedListBox -->
+    <checkedListBoxScrollBarThumbColor color="#7b0099"/>
+
+    <!-- ComboBox -->
+    <comboBoxTextMargins left="4" top="2" right="4" bottom="2" />
+    <comboBoxButtonMargins left="0" top="2" right="1" bottom="1" />
+    <comboBoxDisabled hslAdjustment="" hslTinting="0,0,20" opacity="200" />
+    <comboBoxDown hslAdjustment="" hslTinting="" opacity="255" />
+    <comboBoxNormal hslAdjustment="" hslTinting="" opacity="255" />
+    <comboBoxOver hslAdjustment="" hslTinting="" opacity="255" />
+
+    <!-- Common -->
+    <scrollBarThumbColor color="#7b0099"/>
+
+    <!-- Form -->
+    <formTitlebarMargins left="8" top="1" right="8" bottom="1"  />
+    <formSingleTitlebarMargins left="8" top="1" right="8" bottom="1"  />
+
+    <formCaptionMargins left="5" top="1" right="4" bottom="1" />
+    <formSingleCaptionMargins left="0" top="0" right="0" bottom="0" />
+
+    <formButtonCloseLocation alignment="auto"/>
+    <formButtonMargins left="2" top="3" right="2" />
+    <formSingleButtonMargins left="2" top="3" right="2" />
+
+    <!-- ProgressBar -->
+    <progressBarFillMargins left="1" top="1" right="1" bottom="1"/>
+
+    <!-- TextBox -->
+    <textBoxTextMargins left="2" top="2" right="2" bottom="2" />
+  </parameters>
+</theme>
