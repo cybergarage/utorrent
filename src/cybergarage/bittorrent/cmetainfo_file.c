@@ -47,7 +47,7 @@ BOOL cg_bittorrent_metainfo_load(CgBittorrentMetainfo *cbm, char *fileName)
 	if (fileSize <= 0)
 		return FALSE;
 
-	dataBuf = malloc(fileSize+1);
+	dataBuf = malloc(fileSize);
 	if (!dataBuf)
 		return FALSE;
 
@@ -70,7 +70,6 @@ BOOL cg_bittorrent_metainfo_load(CgBittorrentMetainfo *cbm, char *fileName)
 		return FALSE;
 	}
 	
-	dataBuf[fileSize] = '\0';
 	parseResult = cg_bittorrent_metainfo_parse(cbm, dataBuf, fileSize);
 	free(dataBuf);
 

@@ -24,7 +24,6 @@ BOOL cg_bittorrent_metainfo_fetch(CgBittorrentMetainfo *cbm, char *url)
 {
 	CgString *dataStr;
 	int	dataLen;
-	char	*data;
 	BOOL parseResult;
 
 	dataStr = cg_string_new();
@@ -38,20 +37,9 @@ BOOL cg_bittorrent_metainfo_fetch(CgBittorrentMetainfo *cbm, char *url)
 
 	dataLen = cg_string_length(dataStr);
 
-	data = (char *)malloc(dataLen+1);
-	if (!data) {
-		cg_string_delete(dataStr);
-		return FALSE;
-	}
-
-	memcpy(data, cg_string_getvalue(dataStr), dataLen);
-	data[dataLen] = '\0';
+	parseResult = cg_bittorrent_metainfo_parse(cbm, cg_string_getvalue(dataStr), dataLen);
 
 	cg_string_delete(dataStr);
-
-	parseResult = cg_bittorrent_metainfo_parse(cbm, data, dataLen);
-
-	free(data);
 
 	if (parseResult) {
 		cg_bittorrent_metainfo_seturl(cbm, url);
