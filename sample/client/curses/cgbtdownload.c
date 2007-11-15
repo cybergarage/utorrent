@@ -23,6 +23,7 @@
 
 #define CGBTDOWNLOAD_LEFT_ROW 2
 #define CGBTDOWNLOAD_URL_LINE 1
+#define CGBTDOWNLOAD_FILENAME_LINE 2
 
 /****************************************
 * Usage
@@ -39,11 +40,12 @@ void print_usage()
 
 int main( int argc, char *argv[] )
 {
+	CgBittorrentMetainfo *cbm;
 	int i;
 	int wx, wy;
 	WINDOW *win;
 	char *torrentURL;
-	CgBittorrentMetainfo *cbm;
+	char *fileName;
 
 	if (argc < 2) {
 		print_usage();
@@ -58,6 +60,8 @@ int main( int argc, char *argv[] )
 		cg_bittorrent_metainfo_delete(cbm);
 		exit(1);
 	}
+
+	fileName = cg_bittorrent_metainfo_getinfoname(cbm);
 	//CgBittorrentDictionary *info = cg_bittorrent_metainfo_getinfo(cbm);
 
 	win = initscr();
@@ -65,8 +69,10 @@ int main( int argc, char *argv[] )
 	border(0, 0, 0, 0, 0, 0, 0, 0);
 	
 	/**** URL ****/
-	move(CGBTDOWNLOAD_URL_LINE, CGBTDOWNLOAD_LEFT_ROW);
-	printw("url: %s", torrentURL);
+	mvprintw(CGBTDOWNLOAD_URL_LINE, CGBTDOWNLOAD_LEFT_ROW, "url: %s", torrentURL);
+
+	/**** URL ****/
+	mvprintw(CGBTDOWNLOAD_FILENAME_LINE, CGBTDOWNLOAD_LEFT_ROW, "name: %s", fileName);
 
   for(i=0; i<5 ; i++){
     mvprintw(20-i%20, 5, "d", i);
