@@ -289,6 +289,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cpropertymgr.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\csha1.c"
 				>
 			</File>
@@ -360,6 +364,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\cybergarage\bittorrent\cpeer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\cybergarage\bittorrent\cpropertymgr.h"
 				>
 			</File>
 			<File

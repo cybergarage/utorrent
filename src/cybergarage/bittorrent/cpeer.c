@@ -120,13 +120,14 @@ BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index)
 }
 
 /****************************************
-* cg_bittorrent_peer_getpiece
+* cg_bittorrent_peer_getpieceblock
 ****************************************/
 
-BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int pieceOffset, CgByte *buf, int bufLen, int *pieceLen)
+BOOL cg_bittorrent_peer_getpieceblock(CgBittorrentPeer *peer, int pieceIdx, int pieceOffset, CgByte *buf, int bufLen)
 {
 	CgBittorrentMessage *msg;
 	CgByte msgType;
+	int readLen;
 
 	if (!peer)
 		return FALSE;
@@ -136,20 +137,16 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 			return FALSE;
 	}
 
-	//if (!cg_bittorrent_peer_request(peer, pieceIdx, pieceOffset, bufLen))
-	//	return FALSE;
-
 	msg = cg_bittorrent_message_new();
 	if (!msg)
 		return FALSE;
 
-	*pieceLen = 0;
+	readLen = 0;
 
 	while (cg_bittorrent_peer_recvmsgheader(peer, msg)) {
 		msgType = cg_bittorrent_message_gettype(msg);
 		if (msgType == CG_BITTORRENT_MESSAGE_PIECE) {
-			*pieceLen = cg_bittorrent_peer_recvmsgbody(peer, msg, buf, bufLen);
-			cg_bittorrent_message_print(msg);
+			readLen = cg_bittorrent_peer_recvmsgbody(peer, msg, buf, bufLen);
 			break;
 		}
 		else {
@@ -185,5 +182,5 @@ BOOL cg_bittorrent_peer_getpiece(CgBittorrentPeer *peer, int pieceIdx, int piece
 
 	cg_bittorrent_message_delete(msg);
 
-	return TRUE;
+	return (bufLen == readLen) ? TRUE : FALSE;
 }

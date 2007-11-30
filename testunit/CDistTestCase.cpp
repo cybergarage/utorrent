@@ -651,8 +651,7 @@ void CDistTestCase::testFileMgr()
 
 	int pieceLen = cg_bittorrent_metainfo_getinfopiecelength(metainfo);
 	CgByte *pieceBuf = (CgByte *)malloc(pieceLen);
-	int readPieceLen;
-	CPPUNIT_ASSERT(cg_bittorrent_peer_getpiece(cbp, 0, 0, pieceBuf, CG_BITTORRENT_PIECE_MAX_SIZE, &readPieceLen));
+	CPPUNIT_ASSERT(cg_bittorrent_peer_getpieceblock(cbp, 0, 0, pieceBuf, CG_BITTORRENT_PIECE_MAX_SIZE));
 	free(pieceBuf);
 	
 	CPPUNIT_ASSERT(cg_bittorrent_peer_close(cbp));
