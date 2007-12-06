@@ -20,6 +20,8 @@
 #include <cybergarage/util/cstring.h>
 #include <cybergarage/bittorrent/cdictionary.h>
 #include <cybergarage/bittorrent/csha1.h>
+#include <cybergarage/bittorrent/ctracker.h>
+#include <cybergarage/bittorrent/cpieceinfo.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -58,6 +60,9 @@ typedef struct _CgBittorrentMetainfo {
 	struct _CgBittorrentMetainfo *prev;
 	struct _CgBittorrentMetainfo *next;
 	CgBittorrentDictionary *dir;
+	CgBittorrentTracker *tracker;
+	CgBittorrentPieceInfo **pieceInfo;
+	int numPieceInfo;
 	CgString *url;
 	CgString *fileName;
 	CgString *id;
@@ -188,6 +193,15 @@ BOOL cg_bittorrent_metainfo_tostring(CgBittorrentMetainfo *cbm, CgString *buf);
  * \return Stored dictionary.
  */
 #define cg_bittorrent_metainfo_getdictionary(cbm) (cbm->dir)
+
+/**
+ * Get a tracker.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Stored tracker.
+ */
+#define cg_bittorrent_metainfo_gettracker(cbm) (cbm->tracker)
 
 /**
  * Load the metainfo from a file.
@@ -339,6 +353,42 @@ BOOL cg_bittorrent_metainfo_getinfohash(CgBittorrentMetainfo *cbm, CgByte *infoH
  * \return Stored ID.
  */
 #define cg_bittorrent_metainfo_getid(cbm) cg_string_getvalue(cbm->id)
+
+/**
+ * Alloc array memory for the piece infomation.
+ *
+ * \param cbm Metainfo in question.
+ * \param num Number of the piece to alloc the array.
+ *
+ * \return TRUE if the allocation was successful, otherwise FALSE.
+ */
+BOOL cg_bittorrent_metainfo_allocpieceinfo(CgBittorrentMetainfo *cbm, int num);
+
+/**
+ * Free array memory for the piece infomation.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return TRUE if the allocation was successful, otherwise FALSE.
+ */
+BOOL cg_bittorrent_metainfo_freepieceinfo(CgBittorrentMetainfo *cbm);
+
+/**
+ * Update the tracker.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return TRUE if the update was successful, otherwise FALSE.
+ */
+BOOL cg_bittorrent_metainfo_updatetracker(
+CgBittorrentMetainfo *cbm,
+CgByte *peerId,
+int port,
+CgInt64 uploaded,
+CgInt64 downloaded,
+CgInt64 left,
+char *eventStr,
+int numwant);
 
 /****************************************
 * Macros

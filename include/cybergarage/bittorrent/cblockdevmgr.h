@@ -16,7 +16,7 @@
 #ifndef _CG_BITTORRENT_BLOCKDEVICEMGR_H_
 #define _CG_BITTORRENT_BLOCKDEVICEMGR_H_
 
-#include <cybergarage/bittorrent/ctracker.h>
+#include <cybergarage/bittorrent/cmetainfo.h>
 
 #ifdef  __cplusplus
 extern "C" {

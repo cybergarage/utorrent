@@ -1,36 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cgbtdownload", "cgbtdownload.vcproj", "{9C07D1AA-CD91-4966-9FB7-CA008B5EFDD6}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9ED45EEC-6FAD-4F56-ACF1-CD37BC23DF11} = {9ED45EEC-6FAD-4F56-ACF1-CD37BC23DF11}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcdist", "..\..\..\..\..\lib\win32\vs2005\libcdist.vcproj", "{9ED45EEC-6FAD-4F56-ACF1-CD37BC23DF11}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D550D099-9F69-4F30-864C-504D02F72774} = {D550D099-9F69-4F30-864C-504D02F72774}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CyberLinkC", "..\..\..\..\..\..\clinkc\lib\win32\vs2005\CyberLinkC.vcproj", "{D550D099-9F69-4F30-864C-504D02F72774}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9C07D1AA-CD91-4966-9FB7-CA008B5EFDD6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9C07D1AA-CD91-4966-9FB7-CA008B5EFDD6}.Debug|Win32.Build.0 = Debug|Win32
-		{9C07D1AA-CD91-4966-9FB7-CA008B5EFDD6}.Release|Win32.ActiveCfg = Release|Win32
-		{9C07D1AA-CD91-4966-9FB7-CA008B5EFDD6}.Release|Win32.Build.0 = Release|Win32
-		{9ED45EEC-6FAD-4F56-ACF1-CD37BC23DF11}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9ED45EEC-6FAD-4F56-ACF1-CD37BC23DF11}.Debug|Win32.Build.0 = Debug|Win32
-		{9ED45EEC-6FAD-4F56-ACF1-CD37BC23DF11}.Release|Win32.ActiveCfg = Release|Win32
-		{9ED45EEC-6FAD-4F56-ACF1-CD37BC23DF11}.Release|Win32.Build.0 = Release|Win32
-		{D550D099-9F69-4F30-864C-504D02F72774}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D550D099-9F69-4F30-864C-504D02F72774}.Debug|Win32.Build.0 = Debug|Win32
-		{D550D099-9F69-4F30-864C-504D02F72774}.Release|Win32.ActiveCfg = Release|Win32
-		{D550D099-9F69-4F30-864C-504D02F72774}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

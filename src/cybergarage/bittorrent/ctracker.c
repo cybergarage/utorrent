@@ -55,7 +55,8 @@ void cg_bittorrent_tracker_delete(CgBittorrentTracker *cbt)
 
 BOOL cg_bittorrent_tracker_load(
 CgBittorrentTracker *cbt,
-CgBittorrentMetainfo *cbm,
+char *announceURL,
+CgByte *info_hash,
 CgByte *peer_id,
 char *ip,
 int port,
@@ -68,7 +69,6 @@ int numwant
 )
 {
 	CgBittorrentBencoding *infoVal;
-	unsigned char infoValHash[CG_SHA1_HASH_SIZE];
 	CgString *uri;
 	CgString *escapedInfoValHash;
 	CgString *escapedPeerID;
@@ -79,31 +79,20 @@ int numwant
 	if (!cbt)
 		return FALSE;
 
-	if (!cbm)
-		return FALSE;
-
-	announce = cg_bittorrent_metainfo_getannounce(cbm);
-	if (cg_strlen(announce) <= 0)
-		return FALSE;
-
-	infoVal = cg_bittorrent_metainfo_getvaluebyname(cbm, CG_BITTORRENT_METAINFO_INFO);
-	if (!infoVal)
-		return FALSE;
-
-	if (!cg_bittorrent_bencoding_tosha1(infoVal, infoValHash))
+	if (cg_strlen(announceURL) <= 0)
 		return FALSE;
 
 	uri = cg_string_new();
 
 	/**** announce ****/
-	cg_string_addvalue(uri, announce);
+	cg_string_addvalue(uri, announceURL);
 	cg_string_addvalue(uri, CG_NET_URI_QUESTION_DELIM);
 
 	/**** info_hash ****/
 	cg_string_addvalue(uri, CG_BITTORRENT_TRACKER_QUERY_INFOHASH);
 	cg_string_addvalue(uri, CG_NET_URI_EQ_DELIM);
 	escapedInfoValHash = cg_string_new();
-	cg_net_uri_escapestring(infoValHash, CG_SHA1_HASH_SIZE, escapedInfoValHash);
+	cg_net_uri_escapestring(info_hash, CG_SHA1_HASH_SIZE, escapedInfoValHash);
 	cg_string_addvalue(uri, cg_string_getvalue(escapedInfoValHash));
 	cg_string_delete(escapedInfoValHash);
 	cg_string_addvalue(uri, CG_NET_URI_AMP_DELIM);

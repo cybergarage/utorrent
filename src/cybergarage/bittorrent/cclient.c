@@ -283,7 +283,7 @@ BOOL cg_bittorrent_client_createpeerid(CgBittorrentClient *cbc, CgByte *peerId)
 }
 
 /****************************************
-* cg_bittorrent_client_createpeerid
+* cg_bittorrent_client_getpiece
 ****************************************/
 
 BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainfo *cbm, CgBittorrentTracker *cbt, int pieceIdx, int pieceOffset, CgByte *buf, int bufLen)

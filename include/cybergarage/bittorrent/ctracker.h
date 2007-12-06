@@ -16,7 +16,7 @@
 #ifndef _CG_BITTORRENT_TRACKER_H_
 #define _CG_BITTORRENT_TRACKER_H_
 
-#include <cybergarage/bittorrent/cmetainfo.h>
+#include <cybergarage/bittorrent/cdictionary.h>
 #include <cybergarage/bittorrent/csha1.h>
 #include <cybergarage/bittorrent/cpeer.h>
 
@@ -157,7 +157,8 @@ BOOL cg_bittorrent_tracker_fetch(CgBittorrentTracker *cbt, char *url);
 
 BOOL cg_bittorrent_tracker_load(
 CgBittorrentTracker *cbt,
-CgBittorrentMetainfo *cbm,
+char *announceURL,
+CgByte *info_hash,
 CgByte *peer_id,
 char *ip,
 int port,
@@ -166,7 +167,8 @@ CgInt64 downloaded,
 CgInt64 left,
 BOOL isCompact,
 char *eventStr,
-int numwant);
+int numwant
+);
 
 /****************************************
 * Macros

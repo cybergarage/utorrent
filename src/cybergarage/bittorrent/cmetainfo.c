@@ -31,6 +31,9 @@ CgBittorrentMetainfo *cg_bittorrent_metainfo_new()
 	cbm->url = cg_string_new();
 	cbm->fileName = cg_string_new();
 	cbm->id = cg_string_new();
+	cbm->tracker = cg_bittorrent_tracker_new();
+	cbm->pieceInfo = NULL;
+	cbm->numPieceInfo = 0;
 
 	return cbm;
 }
@@ -44,10 +47,13 @@ void cg_bittorrent_metainfo_delete(CgBittorrentMetainfo *cbm)
 	if (!cbm)
 		return;
 
+	cg_bittorrent_metainfo_freepieceinfo(cbm);
+
 	cg_bittorrent_dictionary_delete(cbm->dir);
 	cg_string_delete(cbm->url);
 	cg_string_delete(cbm->fileName);
 	cg_string_delete(cbm->id);
+	cg_bittorrent_tracker_delete(cbm->tracker);
 
 	free(cbm);
 }
@@ -213,6 +219,48 @@ CgInt64 cg_bittorrent_metainfo_getfilepropertyinteger(CgBittorrentMetainfo *cbm,
 }
 
 /****************************************
+* cg_bittorrent_metainfo_allocpieceinfo
+****************************************/
+
+BOOL cg_bittorrent_metainfo_allocpieceinfo(CgBittorrentMetainfo *cbm, int num)
+{
+	int n;
+
+	cbm->pieceInfo = (CgBittorrentPieceInfo **)malloc(sizeof(CgBittorrentPieceInfo*) * num);
+	if (!cbm->pieceInfo)
+		return FALSE;
+
+	for (n=0; n<num; n++)
+		cbm->pieceInfo[n] = cg_bittorrent_pieceinfo_new();
+	
+	cbm->numPieceInfo = num;
+	
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_freepieceinfo
+****************************************/
+
+BOOL cg_bittorrent_metainfo_freepieceinfo(CgBittorrentMetainfo *cbm)
+{
+	int n;
+
+	if (cbm->numPieceInfo <= 0)
+		return FALSE;
+
+	for (n=0; n<cbm->numPieceInfo; n++)
+		cg_bittorrent_pieceinfo_delete(cbm->pieceInfo[n]);
+	
+	free(cbm->pieceInfo);
+
+	cbm->pieceInfo = NULL;
+	cbm->numPieceInfo = 0;
+	
+	return TRUE;
+}
+
+/****************************************
 * cg_bittorrent_metainfo_setidfromname
 ****************************************/
 
@@ -230,6 +278,49 @@ BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name)
 		cg_bittorrent_metainfo_setid(cbm, name);
 
 	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_updatetracker
+****************************************/
+
+BOOL cg_bittorrent_metainfo_updatetracker(
+CgBittorrentMetainfo *cbm,
+CgByte *peerId,
+int port,
+CgInt64 uploaded,
+CgInt64 downloaded,
+CgInt64 left,
+char *eventStr,
+int numwant)
+{
+	CgBittorrentTracker *cbt;
+	char *announce;
+	CgByte infoHash[CG_SHA1_HASH_SIZE];
+
+	cbt = cg_bittorrent_metainfo_gettracker(cbm);
+
+	announce = cg_bittorrent_metainfo_getannounce(cbm);
+	if (cg_strlen(announce) <= 0)
+		return FALSE;
+
+	if (!cg_bittorrent_metainfo_getinfohash(cbm, infoHash))
+		return FALSE;
+
+	return cg_bittorrent_tracker_load(
+		cbt,
+		announce,
+		infoHash,
+		peerId,
+		"",
+		port,
+		uploaded,
+		downloaded,
+		left,
+		TRUE,
+		eventStr,
+		numwant
+		);
 }
 
 /****************************************

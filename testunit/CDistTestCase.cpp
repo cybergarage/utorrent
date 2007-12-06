@@ -329,12 +329,20 @@ void CDistTestCase::testTrackerLoad()
 	cg_bittorrent_client_createpeerid(cbc, peerId);
 	cg_bittorrent_client_delete(cbc);
 
+	char *announce = cg_bittorrent_metainfo_getannounce(cbm);
+	CPPUNIT_ASSERT(0 < cg_strlen(announce));
+	CgBittorrentBencoding *infoVal = cg_bittorrent_metainfo_getvaluebyname(cbm, CG_BITTORRENT_METAINFO_INFO);
+	CPPUNIT_ASSERT(infoVal);
+	unsigned char infoHash[CG_SHA1_HASH_SIZE];
+	CPPUNIT_ASSERT(cg_bittorrent_bencoding_tosha1(infoVal, infoHash));
+
 	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
 	CPPUNIT_ASSERT(cbt);
 	CPPUNIT_ASSERT(
 		cg_bittorrent_tracker_load(
 		cbt , 
-		cbm,
+		announce,
+		infoHash,
 		peerId,
 		"",
 		CDIST_TEST_TRACKER_PORT,
@@ -488,10 +496,18 @@ void CDistTestCase::testPeerHandshake()
 	cg_bittorrent_client_createpeerid(cbc, peerId);
 	cg_bittorrent_client_delete(cbc);
 
+	char *announce = cg_bittorrent_metainfo_getannounce(cbm);
+	CPPUNIT_ASSERT(0 < cg_strlen(announce));
+	CgBittorrentBencoding *infoVal = cg_bittorrent_metainfo_getvaluebyname(cbm, CG_BITTORRENT_METAINFO_INFO);
+	CPPUNIT_ASSERT(infoVal);
+	unsigned char infoHash[CG_SHA1_HASH_SIZE];
+	CPPUNIT_ASSERT(cg_bittorrent_bencoding_tosha1(infoVal, infoHash));
+
 	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
 	cg_bittorrent_tracker_load(
 		cbt , 
-		cbm,
+		announce,
+		infoHash,
 		peerId,
 		"",
 		CDIST_TEST_TRACKER_PORT,
@@ -621,11 +637,19 @@ void CDistTestCase::testFileMgr()
 
 	/**** Piece ****/
 	unsigned char infoValHash[CG_SHA1_HASH_SIZE];
+
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(metainfo, infoValHash));
+	char *announce = cg_bittorrent_metainfo_getannounce(metainfo);
+	CPPUNIT_ASSERT(0 < cg_strlen(announce));
+	CgBittorrentBencoding *infoVal = cg_bittorrent_metainfo_getvaluebyname(metainfo, CG_BITTORRENT_METAINFO_INFO);
+	CPPUNIT_ASSERT(infoVal);
+	CPPUNIT_ASSERT(cg_bittorrent_bencoding_tosha1(infoVal, infoValHash));
+
 	CgBittorrentTracker *cbt = cg_bittorrent_tracker_new();
 	cg_bittorrent_tracker_load(
 		cbt,
-		metainfo,
+		announce,
+		infoHash,
 		peerId,
 		"",
 		CDIST_TEST_TRACKER_PORT,
