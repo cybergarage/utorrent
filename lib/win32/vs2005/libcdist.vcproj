@@ -289,10 +289,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\cybergarage\bittorrent\cpropertymgr.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\csha1.c"
 				>
 			</File>

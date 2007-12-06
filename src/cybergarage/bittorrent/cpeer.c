@@ -145,6 +145,7 @@ BOOL cg_bittorrent_peer_getpieceblock(CgBittorrentPeer *peer, int pieceIdx, int 
 
 	while (cg_bittorrent_peer_recvmsgheader(peer, msg)) {
 		msgType = cg_bittorrent_message_gettype(msg);
+		printf("msgType = %d\n", (int)msgType);
 		if (msgType == CG_BITTORRENT_MESSAGE_PIECE) {
 			readLen = cg_bittorrent_peer_recvmsgbody(peer, msg, buf, bufLen);
 			break;

@@ -466,6 +466,7 @@ void CDistTestCase::testBlockDevice()
 void CDistTestCase::testPeerHandshake()
 {
 	CgBittorrentMetainfo *cbm = cg_bittorrent_metainfo_new();
+
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(cbm, CDIST_TEST_METAINFO_FILE));
 	//cg_bittorrent_metainfo_print(cbm);
 	CgBittorrentDictionary *info = cg_bittorrent_metainfo_getinfo(cbm);

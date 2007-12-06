@@ -28,7 +28,7 @@ extern "C" {
 
 /* Metainfo */
 typedef int (*CG_BITTORRENT_STRATEGYMGR_GETNEXTPIECEINDEX)(void *cbsm);
-typedef CgBittorrentPeer *(*CG_BITTORRENT_STRATEGYMGR_GETPEER)(void *cbsm, int pieceIdx);
+typedef CgBittorrentPeer *(*CG_BITTORRENT_STRATEGYMGR_GETPEER)(void *cbsm, CgBittorrentTracker *cbt, int pieceIdx);
 
 /****************************************
 * Data Type
@@ -117,6 +117,20 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
  * \return User data
  */
 #define cg_bittorrent_strategymgr_getuserdata(stgmgr) (stgmgr->userData)
+
+/****************************************
+* Function (User Data)
+****************************************/
+
+/**
+ * Get a  a optimal peer to request.
+ *
+ * \param stgmgr Strategy manager to destroy.
+ * \param tracker Metainfo of the file.
+ *
+ * \return TRUE if the specifed file is available, otherwise FALSE.
+ . */
+#define cg_bittorrent_strategymgr_getnextpeer(stgmgr, tracker, pieceIdx) ((stgmgr->getPeerFunc) ? stgmgr->getPeerFunc(stgmgr, tracker, pieceIdx) : FALSE)
 
 #ifdef  __cplusplus
 }
