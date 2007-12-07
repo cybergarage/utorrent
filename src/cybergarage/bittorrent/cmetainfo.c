@@ -15,6 +15,8 @@
 
 #include <cybergarage/bittorrent/cmetainfo.h>
 
+#include <math.h>
+
 /****************************************
 * cg_bittorrent_metainfo_new
 ****************************************/
@@ -226,6 +228,8 @@ BOOL cg_bittorrent_metainfo_allocpieceinfo(CgBittorrentMetainfo *cbm, int num)
 {
 	int n;
 
+	cg_bittorrent_metainfo_freepieceinfo(cbm);
+
 	cbm->pieceInfo = (CgBittorrentPieceInfo **)malloc(sizeof(CgBittorrentPieceInfo*) * num);
 	if (!cbm->pieceInfo)
 		return FALSE;
@@ -278,6 +282,50 @@ BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name)
 		cg_bittorrent_metainfo_setid(cbm, name);
 
 	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_getinfototallength
+****************************************/
+
+CgInt64 cg_bittorrent_metainfo_getinfototallength(CgBittorrentMetainfo *cbm)
+{
+	int numFiles;
+	CgInt64 totalFileLength;
+	int n;
+
+	if (!cbm)
+		return FALSE;
+
+	/* Info in Single File Mode */
+	if (cg_bittorrent_metainfo_issinglefilemode(cbm)) 
+		return cg_bittorrent_metainfo_getinfolength(cbm);
+
+	/* Info in Multiple File Mode */
+	numFiles = cg_bittorrent_metainfo_getnfiles(cbm);
+	totalFileLength = 0;
+	for (n=0; n<numFiles; n++)
+		totalFileLength += cg_bittorrent_metainfo_getinfofilelength(cbm, n);
+
+	return totalFileLength;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_getinfonpieces
+****************************************/
+
+int cg_bittorrent_metainfo_getinfonpieces(CgBittorrentMetainfo *cbm)
+{
+	CgInt64 pieceLength;
+	CgInt64 totalFileLength;
+
+	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+	if (pieceLength <= 0)
+		return 0;
+
+	totalFileLength = cg_bittorrent_metainfo_getinfototallength(cbm);
+
+	return (int)ceil((double)(totalFileLength / pieceLength));
 }
 
 /****************************************

@@ -435,6 +435,24 @@ int numwant);
  */
 #define cg_bittorrent_metainfo_issinglefilemode(cbm) (!cg_bittorrent_metainfo_ismultiplefilemode(cbm))
 
+/**
+ * Get total length of the all files.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Length of all files.
+ */
+CgInt64 cg_bittorrent_metainfo_getinfototallength(CgBittorrentMetainfo *cbm);
+
+/**
+ * Get total length of the all files.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Length of all files.
+ */
+int cg_bittorrent_metainfo_getinfonpieces(CgBittorrentMetainfo *cbm);
+
 /****************************************
 * Function (Internal)
 ****************************************/

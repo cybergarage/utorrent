@@ -26,6 +26,7 @@ extern "C" {
 #include <cybergarage/bittorrent/cmetainfo.h>
 #include <cybergarage/bittorrent/cblockdevmgr.h>
 #include <cybergarage/bittorrent/cstrategymgr.h>
+#include <cybergarage/bittorrent/cpropertymgr.h>
 #include <cybergarage/bittorrent/csha1.h>
 
 /****************************************
@@ -61,6 +62,7 @@ extern "C" {
 typedef struct _CgBittorrentClient {
 	CgBittorrentBlockDeviceMgr *blockDevMgr;
 	CgBittorrentStrategyMgr *stgyMgr;
+	CgBittorrentPropertyMgr *propMgr;
 	CgBittorrentMetainfoList *metaInfoList;
 	CgMutex *mutex;
 	/* HTTP Server */
@@ -158,6 +160,23 @@ void cg_bittorrent_client_delete(CgBittorrentClient *cbc);
  * \return Stored strategy manager.
  */
 #define cg_bittorrent_client_getstrategymgr(cbc) (cbc->stgyMgr)
+
+/**
+ * Set a property manager of the specified download manager.
+ *
+ * \param cbc  Client in question.
+ * \param value Property manager  to set.
+ */
+#define cg_bittorrent_client_setpropertymgr(cbc, value) (cbc->propMgr = value)
+
+/**
+ * Return a  property manager of the specified download manager.
+ *
+ * \param cbc Download manager in question.
+ *
+ * \return Stored property manager.
+ */
+#define cg_bittorrent_client_getpropertymgr(cbc) (cbc->propMgr)
 
 /**
  * Set a  port number for HTTP server

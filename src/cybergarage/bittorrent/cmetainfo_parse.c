@@ -23,6 +23,7 @@ BOOL cg_bittorrent_metainfo_parse(CgBittorrentMetainfo *cbm, char *data, int dat
 {
 	CgBittorrentDictionary *cbd;
 	int offset;
+	int numPieces;
 
 	if (!cbm)
 		return FALSE;
@@ -33,6 +34,10 @@ BOOL cg_bittorrent_metainfo_parse(CgBittorrentMetainfo *cbm, char *data, int dat
 
 	if (cg_bittorrent_dictionary_parse(cbd, data, &offset) == FALSE)
 		return FALSE;
+
+	/* Initialize Piece Infos */
+	numPieces = cg_bittorrent_metainfo_getinfonpieces(cbm);
+	cg_bittorrent_metainfo_allocpieceinfo(cbm, numPieces);
 
 	return TRUE;
 }
