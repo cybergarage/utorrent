@@ -72,25 +72,42 @@ void cg_bittorrent_propertymgr_delete(CgBittorrentPropertyMgr *propmgr);
 BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propmgr);
 
 /****************************************
-* Function (Metainfo)
+* Function
 ****************************************/
 
 /**
- * Set a function to add a metainfo.
+ * Set a function to set a property,
  *
  * \param propmgr Property manager in question.
  * \param func Function to set.
  */
-#define cg_bittorrent_propertymgr_setaddmetainfofunc(propmgr, func) (propmgr->setValueFunc = func)
+#define cg_bittorrent_propertymgr_setsetvaluefunc(propmgr, func) (propmgr->setValueFunc = func)
 
 /**
- * Return a function to add a metainfo.
+ * Return a function to set a property,
  *
  * \param propmgr Property manager in question.
  *
- * \return Specifided function
+ * \return Stored function
  */
-#define cg_bittorrent_propertymgr_getaddmetainfofunc(propmgr) (propmgr->setValueFunc)
+#define cg_bittorrent_propertymgr_getsetvaluefunc(propmgr) (propmgr->setValueFunc)
+
+/**
+ * Set a function to get a property,
+ *
+ * \param propmgr Property manager in question.
+ * \param func Function to set.
+ */
+#define cg_bittorrent_propertymgr_setgetvaluefunc(propmgr, func) (propmgr->getValueFunc = func)
+
+/**
+ * Return a function to get a property,
+ *
+ * \param propmgr Property manager in question.
+ *
+ * \return Stored function
+ */
+#define cg_bittorrent_propertymgr_getgetvaluefunc(propmgr) (propmgr->getValueFunc)
 
 /****************************************
 * Function (User Data)
@@ -118,7 +135,7 @@ BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propmgr);
 ****************************************/
 
 /**
- * Set a value.
+ * Set a string value.
  *
  * \param propmgr Property manager in question.
  * \param category Category of the value to be set.
@@ -127,10 +144,10 @@ BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propmgr);
  *
  * \return TRUE if the function succeeds, otherwise FALSE.
  */
-#define cg_bittorrent_propertymgr_setvalue(propmgr, category, key, value) ((propmgr->setValueFunc) ? propmgr->setValueFunc(propmgr, category, key, value) : FALSE)
+#define cg_bittorrent_propertymgr_setstringvalue(propmgr, category, key, value) ((propmgr->setValueFunc) ? propmgr->setValueFunc(propmgr, category, key, value) : FALSE)
 
 /**
- * Get a value.
+ * Get a string value.
  *
  * \param propmgr Property manager in question.
  * \param category Category of the value to be set.
@@ -140,7 +157,30 @@ BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propmgr);
  *
  * \return TRUE if the function succeeds, otherwise FALSE.
  */
-#define cg_bittorrent_propertymgr_getvalue(propmgr, category, key, buf, bufSize) ((propmgr->getValueFunc) ? propmgr->getValueFunc(propmgr, category, key, buf, bufSize) : FALSE)
+#define cg_bittorrent_propertymgr_getstringvalue(propmgr, category, key, buf, bufSize) ((propmgr->getValueFunc) ? propmgr->getValueFunc(propmgr, category, key, buf, bufSize) : FALSE)
+
+/**
+ * Set a integer value.
+ *
+ * \param propmgr Property manager in question.
+ * \param category Category of the value to be set.
+ * \param key Key of the value to be set.
+ * \param value Value to be set.
+ *
+ * \return TRUE if the function succeeds, otherwise FALSE.
+ */
+BOOL cg_bittorrent_propertymgr_setintegervalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key, int value);
+
+/**
+ * Get a integer value.
+ *
+ * \param propmgr Property manager in question.
+ * \param category Category of the value to be set.
+ * \param key Key of the value to be set.
+ *
+ * \return Stored value if the function succeeds, otherwise 0.
+ */
+int cg_bittorrent_propertymgr_getstringvalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key);
 
 #ifdef  __cplusplus
 }

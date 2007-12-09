@@ -32,14 +32,11 @@ typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_REMOVEMETAINFO)(void *cbdmgr, CgByte
 typedef int (*CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFOS)(void *cbdmgr, CgBittorrentMetainfoList **cbmList);
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFO)(void *cbdmgr, CgByte *infoHash, CgBittorrentMetainfo **cbm);
 
-/* Piece */
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte **pieceData, int *pieceLength);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_WRITEPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx, CgByte *pieceData, int pieceLength);
-typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_HAVEPIECE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int pieceIdx);
-
 /* Input */
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_OPENFILE)(void *cbdmgr, CgBittorrentMetainfo *cbm, int fileIdx);
+typedef int (*CG_BITTORRENT_BLOCKDEVICEMGR_SEEKFILE)(void *cbdmgr, CgInt64 offset);
 typedef int (*CG_BITTORRENT_BLOCKDEVICEMGR_READFILE)(void *cbdmgr, char *buf, int bufLen);
+typedef int (*CG_BITTORRENT_BLOCKDEVICEMGR_WRITEFILE)(void *cbdmgr, char *buf, int bufLen);
 typedef BOOL (*CG_BITTORRENT_BLOCKDEVICEMGR_CLOSEFILE)(void *cbdmgr);
 
 typedef struct _CgBittorrentBlockDeviceMgr {
@@ -48,13 +45,11 @@ typedef struct _CgBittorrentBlockDeviceMgr {
 	CG_BITTORRENT_BLOCKDEVICEMGR_REMOVEMETAINFO removeMetainfoFunc;
 	CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFOS getMetainfosFunc;
 	CG_BITTORRENT_BLOCKDEVICEMGR_GETMETAINFO getMetainfoFunc;
-	/* Piece */
-	CG_BITTORRENT_BLOCKDEVICEMGR_READPIECE readPieceFunc;
-	CG_BITTORRENT_BLOCKDEVICEMGR_WRITEPIECE writePieceFunc;
-	CG_BITTORRENT_BLOCKDEVICEMGR_HAVEPIECE havePieceFunc;
 	/* File */
 	CG_BITTORRENT_BLOCKDEVICEMGR_OPENFILE openFileFunc;
+	CG_BITTORRENT_BLOCKDEVICEMGR_SEEKFILE seekFileFunc;
 	CG_BITTORRENT_BLOCKDEVICEMGR_READFILE readFileFunc;
+	CG_BITTORRENT_BLOCKDEVICEMGR_WRITEFILE writeFileFunc;
 	CG_BITTORRENT_BLOCKDEVICEMGR_CLOSEFILE closeFileFunc;
 	/* User Data */
 	void *userData;
@@ -160,61 +155,6 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
 #define cg_bittorrent_blockdevicemgr_getgetmetainfofunc(bdmgr) (bdmgr->getMetainfoFunc)
 
 /****************************************
-* Function (Piece)
-****************************************/
-
-/**
- * Set a read function.
- *
- * \param bdmgr Block device manager in question.
- * \param func Function to set.
- */
-#define cg_bittorrent_blockdevicemgr_setreadpiecefunc(bdmgr, func) (bdmgr->readPieceFunc = func)
-
-/**
- * Return a read function.
- *
- * \param bdmgr Block device manager in question.
- *
- * \return Read function
- */
-#define cg_bittorrent_blockdevicemgr_getreadpiecefunc(bdmgr) (bdmgr->readPieceFunc)
-
-/**
- * Set a write function.
- *
- * \param bdmgr Block device manager in question.
- * \param func Function to set.
- */
-#define cg_bittorrent_blockdevicemgr_setwritepiecefunc(bdmgr, func) (bdmgr->writePieceFunc = func)
-
-/**
- * Return a write function.
- *
- * \param bdmgr Block device manager in question.
- *
- * \return Read function
- */
-#define cg_bittorrent_blockdevicemgr_getwritepiecefunc(bdmgr) (bdmgr->writePieceFunc)
-
-/**
- * Set a have function.
- *
- * \param bdmgr Block device manager in question.
- * \param func Function to set.
- */
-#define cg_bittorrent_blockdevicemgr_sethavepiecefunc(bdmgr, func) (bdmgr->havePieceFunc = func)
-
-/**
- * Return a have function.
- *
- * \param bdmgr Block device manager in question.
- *
- * \return Read function
- */
-#define cg_bittorrent_blockdevicemgr_gethavepiecefunc(bdmgr) (bdmgr->havePieceFunc)
-
-/****************************************
 * Function (File)
 ****************************************/
 
@@ -236,6 +176,23 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
 #define cg_bittorrent_blockdevicemgr_getopenfilefunc(bdmgr) (bdmgr->openFileFunc)
 
 /**
+ * Set a seek function.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param func Function to set.
+ */
+#define cg_bittorrent_blockdevicemgr_setseekfilefunc(bdmgr, func) (bdmgr->seekFileFunc = func)
+
+/**
+ * Return a seek function.
+ *
+ * \param bdmgr Block device manager in question.
+ *
+ * \return Read function
+ */
+#define cg_bittorrent_blockdevicemgr_getseekfilefunc(bdmgr) (bdmgr->seekFileFunc)
+
+/**
  * Set a read function.
  *
  * \param bdmgr Block device manager in question.
@@ -251,6 +208,23 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  * \return Read function
  */
 #define cg_bittorrent_blockdevicemgr_getreadfilefunc(bdmgr) (bdmgr->readFileFunc)
+
+/**
+ * Set a write function.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param func Function to set.
+ */
+#define cg_bittorrent_blockdevicemgr_setwritefilefunc(bdmgr, func) (bdmgr->writeFileFunc = func)
+
+/**
+ * Return a write function.
+ *
+ * \param bdmgr Block device manager in question.
+ *
+ * \return Read function
+ */
+#define cg_bittorrent_blockdevicemgr_getwritefilefunc(bdmgr) (bdmgr->writeFileFunc)
 
 /**
  * Set a close function.
@@ -392,17 +366,42 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
 #define cg_bittorrent_blockdevicemgr_openfile(bdmgr, cbm, idx) ((bdmgr->openFileFunc) ? bdmgr->openFileFunc(bdmgr, cbm, idx) : FALSE)
 
 /**
+ * Seek a file.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param cbm Metainfo of the file.
+ * \param offset Offset to seek.
+ *
+ * \return TRUE if the specifed file is available, otherwise FALSE.
+ .
+ */
+#define cg_bittorrent_blockdevicemgr_seekfile(bdmgr, offset) ((bdmgr->seekFileFunc) ? bdmgr->seekFileFunc(bdmgr, offset) : FALSE)
+
+/**
  * Read a file.
  *
  * \param bdmgr Block device manager in question.
  * \param cbm Metainfo of the file.
- * \param buf Buffer to store the data.
+ * \param buf Buffer to read the data.
  * \param bufLen Length of the buffer.
  *
  * \return TRUE if the specifed file is available, otherwise FALSE.
  .
  */
-#define cg_bittorrent_blockdevicemgr_readfile(bdmgr, buf, bufLen) ((bdmgr->readFileFunc) ? bdmgr->readFileFunc(bdmgr, cbm, buf, bufLen) : FALSE)
+#define cg_bittorrent_blockdevicemgr_readfile(bdmgr, buf, bufLen) ((bdmgr->readFileFunc) ? bdmgr->readFileFunc(bdmgr, buf, bufLen) : FALSE)
+
+/**
+ * Write a file.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param cbm Metainfo of the file.
+ * \param buf Buffer to write the data.
+ * \param bufLen Length of the buffer.
+ *
+ * \return TRUE if the specifed file is available, otherwise FALSE.
+ .
+ */
+#define cg_bittorrent_blockdevicemgr_writefile(bdmgr, buf, bufLen) ((bdmgr->writeFileFunc) ? bdmgr->writeFileFunc(bdmgr, buf, bufLen) : FALSE)
 
 /**
  * Close a file.
