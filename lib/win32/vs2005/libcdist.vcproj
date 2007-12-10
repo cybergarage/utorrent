@@ -316,6 +316,10 @@
 				RelativePath="..\..\..\src\cybergarage\bittorrent\ctracker_parse.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\impl\propertymgr\cxmlfile.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="ヘッダー ファイル"
@@ -388,6 +392,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\cybergarage\bittorrent\ctracker.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\cybergarage\bittorrent\impl\propertymgr\cxmlfile.h"
 				>
 			</File>
 		</Filter>

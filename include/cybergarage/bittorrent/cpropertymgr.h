@@ -28,6 +28,10 @@ extern "C" {
 
 #define CG_BITTORRENT_PROPERTYMGR_VALUE_MAXSIZE 512
 
+#define CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE "Message"
+#define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT "RequestUnit"
+#define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX "RequestRetryMax"
+
 /****************************************
 * Data Type
 ****************************************/
@@ -45,7 +49,7 @@ typedef struct _CgBittorrentPropertyMgr {
 } CgBittorrentPropertyMgr;
 
 /****************************************
-* Function (BlockDevMgr)
+* Function
 ****************************************/
 
 /**
@@ -131,7 +135,7 @@ BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propmgr);
 #define cg_bittorrent_propertymgr_getuserdata(propmgr) (propmgr->userData)
 
 /****************************************
-* Function (Metainfo)
+* Function
 ****************************************/
 
 /**
@@ -180,7 +184,17 @@ BOOL cg_bittorrent_propertymgr_setintegervalue(CgBittorrentPropertyMgr *propmgr,
  *
  * \return Stored value if the function succeeds, otherwise 0.
  */
-int cg_bittorrent_propertymgr_getstringvalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key);
+int cg_bittorrent_propertymgr_getintegervalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key);
+
+/****************************************
+* Property
+****************************************/
+
+#define cg_bittorrent_propertymgr_message_setrequestunit(propmgr, value) cg_bittorrent_propertymgr_setintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT, value)
+#define cg_bittorrent_propertymgr_message_getrequestunit(propmgr) cg_bittorrent_propertymgr_getintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT)
+
+#define cg_bittorrent_propertymgr_message_setrequestretrymax(propmgr, value) cg_bittorrent_propertymgr_setintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX, value)
+#define cg_bittorrent_propertymgr_message_getrequestretrymax(propmgr) cg_bittorrent_propertymgr_getintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX)
 
 #ifdef  __cplusplus
 }

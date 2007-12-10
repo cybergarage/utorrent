@@ -295,6 +295,8 @@ BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainf
 	CgByte peerId[CG_SHA1_HASH_SIZE];
 	int pieceOffset;
 	int numFailed;
+	int reqUnit;
+	int reqRetryMax;
 
 	stgMgr = cg_bittorrent_client_getstrategymgr(cbc);
 	if (!stgMgr)
@@ -302,6 +304,14 @@ BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainf
 
 	propMgr = cg_bittorrent_client_getpropertymgr(cbc);
 	if (!propMgr)
+		return FALSE;
+
+	reqUnit = cg_bittorrent_propertymgr_message_getrequestunit(propMgr);
+	if (reqUnit <= 0)
+		return FALSE;
+
+	reqRetryMax = cg_bittorrent_propertymgr_message_getrequestretrymax(propMgr);
+	if (reqRetryMax <= 0)
 		return FALSE;
 
 	if (!cg_bittorrent_client_createpeerid(cbc, peerId))
@@ -312,7 +322,7 @@ BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainf
 
 	pieceOffset = 0;
 	numFailed = 0;
-	while (pieceOffset < bufLen && numFailed < 10) {
+	while (pieceOffset < bufLen && numFailed < reqRetryMax) {
 		peer = cg_bittorrent_strategymgr_getnextpeer(stgMgr, cbt, pieceIdx);
 		if (!peer)
 			break;
