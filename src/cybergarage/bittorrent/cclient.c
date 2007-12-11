@@ -286,17 +286,23 @@ BOOL cg_bittorrent_client_createpeerid(CgBittorrentClient *cbc, CgByte *peerId)
 * cg_bittorrent_client_getpiece
 ****************************************/
 
-BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainfo *cbm, CgBittorrentTracker *cbt, int pieceIdx, CgByte *buf, int bufLen)
+BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainfo *cbm, int pieceIdx, CgByte *buf, int bufLen)
 {
 	CgBittorrentStrategyMgr *stgMgr;
 	CgBittorrentPropertyMgr *propMgr;
+	CgBittorrentTracker *cbt;
 	CgBittorrentPeer *peer;
 	CgByte infoValHash[CG_SHA1_HASH_SIZE];
 	CgByte peerId[CG_SHA1_HASH_SIZE];
+	int pieceLength;
 	int pieceOffset;
 	int numFailed;
-	int reqUnit;
+	int reqBlockLength;
 	int reqRetryMax;
+	int reqBlockLen;
+	int reqAmountMax;
+	int recvBlockLen;
+	int reqTimeout;
 
 	stgMgr = cg_bittorrent_client_getstrategymgr(cbc);
 	if (!stgMgr)
@@ -306,12 +312,19 @@ BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainf
 	if (!propMgr)
 		return FALSE;
 
-	reqUnit = cg_bittorrent_propertymgr_message_getrequestunit(propMgr);
-	if (reqUnit <= 0)
+	cbt = cg_bittorrent_metainfo_gettracker(cbm);
+	if (!cbt)
 		return FALSE;
 
+	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+	if (pieceLength <= 0)
+		return FALSE;
+	
+	reqBlockLength = cg_bittorrent_propertymgr_message_getrequestunit(propMgr);
 	reqRetryMax = cg_bittorrent_propertymgr_message_getrequestretrymax(propMgr);
-	if (reqRetryMax <= 0)
+	reqAmountMax = cg_bittorrent_propertymgr_message_getrequestamountmax(propMgr);
+	reqTimeout = cg_bittorrent_propertymgr_message_getrequesttimeout(propMgr);
+	if ((reqBlockLength <= 0) || (reqRetryMax <= 0) || (reqRetryMax <= 0) || (reqTimeout <= 0))
 		return FALSE;
 
 	if (!cg_bittorrent_client_createpeerid(cbc, peerId))
@@ -322,19 +335,35 @@ BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainf
 
 	pieceOffset = 0;
 	numFailed = 0;
+	recvBlockLen = 0;
+
 	while (pieceOffset < bufLen && numFailed < reqRetryMax) {
 		peer = cg_bittorrent_strategymgr_getnextpeer(stgMgr, cbt, pieceIdx);
 		if (!peer)
 			break;
+
+		if (0 < reqTimeout)
+			cg_bittorrent_peer_settimeout(peer, reqTimeout);
 
 		if (!cg_bittorrent_peer_open(peer, infoValHash, peerId)) {
 			numFailed++;
 			continue;
 		}
 
-		if (cg_bittorrent_peer_getpieceblock(peer, pieceIdx, 0, buf, bufLen))
-			pieceOffset += bufLen;
-		
+		if (!cg_bittorrent_peer_haspiece(peer, pieceIdx)) {
+			cg_bittorrent_peer_close(peer);
+			continue;
+		}
+
+		recvBlockLen = 0;
+		while (recvBlockLen < reqAmountMax) {
+			reqBlockLen = min((pieceLength - pieceOffset), reqBlockLength);
+			if (!cg_bittorrent_peer_getpieceblock(peer, pieceIdx, 0, (buf + pieceOffset), reqBlockLength))
+				break;
+			pieceOffset += reqBlockLength;
+			recvBlockLen += reqBlockLength;
+		}
+
 		cg_bittorrent_peer_close(peer);
 	}
 

@@ -37,6 +37,7 @@ CgBittorrentPeer *cg_bittorrent_peer_new(void)
 	peer->bitfield = NULL;
 	peer->bitfieldLength = 0;
 	peer->tracker = NULL;
+	peer->timeout = 0;
 
 	for (n=0; n<CG_BITTORRENT_PEERID_SIZE; n++)
 		peer->id[n] = 0;

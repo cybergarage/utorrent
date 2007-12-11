@@ -30,7 +30,14 @@ extern "C" {
 
 #define CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE "Message"
 #define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT "RequestUnit"
+#define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_AMOUNT_MAX "RequestAmountMax"
 #define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX "RequestRetryMax"
+#define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_TIMEOUT "RequestTimeout"
+
+#define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT_DEFAULT (16*1024)
+#define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_AMOUNT_MAX_DEFAULT (128*1024)
+#define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX_DEFAULT 20
+#define CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_TIMEOUT_DEFAULT 5
 
 /****************************************
 * Data Type
@@ -158,10 +165,11 @@ BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propmgr);
  * \param key Key of the value to be set.
  * \param buf Buffer to be set.
  * \param bufSize Size of the buffer.
+ * \param defaultValue Default value when the method is failed.
  *
  * \return TRUE if the function succeeds, otherwise FALSE.
  */
-#define cg_bittorrent_propertymgr_getstringvalue(propmgr, category, key, buf, bufSize) ((propmgr->getValueFunc) ? propmgr->getValueFunc(propmgr, category, key, buf, bufSize) : FALSE)
+char *cg_bittorrent_propertymgr_getstringvalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key, char *buf, int bufSize, char *defaultValue);
 
 /**
  * Set a integer value.
@@ -181,20 +189,27 @@ BOOL cg_bittorrent_propertymgr_setintegervalue(CgBittorrentPropertyMgr *propmgr,
  * \param propmgr Property manager in question.
  * \param category Category of the value to be set.
  * \param key Key of the value to be set.
+ * \param defaultValue Default value when the method is failed.
  *
  * \return Stored value if the function succeeds, otherwise 0.
  */
-int cg_bittorrent_propertymgr_getintegervalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key);
+int cg_bittorrent_propertymgr_getintegervalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key, int defaultValue);
 
 /****************************************
 * Property
 ****************************************/
 
 #define cg_bittorrent_propertymgr_message_setrequestunit(propmgr, value) cg_bittorrent_propertymgr_setintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT, value)
-#define cg_bittorrent_propertymgr_message_getrequestunit(propmgr) cg_bittorrent_propertymgr_getintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT)
+#define cg_bittorrent_propertymgr_message_getrequestunit(propmgr) cg_bittorrent_propertymgr_getintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_UNIT_DEFAULT)
 
 #define cg_bittorrent_propertymgr_message_setrequestretrymax(propmgr, value) cg_bittorrent_propertymgr_setintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX, value)
-#define cg_bittorrent_propertymgr_message_getrequestretrymax(propmgr) cg_bittorrent_propertymgr_getintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX)
+#define cg_bittorrent_propertymgr_message_getrequestretrymax(propmgr) cg_bittorrent_propertymgr_getintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_RETRY_MAX_DEFAULT)
+
+#define cg_bittorrent_propertymgr_message_setrequestamountmax(propmgr, value) cg_bittorrent_propertymgr_setintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_AMOUNT_MAX, value)
+#define cg_bittorrent_propertymgr_message_getrequestamountmax(propmgr) cg_bittorrent_propertymgr_getintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_AMOUNT_MAX, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_AMOUNT_MAX_DEFAULT)
+
+#define cg_bittorrent_propertymgr_message_setrequesttimeout(propmgr, value) cg_bittorrent_propertymgr_setintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_TIMEOUT, value)
+#define cg_bittorrent_propertymgr_message_getrequesttimeout(propmgr) cg_bittorrent_propertymgr_getintegervalue(propmgr, CG_BITTORRENT_PROPERTYMGR_CATEGORY_MESSAGE, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_TIMEOUT, CG_BITTORRENT_PROPERTYMGR_KEY_REQUEST_TIMEOUT_DEFAULT)
 
 #ifdef  __cplusplus
 }

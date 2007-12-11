@@ -24,6 +24,7 @@ BOOL cg_bittorrent_peer_connect(CgBittorrentPeer *peer)
 {
 	char *addr;
 	int port;
+	int timeout;
 
 	if (!peer)
 		return FALSE;
@@ -39,7 +40,14 @@ BOOL cg_bittorrent_peer_connect(CgBittorrentPeer *peer)
 
 	cg_socket_close(peer->sock);
 
-	return cg_socket_connect(peer->sock, addr, port);
+	if (!cg_socket_connect(peer->sock, addr, port))
+		return FALSE;
+
+	timeout = cg_bittorrent_peer_gettimeout(peer);
+	if (0 < timeout)
+		cg_socket_settimeout(peer->sock, timeout);
+
+	return TRUE;
 }
 
 /****************************************

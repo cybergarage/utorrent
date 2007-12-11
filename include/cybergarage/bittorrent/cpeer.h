@@ -49,6 +49,7 @@ typedef struct _CgBittorrentPeer {
 	CgByte id[CG_BITTORRENT_PEERID_SIZE];
 	CgByte *bitfield;
 	int bitfieldLength;
+	int timeout;
 } CgBittorrentPeer, CgBittorrentPeerList;
 
 /****************************************
@@ -214,6 +215,23 @@ void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, in
  * \return Bitfield of the peer.
  */
 #define cg_bittorrent_peer_getbitfield(peer) (peer->bitfield)
+
+/**
+ * Set a peer timeout.
+ *
+ * \param peer Peer in question.
+ * \param value value of the timeout to set.
+ */
+#define cg_bittorrent_peer_settimeout(peer, value) (peer->timeout = value)
+
+ /**
+ * Get a peer timeout.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Value of the timeout.
+ */
+#define cg_bittorrent_peer_gettimeout(peer) (peer->timeout)
 
  /**
  * Check a peer bitfield.
