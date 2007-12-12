@@ -412,7 +412,38 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
  * \return TRUE if the specifed file is available, otherwise FALSE.
  .
  */
-#define cg_bittorrent_blockdevicemgr_closefile(bdmgr) ((bdmgr->closeFileFunc) ? bdmgr->closeFileFunc(bdmgr, cbm, idx) : FALSE)
+#define cg_bittorrent_blockdevicemgr_closefile(bdmgr) ((bdmgr->closeFileFunc) ? bdmgr->closeFileFunc(bdmgr) : FALSE)
+
+/****************************************
+* Function (File)
+****************************************/
+
+/**
+ * Write a piece to the file.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param cbm Metainfo of the file.
+ * \param pieceIdx Index of the piece.
+ * \param buf Data to write.
+ * \param bufLen Length of the data.
+ *
+ * \return TRUE if the specifed file is available, otherwise FALSE.
+ */
+BOOL cg_bittorrent_blockdevicemgr_writepiecedata(CgBittorrentBlockDeviceMgr *bdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen);
+
+/**
+ * Read a piece from the file.
+ *
+ * \param bdmgr Block device manager in question.
+ * \param cbm Metainfo of the file.
+ * \param pieceIdx Index of the piece.
+ * \param buf Data to store.
+ * \param bufLen Length of the data.
+ * \param readLen Length of the data to read.
+ *
+ * \return TRUE if the specifed file is available, otherwise FALSE.
+ */
+BOOL cg_bittorrent_blockdevicemgr_readpiecedata(CgBittorrentBlockDeviceMgr *bdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen, int *readLen);
 
 #ifdef  __cplusplus
 }

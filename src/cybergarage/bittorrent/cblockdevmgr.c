@@ -88,4 +88,74 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
 	return TRUE;
 }
 
+/****************************************
+* cg_bittorrent_bdmgr_readpiece
+****************************************/
 
+BOOL cg_bittorrent_blockdevicemgr_readpiecedata(CgBittorrentBlockDeviceMgr *bdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen, int *readLen)
+{
+	int startFileIdx, endFileIdx;
+	int pieceOffet, pieceSize;
+	CgInt64 fileOffset, fileSize;
+	int fileIdx;
+	int readSize;
+	char *newBuf;
+
+	if (!cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIdx, &endFileIdx))
+		return FALSE;
+
+	*readLen = 0;
+
+	for (fileIdx=startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
+		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &pieceSize, &fileOffset, &fileSize))
+			return FALSE;
+		if (!cg_bittorrent_blockdevicemgr_openfile(bdmgr, cbm, pieceIdx))
+			return FALSE;
+		if (!cg_bittorrent_blockdevicemgr_seekfile(bdmgr, fileOffset)) {
+			cg_bittorrent_blockdevicemgr_closefile(bdmgr);
+			return FALSE;
+		}
+		readSize = cg_bittorrent_blockdevicemgr_readfile(bdmgr, (buf+pieceOffet), fileSize);
+		cg_bittorrent_blockdevicemgr_closefile(bdmgr);
+		if (readSize != fileSize)
+			return FALSE;
+		readLen += fileSize;
+	}
+
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_bdmgr_writepiece
+****************************************/
+
+BOOL cg_bittorrent_blockdevicemgr_writepiecedata(CgBittorrentBlockDeviceMgr *bdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen)
+{
+	int startFileIdx, endFileIdx;
+	int pieceOffet, pieceSize;
+	CgInt64 fileOffset, fileSize;
+	int fileIdx;
+	BOOL worteRet;
+
+	if (!cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIdx, &endFileIdx))
+		return FALSE;
+
+	for (fileIdx=startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
+		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &pieceSize, &fileOffset, &fileSize))
+			return FALSE;
+		if (bufLen < (fileSize-fileOffset))
+			return FALSE;
+		if (!cg_bittorrent_blockdevicemgr_openfile(bdmgr, cbm, pieceIdx))
+			return FALSE;
+		if (!cg_bittorrent_blockdevicemgr_seekfile(bdmgr, fileOffset)) {
+			cg_bittorrent_blockdevicemgr_closefile(bdmgr);
+			return FALSE;
+		}
+		worteRet = cg_bittorrent_blockdevicemgr_writefile(bdmgr, buf+fileOffset, pieceSize);
+		cg_bittorrent_blockdevicemgr_closefile(bdmgr);
+		if (!worteRet)
+			return FALSE;
+	}
+
+	return TRUE;
+}

@@ -369,3 +369,35 @@ BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainf
 
 	return (pieceOffset == bufLen) ? TRUE : FALSE;
 }
+
+/****************************************
+* cg_bittorrent_client_getpiece
+****************************************/
+
+BOOL cg_bittorrent_client_downloadpiece(CgBittorrentClient *cbc,  CgBittorrentMetainfo *cbm, int pieceIdx)
+{
+	CgBittorrentBlockDeviceMgr *blockDevMgr;
+	int pieceLength;
+	CgByte *pieceBuf;
+
+	blockDevMgr = cg_bittorrent_client_getblockdevicemgr(cbc);
+	if (!blockDevMgr)
+		return FALSE;
+
+	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+	if (pieceLength <= 0)
+		return FALSE;
+	
+	pieceBuf = (CgByte *)malloc(sizeof(CgByte) * pieceLength);
+	if (!pieceBuf)
+		return FALSE;
+
+	if (!cg_bittorrent_client_getpiece(cbc,  cbm, pieceIdx, pieceBuf, pieceLength)) {
+		free(pieceBuf);
+		return FALSE;
+	}
+
+	free(pieceBuf);
+
+	return TRUE;
+}
