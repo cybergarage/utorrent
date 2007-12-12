@@ -95,11 +95,10 @@ BOOL cg_bittorrent_blockdevicemgr_isvalidated(CgBittorrentBlockDeviceMgr *bdmgr)
 BOOL cg_bittorrent_blockdevicemgr_readpiecedata(CgBittorrentBlockDeviceMgr *bdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen, int *readLen)
 {
 	int startFileIdx, endFileIdx;
-	int pieceOffet, pieceSize;
-	CgInt64 fileOffset, fileSize;
+	int pieceOffet, blockSize;
+	CgInt64 fileOffset;
 	int fileIdx;
 	int readSize;
-	char *newBuf;
 
 	if (!cg_bittorrent_metainfo_getfileindexbypieceindex(cbm, pieceIdx, &startFileIdx, &endFileIdx))
 		return FALSE;
@@ -107,7 +106,7 @@ BOOL cg_bittorrent_blockdevicemgr_readpiecedata(CgBittorrentBlockDeviceMgr *bdmg
 	*readLen = 0;
 
 	for (fileIdx=startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
-		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &pieceSize, &fileOffset, &fileSize))
+		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &fileOffset, &blockSize))
 			return FALSE;
 		if (!cg_bittorrent_blockdevicemgr_openfile(bdmgr, cbm, pieceIdx))
 			return FALSE;
@@ -115,11 +114,11 @@ BOOL cg_bittorrent_blockdevicemgr_readpiecedata(CgBittorrentBlockDeviceMgr *bdmg
 			cg_bittorrent_blockdevicemgr_closefile(bdmgr);
 			return FALSE;
 		}
-		readSize = cg_bittorrent_blockdevicemgr_readfile(bdmgr, (buf+pieceOffet), fileSize);
+		readSize = cg_bittorrent_blockdevicemgr_readfile(bdmgr, (buf+pieceOffet), blockSize);
 		cg_bittorrent_blockdevicemgr_closefile(bdmgr);
-		if (readSize != fileSize)
+		if (readSize != blockSize)
 			return FALSE;
-		readLen += fileSize;
+		readLen += blockSize;
 	}
 
 	return TRUE;
@@ -132,8 +131,8 @@ BOOL cg_bittorrent_blockdevicemgr_readpiecedata(CgBittorrentBlockDeviceMgr *bdmg
 BOOL cg_bittorrent_blockdevicemgr_writepiecedata(CgBittorrentBlockDeviceMgr *bdmgr, CgBittorrentMetainfo *cbm, int pieceIdx , CgByte *buf, int bufLen)
 {
 	int startFileIdx, endFileIdx;
-	int pieceOffet, pieceSize;
-	CgInt64 fileOffset, fileSize;
+	int pieceOffet, blockSize;
+	CgInt64 fileOffset;
 	int fileIdx;
 	BOOL worteRet;
 
@@ -141,9 +140,7 @@ BOOL cg_bittorrent_blockdevicemgr_writepiecedata(CgBittorrentBlockDeviceMgr *bdm
 		return FALSE;
 
 	for (fileIdx=startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
-		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &pieceSize, &fileOffset, &fileSize))
-			return FALSE;
-		if (bufLen < (fileSize-fileOffset))
+		if (!cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(cbm, pieceIdx, fileIdx, &pieceOffet, &fileOffset, &blockSize))
 			return FALSE;
 		if (!cg_bittorrent_blockdevicemgr_openfile(bdmgr, cbm, pieceIdx))
 			return FALSE;
@@ -151,7 +148,7 @@ BOOL cg_bittorrent_blockdevicemgr_writepiecedata(CgBittorrentBlockDeviceMgr *bdm
 			cg_bittorrent_blockdevicemgr_closefile(bdmgr);
 			return FALSE;
 		}
-		worteRet = cg_bittorrent_blockdevicemgr_writefile(bdmgr, buf+fileOffset, pieceSize);
+		worteRet = cg_bittorrent_blockdevicemgr_writefile(bdmgr, buf+pieceOffet, blockSize);
 		cg_bittorrent_blockdevicemgr_closefile(bdmgr);
 		if (!worteRet)
 			return FALSE;

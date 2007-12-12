@@ -439,7 +439,7 @@ BOOL cg_bittorrent_metainfo_getfileindexbypieceindex(CgBittorrentMetainfo *cbm, 
 * cg_bittorrent_metainfo_getfilerangebypieceindex
 ****************************************/
 
-BOOL cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(CgBittorrentMetainfo *cbm, int pieceIdx, int fileIdx, int *pieceOffset, int *pieceSize, CgInt64 *fileOffset, CgInt64 *fileSize)
+BOOL cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(CgBittorrentMetainfo *cbm, int pieceIdx, int fileIdx, int *pieceOffset, CgInt64 *fileOffset, int *blockSize)
 {
 	int startFileIndex;
 	int endFileIndex;
@@ -478,21 +478,19 @@ BOOL cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(CgBittorrent
 			prevAllFileOffset += cg_bittorrent_metainfo_getinfofilelength(cbm, n);
 		targetAllFileOffset = prevAllFileOffset +  cg_bittorrent_metainfo_getinfofilelength(cbm, fileIdx);
 		*pieceOffset = (int)((prevAllFileOffset < pieceStartOffset) ? 0 : (prevAllFileOffset - pieceStartOffset));
-		*pieceSize = (int)(min(pieceEndOffset, targetAllFileOffset) - max(pieceStartOffset, prevAllFileOffset));
 		*fileOffset = (pieceStartOffset < prevAllFileOffset) ? 0 : (pieceStartOffset - prevAllFileOffset);
-		*fileSize = *pieceSize;
+		*blockSize = (int)(min(pieceEndOffset, targetAllFileOffset) - max(pieceStartOffset, prevAllFileOffset));
 	}
 	else { /* Info in Single File Mode */
 		fileLength = cg_bittorrent_metainfo_getinfolength(cbm);
 		if (fileLength < pieceStartOffset)
 			return FALSE;
 		*pieceOffset = 0;
-		*pieceSize = (int)(min(pieceEndOffset, fileLength ) - pieceStartOffset);
 		*fileOffset = pieceStartOffset;
-		*fileSize = *pieceSize;
+		*blockSize = (int)(min(pieceEndOffset, fileLength ) - pieceStartOffset);
 	}
 
-	if (*fileOffset < 0 || *fileSize  <= 0)
+	if (*pieceOffset < 0 || *fileOffset < 0 || *blockSize  <= 0)
 		return FALSE;
 
 	return TRUE;
