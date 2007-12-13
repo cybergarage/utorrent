@@ -96,6 +96,7 @@ BOOL cg_bittorrent_blockdevicemgr_readpiecedata(CgBittorrentBlockDeviceMgr *bdmg
 {
 	int startFileIdx, endFileIdx;
 	int pieceOffet, blockSize;
+
 	CgInt64 fileOffset;
 	int fileIdx;
 	int readSize;
