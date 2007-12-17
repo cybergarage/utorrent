@@ -8,15 +8,15 @@
 *
 *	Revision:
 *
-*	12/18/07
+*	07/12/07
 *		- first revision
 *
 ******************************************************************/
 
-#ifndef _CG_BITTORRENT_STRATEGYMGR_H_
-#define _CG_BITTORRENT_STRATEGYMGR_H_
+#ifndef _CG_BITTORRENT_FILEMGR_STDIO_H_
+#define _CG_BITTORRENT_FILEMGR_STDIO_H_
 
-#include <cybergarage/bittorrent/ctracker.h>
+#include <cybergarage/bittorrent/cblockdevmgr.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -26,24 +26,9 @@ extern "C" {
 * Data Type
 ****************************************/
 
-/* Metainfo */
-typedef int (*CG_BITTORRENT_STRATEGYMGR_GETNEXTPIECEINDEX)(void *cbsm);
-typedef CgBittorrentPeer *(*CG_BITTORRENT_STRATEGYMGR_GETPEER)(void *cbsm, CgBittorrentTracker *cbt, int pieceIdx);
-
-/****************************************
-* Data Type
-****************************************/
-
-typedef struct _CgBittorrentStrategyMgr {
-	/* Basic */
-	int type;
-	CgString *name;
-	/* Function */
-	CG_BITTORRENT_STRATEGYMGR_GETNEXTPIECEINDEX nextPieceIndexFunc;
-	CG_BITTORRENT_STRATEGYMGR_GETPEER getPeerFunc;
-	/* User Data */
+typedef struct _CgBittorrentStdioFileMgr {
 	void *userData;
-} CgBittorrentStrategyMgr;
+} CgBittorrentStdioFileMgr;
 
 /****************************************
 * Function (StrategyMgr)
@@ -54,14 +39,14 @@ typedef struct _CgBittorrentStrategyMgr {
  *
  * \return New strategymgr.
  */
-CgBittorrentStrategyMgr *cg_bittorrent_strategymgr_new(void);
+CgBittorrentStdioFileMgr *cg_bittorrent_stdio_filemgr_new(void);
 
 /**
  * Destroy a strategymgr.
  *
  * \param stgmgr Strategy manager to destroy.
  */
-void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
+void cg_bittorrent_stdio_filemgr_delete(CgBittorrentStdioFileMgr *stgmgr);
 
 /**
  * Set a type.
@@ -69,7 +54,7 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
  * \param stgmgr Strategy manager to destroy.
  * \param value Type to set.
  */
-#define cg_bittorrent_strategymgr_settype(stgmgr, value) (stgmgr->type = value)
+#define cg_bittorrent_stdio_filemgr_settype(stgmgr, value) (stgmgr->type = value)
 
 /**
  * Return a stored type.
@@ -78,7 +63,7 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
  *
  * \return Stored type.
  */
-#define cg_bittorrent_strategymgr_gettype(stgmgr) (stgmgr->type)
+#define cg_bittorrent_stdio_filemgr_gettype(stgmgr) (stgmgr->type)
 
 /**
  * Set a name.
@@ -86,7 +71,7 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
  * \param stgmgr Strategy manager to destroy.
  * \param value Type to set.
  */
-#define cg_bittorrent_strategymgr_setname(stgmgr, value) cg_string_setvalue(stgmgr->name, value)
+#define cg_bittorrent_stdio_filemgr_setname(stgmgr, value) cg_string_setvalue(stgmgr->name, value)
 
 /**
  * Return a stored name.
@@ -95,7 +80,7 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
  *
  * \return Stored name.
  */
-#define cg_bittorrent_strategymgr_getname(stgmgr) cg_string_getvalue(stgmgr->name)
+#define cg_bittorrent_stdio_filemgr_getname(stgmgr) cg_string_getvalue(stgmgr->name)
 
 /****************************************
 * Function (User Data)
@@ -107,7 +92,7 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
  * \param stgmgr Strategy manager to destroy.
  * \param value User data to set.
  */
-#define cg_bittorrent_strategymgr_setuserdata(stgmgr, value) (stgmgr->userData = value)
+#define cg_bittorrent_stdio_filemgr_setuserdata(stgmgr, value) (stgmgr->userData = value)
 
 /**
  * Get a user data.
@@ -116,7 +101,7 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
  *
  * \return User data
  */
-#define cg_bittorrent_strategymgr_getuserdata(stgmgr) (stgmgr->userData)
+#define cg_bittorrent_stdio_filemgr_getuserdata(stgmgr) (stgmgr->userData)
 
 /****************************************
 * Function (User Data)
@@ -130,7 +115,7 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
  *
  * \return TRUE if the specifed file is available, otherwise FALSE.
  . */
-#define cg_bittorrent_strategymgr_getnextpeer(stgmgr, tracker, pieceIdx) ((stgmgr->getPeerFunc) ? stgmgr->getPeerFunc(stgmgr, tracker, pieceIdx) : FALSE)
+#define cg_bittorrent_stdio_filemgr_getnextpeer(stgmgr, tracker, pieceIdx) ((stgmgr->getPeerFunc) ? stgmgr->getPeerFunc(stgmgr, tracker, pieceIdx) : FALSE)
 
 #ifdef  __cplusplus
 }

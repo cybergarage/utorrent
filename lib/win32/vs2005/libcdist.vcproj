@@ -297,7 +297,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\impl\strategymgr\csequential.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\csha1.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\impl\filemgr\cstdio.c"
 				>
 			</File>
 			<File
@@ -383,7 +391,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\include\cybergarage\bittorrent\impl\strategymgr\csequential.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\include\cybergarage\bittorrent\csha1.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\cybergarage\bittorrent\impl\filemgr\cstdio.h"
 				>
 			</File>
 			<File
