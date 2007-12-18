@@ -23,43 +23,43 @@
 
 CgBittorrentPropertyMgr *cg_bittorrent_propertymgr_new()
 {
-	CgBittorrentPropertyMgr *propmgr;
+	CgBittorrentPropertyMgr *propMgr;
 
-	propmgr = (CgBittorrentPropertyMgr *)malloc(sizeof(CgBittorrentPropertyMgr));
-	if (!propmgr)
+	propMgr = (CgBittorrentPropertyMgr *)malloc(sizeof(CgBittorrentPropertyMgr));
+	if (!propMgr)
 		return NULL;
 
 	/* Value */
-	cg_bittorrent_propertymgr_setsetvaluefunc(propmgr, NULL);
-	cg_bittorrent_propertymgr_setgetvaluefunc(propmgr, NULL);
+	cg_bittorrent_propertymgr_setsetvaluefunc(propMgr, NULL);
+	cg_bittorrent_propertymgr_setgetvaluefunc(propMgr, NULL);
 
-	return propmgr;
+	return propMgr;
 }
 
 /****************************************
 * cg_bittorrent_propertymgr_delete
 ****************************************/
 
-void cg_bittorrent_propertymgr_delete(CgBittorrentPropertyMgr *propmgr)
+void cg_bittorrent_propertymgr_delete(CgBittorrentPropertyMgr *propMgr)
 {
-	if (!propmgr)
+	if (!propMgr)
 		return;
 
-	free(propmgr);
+	free(propMgr);
 }
 
 /****************************************
 * cg_bittorrent_propertymgr_isvalidated
 ****************************************/
 
-BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propmgr)
+BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propMgr)
 {
-	if (!propmgr)
+	if (!propMgr)
 		return FALSE;
 
-	if (!cg_bittorrent_propertymgr_getsetvaluefunc(propmgr))
+	if (!cg_bittorrent_propertymgr_getsetvaluefunc(propMgr))
 		return FALSE;
-	if (!cg_bittorrent_propertymgr_getgetvaluefunc(propmgr))
+	if (!cg_bittorrent_propertymgr_getgetvaluefunc(propMgr))
 		return FALSE;
 
 	return TRUE;
@@ -69,13 +69,13 @@ BOOL cg_bittorrent_propertymgr_isvalidated(CgBittorrentPropertyMgr *propmgr)
 * cg_bittorrent_propertymgr_getstringvalue
 ****************************************/
 
-char *cg_bittorrent_propertymgr_getstringvalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key, char *buf, int bufSize, char *defaultValue)
+char *cg_bittorrent_propertymgr_getstringvalue(CgBittorrentPropertyMgr *propMgr, char *category, char *key, char *buf, int bufSize, char *defaultValue)
 {
-	if (!propmgr)
+	if (!propMgr)
 		return defaultValue;
 
-	if (propmgr->getValueFunc) {
-		if (propmgr->getValueFunc(propmgr, category, key, buf, bufSize))
+	if (propMgr->getValueFunc) {
+		if (propMgr->getValueFunc(propMgr, category, key, buf, bufSize))
 			return buf;
 	}
 
@@ -86,32 +86,32 @@ char *cg_bittorrent_propertymgr_getstringvalue(CgBittorrentPropertyMgr *propmgr,
 * cg_bittorrent_propertymgr_isvalidated
 ****************************************/
 
-BOOL cg_bittorrent_propertymgr_setintegervalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key, int value)
+BOOL cg_bittorrent_propertymgr_setintegervalue(CgBittorrentPropertyMgr *propMgr, char *category, char *key, int value)
 {
 	char buf[CG_STRING_INTEGER_BUFLEN];
 
-	if (!propmgr)
+	if (!propMgr)
 		return FALSE;
 
 	if (!cg_int2str(value, buf, (sizeof(buf)-1)))
 		return FALSE;
 
-	return  cg_bittorrent_propertymgr_setstringvalue(propmgr, category, key, buf);
+	return  cg_bittorrent_propertymgr_setstringvalue(propMgr, category, key, buf);
 }
 
 /****************************************
 * cg_bittorrent_propertymgr_isvalidated
 ****************************************/
 
-int cg_bittorrent_propertymgr_getintegervalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key, int defaultValue)
+int cg_bittorrent_propertymgr_getintegervalue(CgBittorrentPropertyMgr *propMgr, char *category, char *key, int defaultValue)
 {
 	char buf[CG_STRING_INTEGER_BUFLEN];
 
-	if (!propmgr)
+	if (!propMgr)
 		return defaultValue;
 
-	if (propmgr->getValueFunc) {
-		if (propmgr->getValueFunc(propmgr, category, key, buf, (sizeof(buf)-1)))
+	if (propMgr->getValueFunc) {
+		if (propMgr->getValueFunc(propMgr, category, key, buf, (sizeof(buf)-1)))
 			return cg_str2int(buf);
 	}
 

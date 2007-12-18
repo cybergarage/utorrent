@@ -14,32 +14,108 @@
 ******************************************************************/
 
 #include <cybergarage/bittorrent/impl/propertymgr/cxmlfile.h>
+#include <cybergarage/io/cfile.h>
 
 #include <stdlib.h>
 
 /****************************************
-* cg_bittorrent_xmlfile_propertymgr_open
+* cg_bittorrent_xmlfile_propertymgr_getfilename
 ****************************************/
 
-static BOOL cg_bittorrent_xmlfile_propertymgr_open(CgBittorrentPropertyMgr *propmgr)
+static char *cg_bittorrent_xmlfile_propertymgr_getfilename(CgBittorrentPropertyMgr *propMgr, CgString *buf)
 {
-	return TRUE;
+	return cg_string_getvalue(buf);
 }
 
 /****************************************
-* cg_bittorrent_xmlfile_propertymgr_close
+* cg_bittorrent_xmlfile_propertymgr_load
 ****************************************/
 
-static BOOL cg_bittorrent_xmlfile_propertymgr_close(CgBittorrentPropertyMgr *propmgr)
+static BOOL cg_bittorrent_xmlfile_propertymgr_load(CgBittorrentPropertyMgr *propMgr)
 {
-	return TRUE;
+	CgXmlNode *rootNode;
+	CgString *buf;
+	CgFile *file;
+	BOOL loadRes;
+	CgXmlParser *xmlParser;
+	BOOL parseRes;
+
+	rootNode = cg_bittorrent_xmlfile_propertymgr_getrootnode(propMgr);
+	if (!rootNode)
+		return FALSE;
+
+	file = cg_file_new();
+	if (!file)
+		return FALSE;
+
+	buf = cg_string_new();
+	if (!buf)
+		return FALSE;
+	cg_file_setname(file, cg_bittorrent_xmlfile_propertymgr_getfilename(propMgr, buf));
+	cg_file_delete(file);
+	loadRes = cg_file_load(file);
+
+	cg_string_delete(buf);
+
+	if (!loadRes) {
+		cg_file_delete(file);
+		return FALSE;
+	}
+
+	xmlParser = cg_xml_parser_new();
+	if (!xmlParser) {
+		cg_file_delete(file);
+		return FALSE;
+	}
+	parseRes = cg_xml_parse(xmlParser, rootNode, cg_file_getcontent(file), cg_file_getlength(file));
+	cg_xml_parser_delete(xmlParser);
+
+	cg_file_delete(file);
+
+	return parseRes;
+}
+
+/****************************************
+* cg_bittorrent_xmlfile_propertymgr_save
+****************************************/
+
+static BOOL cg_bittorrent_xmlfile_propertymgr_save(CgBittorrentPropertyMgr *propMgr)
+{
+	CgString *buf;
+	CgXmlNode *rootNode;
+	CgFile *file;
+	BOOL saveRes;
+
+	rootNode = cg_bittorrent_xmlfile_propertymgr_getrootnode(propMgr);
+	if (!rootNode)
+		return FALSE;
+
+	buf = cg_string_new();
+	if (!buf)
+		return FALSE;
+
+	cg_xml_node_tostring(rootNode, TRUE, buf);
+
+	file = cg_file_new();
+	if (!file) {
+		cg_string_delete(buf);
+		return FALSE;
+	}
+	cg_file_setcontent(file, cg_string_getvalue(buf));
+	cg_file_setname(file, cg_bittorrent_xmlfile_propertymgr_getfilename(propMgr, buf));
+	saveRes = cg_file_save(file);
+	cg_file_delete(file);
+
+	cg_string_delete(buf);
+
+	return saveRes;
 }
 
 /****************************************
 * cg_bittorrent_xmlfile_propertymgr_setvalue
 ****************************************/
 
-static BOOL cg_bittorrent_xmlfile_propertymgr_setvalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key, char *value)
+static BOOL cg_bittorrent_xmlfile_propertymgr_setvalue(CgBittorrentPropertyMgr *propMgr, char *category, char *key, char *value)
 {
 	return TRUE;
 }
@@ -48,7 +124,7 @@ static BOOL cg_bittorrent_xmlfile_propertymgr_setvalue(CgBittorrentPropertyMgr *
 * cg_bittorrent_xmlfile_propertymgr_getvalue
 ****************************************/
 
-static BOOL cg_bittorrent_xmlfile_propertymgr_getvalue(CgBittorrentPropertyMgr *propmgr, char *category, char *key, char *buf, int bufSize)
+static BOOL cg_bittorrent_xmlfile_propertymgr_getvalue(CgBittorrentPropertyMgr *propMgr, char *category, char *key, char *buf, int bufSize)
 {
 	return TRUE;
 }
@@ -59,46 +135,46 @@ static BOOL cg_bittorrent_xmlfile_propertymgr_getvalue(CgBittorrentPropertyMgr *
 
 CgBittorrentPropertyMgr *cg_bittorrent_xmlfile_propertymgr_new()
 {
-	CgBittorrentPropertyMgr *propmgr;
+	CgBittorrentPropertyMgr *propMgr;
 	CgBittorrentXmlFilePropertyMgrData *data;
 
-	propmgr = cg_bittorrent_propertymgr_new();
-	if (!propmgr)
+	propMgr = cg_bittorrent_propertymgr_new();
+	if (!propMgr)
 		return NULL;
 
 	data  = (CgBittorrentXmlFilePropertyMgrData *)malloc(sizeof(CgBittorrentXmlFilePropertyMgrData));
 	if (!data) {
-		free(propmgr);
+		free(propMgr);
 		return NULL;
 	}
 	data->rootNode = cg_xml_nodelist_new();
 
 	if (data->rootNode) {
-		cg_bittorrent_xmlfile_propertymgr_delete(propmgr);
+		cg_bittorrent_xmlfile_propertymgr_delete(propMgr);
 		return FALSE;
 	}
 
-	cg_bittorrent_propertymgr_setsetvaluefunc(propmgr, cg_bittorrent_xmlfile_propertymgr_setvalue);
-	cg_bittorrent_propertymgr_setgetvaluefunc(propmgr, cg_bittorrent_xmlfile_propertymgr_getvalue);
-	cg_bittorrent_propertymgr_setuserdata(propmgr, data);
+	cg_bittorrent_propertymgr_setsetvaluefunc(propMgr, cg_bittorrent_xmlfile_propertymgr_setvalue);
+	cg_bittorrent_propertymgr_setgetvaluefunc(propMgr, cg_bittorrent_xmlfile_propertymgr_getvalue);
+	cg_bittorrent_propertymgr_setuserdata(propMgr, data);
 
-	return propmgr;
+	return propMgr;
 }
 
 /****************************************
 * cg_bittorrent_xmlfile_propertymgr_delete
 ****************************************/
 
-void cg_bittorrent_xmlfile_propertymgr_delete(CgBittorrentPropertyMgr *propmgr)
+void cg_bittorrent_xmlfile_propertymgr_delete(CgBittorrentPropertyMgr *propMgr)
 {
 	CgBittorrentXmlFilePropertyMgrData *data;
 
-	if (!propmgr)
+	if (!propMgr)
 		return;
 
-	data = cg_bittorrent_xmlfile_propertymgr_getuserdata(propmgr);
+	data = cg_bittorrent_xmlfile_propertymgr_getuserdata(propMgr);
 	if (data->rootNode)
 		cg_xml_nodelist_delete(data->rootNode);
 
-	cg_bittorrent_xmlfile_propertymgr_delete(propmgr);
+	cg_bittorrent_xmlfile_propertymgr_delete(propMgr);
 }

@@ -19,7 +19,7 @@
 * cg_bittorrent_sequential_strategymgr_new
 ****************************************/
 
-int (*cg_bittorrent_sequential_strategymgr_getnextpieceindex(CgBittorrentStrategyMgr *stgMgr)
+int cg_bittorrent_sequential_strategymgr_getnextpieceindex(CgBittorrentStrategyMgr *stgMgr)
 {
 }
 
