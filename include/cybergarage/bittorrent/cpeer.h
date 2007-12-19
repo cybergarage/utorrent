@@ -45,11 +45,21 @@ typedef struct _CgBittorrentPeer {
 	void *tracker;
 	char *addr;
 	int port;
+	/* Socket */
 	CgSocket *sock;
 	CgByte id[CG_BITTORRENT_PEERID_SIZE];
+	int timeout;
+	/* Bitfield */
 	CgByte *bitfield;
 	int bitfieldLength;
-	int timeout;
+	/* Statistics */
+	int numSucceeded;
+	int numFailed;
+	int downloadedElapsedTime;
+	int uploadedElapsedTime;
+	int downloadedBytes;
+	int uploadedBytes;
+	int downloadingPercentage;
 } CgBittorrentPeer, CgBittorrentPeerList;
 
 /****************************************
@@ -346,6 +356,185 @@ BOOL cg_bittorrent_peer_getpieceblock(CgBittorrentPeer *peer, int pieceIdx, int 
  * \return TRUE if the request is successful, otherwise FALSE.
  */
 BOOL cg_bittorrent_peer_request(CgBittorrentPeer *peer, int index, int begin, int length);
+
+/****************************************
+* Function (Statics)
+****************************************/
+
+/**
+ * Set a count of the succeeded connections.
+ *
+ * \param peer Peer in question.
+ * \param value Count of the succeeded connections.
+ */
+#define cg_bittorrent_peer_setnumsucceeded(peer, value) (peer->numSucceeded = value)
+
+ /**
+ * Get the count of the succeeded connections.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Count of the succeeded connections.
+ */
+#define cg_bittorrent_peer_getnumsucceeded(peer) (peer->numSucceeded)
+
+ /**
+ * Increment the a count of the succeeded connections.
+ *
+ * \param peer Peer in question.
+ *
+ */
+#define cg_bittorrent_peer_incrementnumsucceeded(peer) (peer->numSucceeded++)
+
+/**
+ * Set a count of the failed connections.
+ *
+ * \param peer Peer in question.
+ * \param value Count of the failed connections.
+ */
+#define cg_bittorrent_peer_setnumfailed(peer, value) (peer->numFailed = value)
+
+ /**
+ * Get the count of the failed connections.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Count of the failed connections.
+ */
+#define cg_bittorrent_peer_getnumfailed(peer) (peer->numFailed)
+
+ /**
+ * Increment the a count of the failed connections.
+ *
+ * \param peer Peer in question.
+ *
+ */
+#define cg_bittorrent_peer_incrementnumfailed(peer) (peer->numFailed++)
+
+/**
+ * Set a elapsed time.
+ *
+ * \param peer Peer in question.
+ * \param value to set.
+ */
+#define cg_bittorrent_peer_setdownloadedelapsedtime(peer, value) (peer->downloadedElapsedTime = value)
+
+ /**
+ * Get the elapsed time.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Elapsed time.
+ */
+#define cg_bittorrent_peer_getdownloadedelapsedtime(peer) (peer->downloadedElapsedTime)
+
+ /**
+ * Add a time into the current elapsed time.
+ *
+ * \param peer Peer in question.
+ * \value Value to add.
+ *
+ */
+#define cg_bittorrent_peer_adddownloadedelapsedtime(peer, value) (peer->downloadedElapsedTime += value)
+
+/**
+ * Set a elapsed time.
+ *
+ * \param peer Peer in question.
+ * \param value to set.
+ */
+#define cg_bittorrent_peer_setuploadedelapsedtime(peer, value) (peer->uploadedElapsedTime = value)
+
+ /**
+ * Get the elapsed time.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Elapsed time.
+ */
+#define cg_bittorrent_peer_getuploadedelapsedtime(peer) (peer->uploadedElapsedTime)
+
+ /**
+ * Add a time into the current elapsed time.
+ *
+ * \param peer Peer in question.
+ * \value Value to add.
+ *
+ */
+#define cg_bittorrent_peer_adduploadedelapsedtime(peer, value) (peer->uploadedElapsedTime += value)
+
+/**
+ * Set a downloaded bytes.
+ *
+ * \param peer Peer in question.
+ * \param value to set.
+ */
+#define cg_bittorrent_peer_setdownloadedbytes(peer, value) (peer->downloadedBytes = value)
+
+ /**
+ * Get the downloaded bytes.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Elapsed bytes.
+ */
+#define cg_bittorrent_peer_getdownloadedbytes(peer) (peer->downloadedBytes)
+
+ /**
+ * Add a bytes into the current downloaded bytes.
+ *
+ * \param peer Peer in question.
+ * \value Value to add.
+ *
+ */
+#define cg_bittorrent_peer_adddownloadedbytes(peer, value) (peer->downloadedBytes += value)
+
+/**
+ * Set a uploaded bytes.
+ *
+ * \param peer Peer in question.
+ * \param value to set.
+ */
+#define cg_bittorrent_peer_setuploadedbytes(peer, value) (peer->uploadedBytes = value)
+
+ /**
+ * Get the uploaded bytes.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Elapsed bytes.
+ */
+#define cg_bittorrent_peer_getuploadedbytes(peer) (peer->uploadedBytes)
+
+ /**
+ * Add a bytes into the current uploaded bytes.
+ *
+ * \param peer Peer in question.
+ * \value Value to add.
+ *
+ */
+#define cg_bittorrent_peer_adduploadedbytes(peer, value) (peer->uploadedBytes += value)
+
+/**
+ * Set a downloaded percentages.
+ *
+ * \param peer Peer in question.
+ * \param value to set.
+ */
+#define cg_bittorrent_peer_setdownloadingpercentages(peer, value) (peer->downloadingPercentage = value)
+
+ /**
+ * Get the downloaded percentages.
+ *
+ * \param peer Peer in question.
+ *
+ * \return Elapsed percentages.
+ */
+#define cg_bittorrent_peer_getdownloadingpercentages(peer) (peer->downloadingPercentage)
+
+/****************************************
+* Function (Other)
+****************************************/
 
 BOOL cg_bittorrent_peer_recvmsgheader(CgBittorrentPeer *peer, CgBittorrentMessage *msg);
 int cg_bittorrent_peer_recvmsgbody(CgBittorrentPeer *peer, CgBittorrentMessage *msg, CgByte *buf, int bufLen);

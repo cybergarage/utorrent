@@ -36,6 +36,8 @@ CgBittorrentMetainfo *cg_bittorrent_metainfo_new()
 	cbm->tracker = cg_bittorrent_tracker_new();
 	cbm->pieceInfo = NULL;
 	cbm->numPieceInfo = 0;
+	cbm->bitfield = NULL;
+	cbm->bitfieldLen = 0;
 
 	return cbm;
 }
@@ -56,6 +58,7 @@ void cg_bittorrent_metainfo_delete(CgBittorrentMetainfo *cbm)
 	cg_string_delete(cbm->fileName);
 	cg_string_delete(cbm->id);
 	cg_bittorrent_tracker_delete(cbm->tracker);
+	cg_bittorrent_metainfo_freebitfield(cbm);
 
 	free(cbm);
 }
@@ -311,10 +314,10 @@ CgInt64 cg_bittorrent_metainfo_getinfototallength(CgBittorrentMetainfo *cbm)
 }
 
 /****************************************
-* cg_bittorrent_metainfo_getinfonpieces
+* cg_bittorrent_metainfo_gettotalpieces
 ****************************************/
 
-int cg_bittorrent_metainfo_getinfonpieces(CgBittorrentMetainfo *cbm)
+int cg_bittorrent_metainfo_gettotalpieces(CgBittorrentMetainfo *cbm)
 {
 	CgInt64 pieceLength;
 	CgInt64 totalFileLength;
@@ -326,6 +329,131 @@ int cg_bittorrent_metainfo_getinfonpieces(CgBittorrentMetainfo *cbm)
 	totalFileLength = cg_bittorrent_metainfo_getinfototallength(cbm);
 
 	return (int)ceil((double)(totalFileLength / pieceLength));
+}
+
+/****************************************
+* cg_bittorrent_metainfo_gettotalpieces
+****************************************/
+
+int cg_bittorrent_metainfo_getpiecelength(CgBittorrentMetainfo *cbm, int pieceIdx)
+{
+	int totalPieces;
+	int pieceLength;
+	CgInt64 totalLength;
+	CgInt64 modLength;
+
+	totalPieces = cg_bittorrent_metainfo_gettotalpieces(cbm);
+	if ((pieceIdx < 0) || totalPieces <= (pieceIdx))
+		return 0;
+
+	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+	if (pieceIdx < (totalPieces-1))
+		return pieceLength;
+
+	totalLength = cg_bittorrent_metainfo_getinfototallength(cbm);
+	modLength = totalLength % pieceLength;
+
+	return (int)modLength;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_haspiece
+****************************************/
+
+BOOL cg_bittorrent_metainfo_getbitfieldparam(CgBittorrentMetainfo *cbm, int pieceIdx, int *bitfieldNum, CgByte *bitfieldMask)
+{
+	int bitfieldOffset;
+
+	*bitfieldNum = pieceIdx / 8;
+	bitfieldOffset = pieceIdx % 8;
+	*bitfieldMask = (CgByte)((1 << (7 - bitfieldOffset)) & 0xff); 
+
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_allocateitfield
+****************************************/
+
+BOOL cg_bittorrent_metainfo_allocateitfield(CgBittorrentMetainfo *cbm)
+{
+	int nTotalPieces;
+	int bitfieldLen;
+
+	if (!cbm)
+		return FALSE;
+
+	nTotalPieces = cg_bittorrent_metainfo_gettotalpieces(cbm);
+	if (nTotalPieces <= 0)
+		return FALSE;
+
+	bitfieldLen = (nTotalPieces / 8) + ((nTotalPieces % 8) ? 1 : 0);
+	
+	cbm->bitfield = (CgByte *)calloc(sizeof(CgByte), bitfieldLen);
+	if (!cbm->bitfield)
+		return FALSE;
+
+	cbm->bitfieldLen = bitfieldLen;
+
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_freebitfield
+****************************************/
+
+BOOL cg_bittorrent_metainfo_freebitfield(CgBittorrentMetainfo *cbm)
+{
+	if (!cbm)
+		return FALSE;
+
+	if (cbm->bitfield) {
+		free(cbm->bitfield);
+		cbm->bitfield = NULL;
+	}
+
+	cbm->bitfieldLen = 0;
+
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_setbitfield
+****************************************/
+
+BOOL cg_bittorrent_metainfo_setbitfield(CgBittorrentMetainfo *cbm, int pieceIdx, BOOL flag)
+{
+	int bitfieldNum;
+	CgByte bitfieldMask;
+
+	if (!cg_bittorrent_metainfo_getbitfieldparam(cbm, pieceIdx, &bitfieldNum, &bitfieldMask))
+		return FALSE;
+	if (cg_bittorrent_metainfo_getbitfieldlength(cbm) < bitfieldNum)
+		return FALSE;
+	
+	if (flag)
+		cbm->bitfield[bitfieldNum] |= bitfieldMask;
+	else
+		cbm->bitfield[bitfieldNum] &= ~bitfieldMask;
+
+	return TRUE;
+}
+
+/****************************************
+* cg_bittorrent_metainfo_haspiece
+****************************************/
+
+BOOL cg_bittorrent_metainfo_haspiece(CgBittorrentMetainfo *cbm, int pieceIdx)
+{
+	int bitfieldNum;
+	CgByte bitfieldMask;
+
+	if (!cg_bittorrent_metainfo_getbitfieldparam(cbm, pieceIdx, &bitfieldNum, &bitfieldMask))
+		return FALSE;
+	if (cg_bittorrent_metainfo_getbitfieldlength(cbm) < bitfieldNum)
+		return FALSE;
+	
+	return (cbm->bitfield[bitfieldNum] & bitfieldMask) ? TRUE : FALSE;
 }
 
 /****************************************

@@ -4,11 +4,11 @@
 *
 *	Copyright (C) Satoshi Konno 2007
 *
-*	Strategy: cstrategymgr.h
+*	File: stdio.h
 *
 *	Revision:
 *
-*	07/12/07
+*	12/18/07
 *		- first revision
 *
 ******************************************************************/
@@ -16,7 +16,9 @@
 #ifndef _CG_BITTORRENT_FILEMGR_STDIO_H_
 #define _CG_BITTORRENT_FILEMGR_STDIO_H_
 
-#include <cybergarage/bittorrent/cblockdevmgr.h>
+#include <cybergarage/bittorrent/cfilemgr.h>
+#include <cybergarage/util/cstring.h>
+#include <cybergarage/io/cfile.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -26,96 +28,76 @@ extern "C" {
 * Data Type
 ****************************************/
 
-typedef struct _CgBittorrentStdioFileMgr {
-	void *userData;
-} CgBittorrentStdioFileMgr;
+typedef CgBittorrentFileMgr CgBittorrentFileMgr;
+
+typedef struct _CgBittorrentFileMgrData {
+	CgString *dstDir;
+	CgFile *file;
+} CgBittorrentFileMgrData;
 
 /****************************************
-* Function (StrategyMgr)
+* Function
 ****************************************/
 
 /**
- * Create a new strategymgr.
+ * Create a new file manager.
  *
- * \return New strategymgr.
+ * \return New file manager.
  */
-CgBittorrentStdioFileMgr *cg_bittorrent_stdio_filemgr_new(void);
+CgBittorrentFileMgr *cg_bittorrent_stdio_filemgr_new(void);
 
 /**
- * Destroy a strategymgr.
+ * Destroy a filemgr.
  *
- * \param stgmgr Strategy manager to destroy.
+ * \param filemgr File manager to destroy.
  */
-void cg_bittorrent_stdio_filemgr_delete(CgBittorrentStdioFileMgr *stgmgr);
+void cg_bittorrent_stdio_filemgr_delete(CgBittorrentFileMgr *filemgr);
 
 /**
- * Set a type.
+ * Return a filemgr type.
  *
- * \param stgmgr Strategy manager to destroy.
+ * \param filemgr File manager in question.
+ *
+ * \return FileMgr type.
+ */
+#define cg_bittorrent_stdio_filemgr_getdata(filemgr) ((CgBittorrentFileMgrData *)cg_bittorrent_filemgr_getuserdata(filemgr))
+
+/**
+ * Set a destination directory.
+ *
+ * \param filemgr File manager in question.
  * \param value Type to set.
  */
-#define cg_bittorrent_stdio_filemgr_settype(stgmgr, value) (stgmgr->type = value)
+void cg_bittorrent_stdio_filemgr_setdestinationdirectory(CgBittorrentFileMgr *filemgr, char *value);
 
 /**
- * Return a stored type.
+ * Return a stored destination directory.
  *
- * \param stgmgr Strategy manager to destroy.
+ * \param filemgr File manager in question.
  *
- * \return Stored type.
+ * \return Stored destination directory.
  */
-#define cg_bittorrent_stdio_filemgr_gettype(stgmgr) (stgmgr->type)
+char *cg_bittorrent_stdio_filemgr_getdestinationdirectory(CgBittorrentFileMgr *filemgr);
 
 /**
- * Set a name.
+ * Return a stored file.
  *
- * \param stgmgr Strategy manager to destroy.
- * \param value Type to set.
+ * \param filemgr File manager in question.
+ *
+ * \return Stored file.
  */
-#define cg_bittorrent_stdio_filemgr_setname(stgmgr, value) cg_string_setvalue(stgmgr->name, value)
-
-/**
- * Return a stored name.
- *
- * \param stgmgr Strategy manager to destroy.
- *
- * \return Stored name.
- */
-#define cg_bittorrent_stdio_filemgr_getname(stgmgr) cg_string_getvalue(stgmgr->name)
+CgFile *cg_bittorrent_stdio_filemgr_getfile(CgBittorrentFileMgr *filemgr);
 
 /****************************************
-* Function (User Data)
+* Macros
 ****************************************/
 
-/**
- * Set a user data.
- *
- * \param stgmgr Strategy manager to destroy.
- * \param value User data to set.
- */
-#define cg_bittorrent_stdio_filemgr_setuserdata(stgmgr, value) (stgmgr->userData = value)
+#define cg_bittorrent_stdio_filemgr_isvalidated(filemgr) cg_bittorrent_filemgr_isvalidated(filemgr)
 
-/**
- * Get a user data.
- *
- * \param stgmgr Strategy manager to destroy.
- *
- * \return User data
- */
-#define cg_bittorrent_stdio_filemgr_getuserdata(stgmgr) (stgmgr->userData)
-
-/****************************************
-* Function (User Data)
-****************************************/
-
-/**
- * Get a  a optimal peer to request.
- *
- * \param stgmgr Strategy manager to destroy.
- * \param tracker Metainfo of the file.
- *
- * \return TRUE if the specifed file is available, otherwise FALSE.
- . */
-#define cg_bittorrent_stdio_filemgr_getnextpeer(stgmgr, tracker, pieceIdx) ((stgmgr->getPeerFunc) ? stgmgr->getPeerFunc(stgmgr, tracker, pieceIdx) : FALSE)
+#define cg_bittorrent_stdio_filemgr_addmetainfo(fileMgr, cbm) cg_bittorrent_filemgr_addmetainfo(fileMgr, cbm)
+#define cg_bittorrent_stdio_filemgr_removemetainfo(fileMgr, infoHash) cg_bittorrent_filemgr_removemetainfo(fileMgr, infoHash)
+#define cg_bittorrent_stdio_filemgr_getmetainfos(fileMgr, cbmList) cg_bittorrent_filemgr_getmetainfos(fileMgr, cbmList)
+#define cg_bittorrent_stdio_filemgr_getmetainfo(fileMgr, infoHash, cbm) cg_bittorrent_filemgr_getmetainfo(fileMgr, infoHash, cbm)
 
 #ifdef  __cplusplus
 }

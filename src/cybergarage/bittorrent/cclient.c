@@ -72,7 +72,7 @@ CgBittorrentClient *cg_bittorrent_client_new()
 	cg_bittorrent_client_sethttpserverport(cbc, CG_BITTORRENT_CLIENT_DEFAULT_HTTP_PORT);
 
 	/* Manager */
-	cg_bittorrent_client_setblockdevicemgr(cbc, NULL);
+	cg_bittorrent_client_setfilemgr(cbc, NULL);
 	cg_bittorrent_client_setstrategymgr(cbc, NULL);
 
 	/* Other Settings */
@@ -119,10 +119,10 @@ void cg_bittorrent_client_delete(CgBittorrentClient *cbc)
 
 static BOOL cg_bittorrent_client_isready(CgBittorrentClient *cbc)
 {
-	if (!cbc->blockDevMgr)
+	if (!cbc->fileDevMgr)
 		return FALSE;
 
-	if (!cg_bittorrent_blockdevicemgr_isvalidated(cbc->blockDevMgr))
+	if (!cg_bittorrent_filemgr_isvalidated(cbc->fileDevMgr))
 		return FALSE;
 
 	if (!cbc->stgyMgr)
@@ -141,7 +141,7 @@ static BOOL cg_bittorrent_client_isready(CgBittorrentClient *cbc)
 static BOOL cg_bittorrent_client_initialize(CgBittorrentClient *cbc)
 {
 	CgBittorrentMetainfoList *metainfoList;
-	CgBittorrentBlockDeviceMgr *blkDevMgr;
+	CgBittorrentFileMgr *blkDevMgr;
 	CgBittorrentMetainfoList *blkDevMetainfoList;
 	CgByte infoHash[CG_BITTORRENT_METAINFO_INFOHASH_SIZE];
 	CgBittorrentMetainfo *metainfo, *cbm;
@@ -156,18 +156,18 @@ static BOOL cg_bittorrent_client_initialize(CgBittorrentClient *cbc)
 	if (!metainfoList)
 		return FALSE;
 
-	blkDevMgr = cg_bittorrent_client_getblockdevicemgr(cbc);
+	blkDevMgr = cg_bittorrent_client_getfilemgr(cbc);
 	if (!blkDevMgr)
 		return FALSE;
 
 	/* Loading Metainfos */
-	if (!cg_bittorrent_blockdevicemgr_getmetainfos(blkDevMgr, &blkDevMetainfoList))
+	if (!cg_bittorrent_filemgr_getmetainfos(blkDevMgr, &blkDevMetainfoList))
 		return FALSE;
 
 	for (cbm=cg_bittorrent_metainfolist_gets(blkDevMetainfoList); cbm; cbm=cg_bittorrent_metainfo_next(cbm)) {
 		if (!cg_bittorrent_metainfo_getinfohash(cbm, infoHash))
 			continue;
-		if (!cg_bittorrent_blockdevicemgr_getmetainfo(blkDevMgr, infoHash, &metainfo))
+		if (!cg_bittorrent_filemgr_getmetainfo(blkDevMgr, infoHash, &metainfo))
 			continue;
 		cg_bittorrent_client_addmetainfo(cbc, metainfo);
 	}
@@ -338,7 +338,7 @@ BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainf
 	recvBlockLen = 0;
 
 	while (pieceOffset < bufLen && numFailed < reqRetryMax) {
-		peer = cg_bittorrent_strategymgr_getnextpeer(stgMgr, cbt, pieceIdx);
+		peer = cg_bittorrent_strategymgr_getnextpeer(stgMgr, cbm, pieceIdx);
 		if (!peer)
 			break;
 
@@ -371,20 +371,24 @@ BOOL cg_bittorrent_client_getpiece(CgBittorrentClient *cbc,  CgBittorrentMetainf
 }
 
 /****************************************
-* cg_bittorrent_client_getpiece
+* cg_bittorrent_client_downloadpiece
 ****************************************/
 
 BOOL cg_bittorrent_client_downloadpiece(CgBittorrentClient *cbc,  CgBittorrentMetainfo *cbm, int pieceIdx)
 {
-	CgBittorrentBlockDeviceMgr *blockDevMgr;
+	CgBittorrentFileMgr *fileDevMgr;
 	int pieceLength;
 	CgByte *pieceBuf;
+	BOOL wroteRes;
 
-	blockDevMgr = cg_bittorrent_client_getblockdevicemgr(cbc);
-	if (!blockDevMgr)
+	if (cg_bittorrent_metainfo_haspiece(cbm, pieceIdx))
+		return TRUE;
+
+	fileDevMgr = cg_bittorrent_client_getfilemgr(cbc);
+	if (!fileDevMgr)
 		return FALSE;
 
-	pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
+	pieceLength = cg_bittorrent_metainfo_getpiecelength(cbm, pieceIdx);
 	if (pieceLength <= 0)
 		return FALSE;
 	
@@ -397,7 +401,43 @@ BOOL cg_bittorrent_client_downloadpiece(CgBittorrentClient *cbc,  CgBittorrentMe
 		return FALSE;
 	}
 
+	wroteRes = cg_bittorrent_filemgr_writepiecedata(fileDevMgr, cbm, pieceIdx , pieceBuf, pieceLength);
+
 	free(pieceBuf);
+
+	if (wroteRes) {
+		if (!cg_bittorrent_metainfo_setbitfield(cbm, pieceIdx, FALSE))
+			return FALSE;
+	}
+
+	return wroteRes;
+}
+
+/****************************************
+* cg_bittorrent_client_downloadpiece
+****************************************/
+
+BOOL cg_bittorrent_client_downloadpieces(CgBittorrentClient *cbc,  CgBittorrentMetainfo *cbm)
+{
+	CgBittorrentStrategyMgr *stgMgr;
+	int totalPieceNum;
+	int nextPieceIdx;
+
+	if (!cbm)
+		return FALSE;
+
+	stgMgr = cg_bittorrent_client_getstrategymgr(cbc);
+	if (!stgMgr)
+		return FALSE;
+
+	totalPieceNum = cg_bittorrent_metainfo_gettotalpieces(cbm);
+	if (totalPieceNum <= 0)
+		return FALSE;
+
+	while (!cg_bittorrent_metainfo_isdownloaded(cbm)) {
+		nextPieceIdx = cg_bittorrent_strategymgr_getnextpieceindex(stgMgr, cbm);
+		cg_bittorrent_client_downloadpiece(cbc, cbm, nextPieceIdx);
+	}
 
 	return TRUE;
 }

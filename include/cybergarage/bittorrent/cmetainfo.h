@@ -32,6 +32,7 @@ extern "C" {
 ****************************************/
 
 #define CG_BITTORRENT_METAINFO_INFO "info"
+
 #define CG_BITTORRENT_METAINFO_ANNOUNCE "announce"
 #define CG_BITTORRENT_METAINFO_ANNOUNCELIST "announce-list"
 #define CG_BITTORRENT_METAINFO_CREATIONDATE "creation date"
@@ -66,6 +67,8 @@ typedef struct _CgBittorrentMetainfo {
 	CgString *url;
 	CgString *fileName;
 	CgString *id;
+	CgByte *bitfield;
+	int bitfieldLen;
 } CgBittorrentMetainfo, CgBittorrentMetainfoList;
 
 /****************************************
@@ -202,6 +205,65 @@ BOOL cg_bittorrent_metainfo_tostring(CgBittorrentMetainfo *cbm, CgString *buf);
  * \return Stored tracker.
  */
 #define cg_bittorrent_metainfo_gettracker(cbm) (cbm->tracker)
+
+/**
+ * Get the bitfield of the pieces.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Bitfield.
+ */
+#define cg_bittorrent_metainfo_getbitfield(cbm) (cbm->bitfield)
+
+/**
+ * Get the bitfield of the pieces.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return Length of the bitfield.
+ */
+#define cg_bittorrent_metainfo_getbitfieldlength(cbm) (cbm->bitfieldLen)
+
+/**
+ * Get the bitfield of the pieces.
+ *
+ * \param cbm Metainfo in question.
+ * \param pieceIdx Index of the piece.
+ * \param flag TRUE or FALSE.
+ *
+ * \return TRUE if the function is succeeded, otherwise FALSE.
+ *
+ * \return Bitfield.
+ */
+BOOL cg_bittorrent_metainfo_setbitfield(CgBittorrentMetainfo *cbm, int pieceIdx, BOOL flag);
+
+/**
+ * Allocate the bitfield.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return TRUE if the function is succeeded, otherwise FALSE.
+ */
+BOOL cg_bittorrent_metainfo_allocateitfield(CgBittorrentMetainfo *cbm);
+
+/**
+ * Free the allocated bitfield.
+ *
+ * \param cbm Metainfo in question.
+ *
+ * \return TRUE if the function is succeeded, otherwise FALSE.
+ */
+BOOL cg_bittorrent_metainfo_freebitfield(CgBittorrentMetainfo *cbm);
+
+/**
+ * Check if the specified peer is downloaed.
+ *
+ * \param cbm Metainfo in question.
+ * \param index Index of the piece.
+ *
+ * \return TRUE if the piece is downloaded, otherwise FALSE.
+ */
+BOOL cg_bittorrent_metainfo_haspiece(CgBittorrentMetainfo *cbm, int index);
 
 /**
  * Load the metainfo from a file.
@@ -451,7 +513,17 @@ CgInt64 cg_bittorrent_metainfo_getinfototallength(CgBittorrentMetainfo *cbm);
  *
  * \return Length of all files.
  */
-int cg_bittorrent_metainfo_getinfonpieces(CgBittorrentMetainfo *cbm);
+int cg_bittorrent_metainfo_gettotalpieces(CgBittorrentMetainfo *cbm);
+
+/**
+ * Get length of the piece.
+ *
+ * \param cbm Metainfo in question.
+ * \param pieceIdx Index of the piece.
+ *
+ * \return Length of the piece.
+ */
+int cg_bittorrent_metainfo_getpiecelength(CgBittorrentMetainfo *cbm, int pieceIdx);
 
 /****************************************
 * Function (Internal)
@@ -469,11 +541,19 @@ BOOL cg_bittorrent_metainfo_save(CgBittorrentMetainfo *cbm, char *fileName);
 BOOL cg_bittorrent_metainfo_setidfromname(CgBittorrentMetainfo *cbm, char *name);
 
 /****************************************
-* Function (Metainfo)
+* Function
 ****************************************/
 
 BOOL cg_bittorrent_metainfo_getfileindexbypieceindex(CgBittorrentMetainfo *cbm, int pieceIdx, int *startFileIndex, int *endFileIndex);
 BOOL cg_bittorrent_metainfo_getfileandpiecerangebypieceandfileindex(CgBittorrentMetainfo *cbm, int pieceIdx, int fileIdx, int *pieceOffset, CgInt64 *fileOffset, int *blockSize);
+
+/****************************************
+* Function (Statistics)
+****************************************/
+
+int cg_bittorrent_metainfo_getdownloadedpercentage(CgBittorrentMetainfo *cbm);
+
+#define cg_bittorrent_metainfo_isdownloaded(cbm) ((100 <= cg_bittorrent_metainfo_getdownloadedpercentage(cbm)) ? TRUE : FALSE)
 
 #ifdef  __cplusplus
 }

@@ -173,10 +173,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\cybergarage\bittorrent\cblockdevmgr.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cclient.c"
 				>
 			</File>
@@ -265,6 +261,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cmetainfo_statistics.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer.c"
 				>
 			</File>
@@ -340,10 +340,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\cybergarage\bittorrent\cbittorrent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\include\cybergarage\bittorrent\cblockdevmgr.h"
 				>
 			</File>
 			<File

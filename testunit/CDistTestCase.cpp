@@ -444,7 +444,7 @@ void CDistTestCase::testBlockDevice()
 
 	int pieceLength = cg_bittorrent_metainfo_getinfopiecelength(cbm);
 
-	CgBittorrentBlockDeviceMgr *blockDev = cg_bittorrent_blockdevicemgr_new();
+	CgBittorrentFileMgr *blockDev = cg_bittorrent_filemgr_new();
 
 	if (cg_bittorrent_metainfo_ismultiplefilemode(cbm)) {
 		int cbmFileCnt = cg_bittorrent_metainfo_getnfiles(cbm);
@@ -463,7 +463,7 @@ void CDistTestCase::testBlockDevice()
 	else { /* Info in Single File Mode */
 	}
 
-	cg_bittorrent_blockdevicemgr_delete(blockDev);
+	cg_bittorrent_filemgr_delete(blockDev);
 	cg_bittorrent_metainfo_delete(cbm);
 }
 
@@ -590,43 +590,43 @@ void CDistTestCase::testFileMgr()
 	CgBittorrentMetainfo *newMetainfo;
 
 	/* File Manager */
-	fileMgr = cg_bittorrent_filemgr_new();
+	fileMgr = cg_bittorrent_stdio_filemgr_new();
 	CPPUNIT_ASSERT(fileMgr);
-	//CPPUNIT_ASSERT(cg_bittorrent_filemgr_isvalidated(fileMgr));
+	//CPPUNIT_ASSERT(cg_bittorrent_stdio_filemgr_isvalidated(fileMgr));
 
 	/* Destination Directory */
-	destDir = cg_bittorrent_filemgr_getdestinationdirectory(fileMgr);
+	destDir = cg_bittorrent_stdio_filemgr_getdestinationdirectory(fileMgr);
 	CPPUNIT_ASSERT(cg_strlen(destDir) <= 0);
-	cg_bittorrent_filemgr_setdestinationdirectory(fileMgr, CDIST_TEST_FILEMGR_DESTDIR);
-	destDir = cg_bittorrent_filemgr_getdestinationdirectory(fileMgr);
+	cg_bittorrent_stdio_filemgr_setdestinationdirectory(fileMgr, CDIST_TEST_FILEMGR_DESTDIR);
+	destDir = cg_bittorrent_stdio_filemgr_getdestinationdirectory(fileMgr);
 	CPPUNIT_ASSERT(cg_streq(destDir, CDIST_TEST_FILEMGR_DESTDIR));
 
 	/* Clean */
-	if (0 < cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList)) {
+	if (0 < cg_bittorrent_stdio_filemgr_getmetainfos(fileMgr, &metainfoList)) {
 		for (metainfo = cg_bittorrent_metainfolist_gets(metainfoList); metainfo; metainfo = cg_bittorrent_metainfo_next(metainfo)) {
 			if (!cg_bittorrent_metainfo_getinfohash(metainfo, infoHash))
 				continue;
-			CPPUNIT_ASSERT(cg_bittorrent_filemgr_removemetainfo(fileMgr, infoHash));
+			CPPUNIT_ASSERT(cg_bittorrent_stdio_filemgr_removemetainfo(fileMgr, infoHash));
 		}
 		cg_bittorrent_metainfolist_delete(metainfoList);
 	}
-	CPPUNIT_ASSERT(cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList) == 0);
+	CPPUNIT_ASSERT(cg_bittorrent_stdio_filemgr_getmetainfos(fileMgr, &metainfoList) == 0);
 
 	/**** Metainfo ****/
 	newMetainfo = cg_bittorrent_metainfo_new();
 	CPPUNIT_ASSERT(newMetainfo);
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_load(newMetainfo, CDIST_TEST_METAINFO_FILE));
 	/* Save */
-	CPPUNIT_ASSERT(cg_bittorrent_filemgr_addmetainfo(fileMgr, newMetainfo));
+	CPPUNIT_ASSERT(cg_bittorrent_stdio_filemgr_addmetainfo(fileMgr, newMetainfo));
 	/* Load */
-	CPPUNIT_ASSERT(cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList) == 1);
+	CPPUNIT_ASSERT(cg_bittorrent_stdio_filemgr_getmetainfos(fileMgr, &metainfoList) == 1);
 	metainfo = cg_bittorrent_metainfolist_gets(metainfoList);
 	CPPUNIT_ASSERT(cg_streq(cg_bittorrent_metainfo_getid(metainfo), cg_bittorrent_metainfo_getid(newMetainfo)));
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_next(metainfo) == NULL);
 	CPPUNIT_ASSERT(cg_bittorrent_metainfo_getinfohash(metainfo, infoHash));
 	/* Remove */
-	CPPUNIT_ASSERT(cg_bittorrent_filemgr_removemetainfo(fileMgr, infoHash));
-	CPPUNIT_ASSERT(cg_bittorrent_filemgr_getmetainfos(fileMgr, &metainfoList) == 0);
+	CPPUNIT_ASSERT(cg_bittorrent_stdio_filemgr_removemetainfo(fileMgr, infoHash));
+	CPPUNIT_ASSERT(cg_bittorrent_stdio_filemgr_getmetainfos(fileMgr, &metainfoList) == 0);
 	/* Clean */
 	cg_bittorrent_metainfo_delete(newMetainfo);
 
@@ -684,7 +684,7 @@ void CDistTestCase::testFileMgr()
 	cg_bittorrent_tracker_delete(cbt);
 	cg_bittorrent_metainfo_delete(metainfo);
 
-	cg_bittorrent_filemgr_delete(fileMgr);
+	cg_bittorrent_stdio_filemgr_delete(fileMgr);
 }
 
 ////////////////////////////////////////

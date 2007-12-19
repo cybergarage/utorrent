@@ -39,6 +39,14 @@ CgBittorrentPeer *cg_bittorrent_peer_new(void)
 	peer->tracker = NULL;
 	peer->timeout = 0;
 
+	cg_bittorrent_peer_setnumsucceeded(peer, 0);
+	cg_bittorrent_peer_setnumfailed(peer, 0);
+	cg_bittorrent_peer_setdownloadedelapsedtime(peer, 0);
+	cg_bittorrent_peer_setuploadedelapsedtime(peer, 0);
+	cg_bittorrent_peer_setdownloadedbytes(peer, 0);
+	cg_bittorrent_peer_setuploadedbytes(peer, 0);
+	cg_bittorrent_peer_setdownloadingpercentages(peer, 0);
+
 	for (n=0; n<CG_BITTORRENT_PEERID_SIZE; n++)
 		peer->id[n] = 0;
 

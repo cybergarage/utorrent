@@ -24,7 +24,7 @@ extern "C" {
 #include <cybergarage/net/csocket.h>
 #include <cybergarage/util/cmutex.h>
 #include <cybergarage/bittorrent/cmetainfo.h>
-#include <cybergarage/bittorrent/cblockdevmgr.h>
+#include <cybergarage/bittorrent/cfilemgr.h>
 #include <cybergarage/bittorrent/cstrategymgr.h>
 #include <cybergarage/bittorrent/cpropertymgr.h>
 #include <cybergarage/bittorrent/csha1.h>
@@ -60,7 +60,7 @@ extern "C" {
 ****************************************/
 
 typedef struct _CgBittorrentClient {
-	CgBittorrentBlockDeviceMgr *blockDevMgr;
+	CgBittorrentFileMgr *fileDevMgr;
 	CgBittorrentStrategyMgr *stgyMgr;
 	CgBittorrentPropertyMgr *propMgr;
 	CgBittorrentMetainfoList *metaInfoList;
@@ -133,7 +133,7 @@ void cg_bittorrent_client_delete(CgBittorrentClient *cbc);
  * \param cbc  Client in question.
  * \param value Block device manager to set.
  */
-#define cg_bittorrent_client_setblockdevicemgr(cbc, value) (cbc->blockDevMgr = value)
+#define cg_bittorrent_client_setfilemgr(cbc, value) (cbc->fileDevMgr = value)
 
 /**
  * Return a  blockdevice manager of the specified download manager.
@@ -142,7 +142,7 @@ void cg_bittorrent_client_delete(CgBittorrentClient *cbc);
  *
  * \return Stored block device manager.
  */
-#define cg_bittorrent_client_getblockdevicemgr(cbc) (cbc->blockDevMgr)
+#define cg_bittorrent_client_getfilemgr(cbc) (cbc->fileDevMgr)
 
 /**
  * Set a strategy manager of the specified download manager.

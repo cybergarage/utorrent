@@ -36,8 +36,11 @@ BOOL cg_bittorrent_metainfo_parse(CgBittorrentMetainfo *cbm, char *data, int dat
 		return FALSE;
 
 	/* Initialize Piece Infos */
-	numPieces = cg_bittorrent_metainfo_getinfonpieces(cbm);
+	numPieces = cg_bittorrent_metainfo_gettotalpieces(cbm);
 	cg_bittorrent_metainfo_allocpieceinfo(cbm, numPieces);
+
+	if (!cg_bittorrent_metainfo_allocateitfield(cbm))
+		return FALSE;
 
 	return TRUE;
 }

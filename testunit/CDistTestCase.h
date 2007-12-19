@@ -5,6 +5,8 @@
 
 #include <cybergarage/bittorrent/cbittorrent.h>
 
+#include <cybergarage/bittorrent/impl/filemgr/cstdio.h>
+
 class CDistTestCase : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE( CDistTestCase );

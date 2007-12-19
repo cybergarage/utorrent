@@ -16,7 +16,7 @@
 #ifndef _CG_BITTORRENT_STRATEGYMGR_H_
 #define _CG_BITTORRENT_STRATEGYMGR_H_
 
-#include <cybergarage/bittorrent/ctracker.h>
+#include <cybergarage/bittorrent/cmetainfo.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -27,8 +27,8 @@ extern "C" {
 ****************************************/
 
 /* Metainfo */
-typedef int (*CG_BITTORRENT_STRATEGYMGR_GETNEXTPIECEINDEX)(void *cbsm);
-typedef CgBittorrentPeer *(*CG_BITTORRENT_STRATEGYMGR_GETPEER)(void *cbsm, CgBittorrentTracker *cbt, int pieceIdx);
+typedef int (*CG_BITTORRENT_STRATEGYMGR_GETNEXTPIECEINDEX)(void *cbsm, CgBittorrentMetainfo *cbm);
+typedef CgBittorrentPeer *(*CG_BITTORRENT_STRATEGYMGR_GETPEER)(void *cbsm, CgBittorrentMetainfo *cbm, int pieceIdx);
 
 /****************************************
 * Data Type
@@ -39,7 +39,7 @@ typedef struct _CgBittorrentStrategyMgr {
 	int type;
 	CgString *name;
 	/* Function */
-	CG_BITTORRENT_STRATEGYMGR_GETNEXTPIECEINDEX nextPieceIndexFunc;
+	CG_BITTORRENT_STRATEGYMGR_GETNEXTPIECEINDEX getNextPieceIndexFunc;
 	CG_BITTORRENT_STRATEGYMGR_GETPEER getPeerFunc;
 	/* User Data */
 	void *userData;
@@ -123,14 +123,24 @@ void cg_bittorrent_strategymgr_delete(CgBittorrentStrategyMgr *stgmgr);
 ****************************************/
 
 /**
- * Get a  a optimal peer to request.
+ * Get an optimal index of the piece to request.
  *
  * \param stgmgr Strategy manager to destroy.
  * \param tracker Metainfo of the file.
  *
  * \return TRUE if the specifed file is available, otherwise FALSE.
  . */
-#define cg_bittorrent_strategymgr_getnextpeer(stgmgr, tracker, pieceIdx) ((stgmgr->getPeerFunc) ? stgmgr->getPeerFunc(stgmgr, tracker, pieceIdx) : FALSE)
+#define cg_bittorrent_strategymgr_getnextpieceindex(stgmgr, cbm) ((stgmgr->getNextPieceIndexFunc) ? stgmgr->getNextPieceIndexFunc(stgmgr, cbm) : -1)
+
+/**
+ * Get an optimal peer to request.
+ *
+ * \param stgmgr Strategy manager to destroy.
+ * \param tracker Metainfo of the file.
+ *
+ * \return TRUE if the specifed file is available, otherwise FALSE.
+ . */
+#define cg_bittorrent_strategymgr_getnextpeer(stgmgr, cbm, pieceIdx) ((stgmgr->getPeerFunc) ? stgmgr->getPeerFunc(stgmgr, cbm, pieceIdx) : FALSE)
 
 #ifdef  __cplusplus
 }
