@@ -19,10 +19,10 @@
 #include <stdlib.h>
 
 /****************************************
-* cg_bittorrent_xmlfile_propertymgr_getfilename
+* cg_bittorrent_xmlfile_propertymgr_getpath
 ****************************************/
 
-static char *cg_bittorrent_xmlfile_propertymgr_getfilename(CgBittorrentPropertyMgr *propMgr, CgString *buf)
+static char *cg_bittorrent_xmlfile_propertymgr_getpath(CgBittorrentPropertyMgr *propMgr, CgString *buf)
 {
 	return cg_string_getvalue(buf);
 }
@@ -51,7 +51,7 @@ static BOOL cg_bittorrent_xmlfile_propertymgr_load(CgBittorrentPropertyMgr *prop
 	buf = cg_string_new();
 	if (!buf)
 		return FALSE;
-	cg_file_setname(file, cg_bittorrent_xmlfile_propertymgr_getfilename(propMgr, buf));
+	cg_file_setname(file, cg_bittorrent_xmlfile_propertymgr_getpath(propMgr, buf));
 	cg_file_delete(file);
 	loadRes = cg_file_load(file);
 
@@ -102,7 +102,7 @@ static BOOL cg_bittorrent_xmlfile_propertymgr_save(CgBittorrentPropertyMgr *prop
 		return FALSE;
 	}
 	cg_file_setcontent(file, cg_string_getvalue(buf));
-	cg_file_setname(file, cg_bittorrent_xmlfile_propertymgr_getfilename(propMgr, buf));
+	cg_file_setname(file, cg_bittorrent_xmlfile_propertymgr_getpath(propMgr, buf));
 	saveRes = cg_file_save(file);
 	cg_file_delete(file);
 
@@ -148,8 +148,10 @@ CgBittorrentPropertyMgr *cg_bittorrent_xmlfile_propertymgr_new()
 		return NULL;
 	}
 	data->rootNode = cg_xml_nodelist_new();
+	data->directory = cg_string_new();
+	data->filename = cg_string_new();
 
-	if (data->rootNode) {
+	if (!data->rootNode || !data->directory || !data->filename) {
 		cg_bittorrent_xmlfile_propertymgr_delete(propMgr);
 		return FALSE;
 	}

@@ -17,6 +17,7 @@
 #define _CG_BITTORRENT_PROPERTYMGR_XMLFILE_H_
 
 #include <cybergarage/xml/cxml.h>
+#include <cybergarage/util/cstring.h>
 #include <cybergarage/bittorrent/cpropertymgr.h>
 
 #ifdef  __cplusplus
@@ -41,6 +42,8 @@ extern "C" {
 
  typedef struct _CgBittorrentXmlFilePropertyMgrData {
 	CgXmlNodeList *rootNode;
+	CgString *directory;
+	CgString *filename;
 } CgBittorrentXmlFilePropertyMgrData;
 
 /****************************************
@@ -67,6 +70,11 @@ void cg_bittorrent_xmlfile_propertymgr_delete(CgBittorrentPropertyMgr *propMgr);
 
 #define cg_bittorrent_xmlfile_propertymgr_getuserdata(propMgr) ((CgBittorrentXmlFilePropertyMgrData *)cg_bittorrent_propertymgr_getuserdata(propMgr))
 #define cg_bittorrent_xmlfile_propertymgr_getrootnode(propMgr) (((CgBittorrentXmlFilePropertyMgrData *)cg_bittorrent_propertymgr_getuserdata(propMgr))->rootNode)
+
+#define cg_bittorrent_xmlfile_propertymgr_setdirectory(propMgr, value) cg_string_setvalue((((CgBittorrentXmlFilePropertyMgrData *)cg_bittorrent_propertymgr_getuserdata(propMgr))->directory), value)
+#define cg_bittorrent_xmlfile_propertymgr_getdirectory(propMgr) cg_string_getvalue((((CgBittorrentXmlFilePropertyMgrData *)cg_bittorrent_propertymgr_getuserdata(propMgr))->directory))
+#define cg_bittorrent_xmlfile_propertymgr_setfilename(propMgr, value) cg_string_setvalue((((CgBittorrentXmlFilePropertyMgrData *)cg_bittorrent_propertymgr_getuserdata(propMgr))->filename), value)
+#define cg_bittorrent_xmlfile_propertymgr_getfilename(propMgr) cg_string_getvalue((((CgBittorrentXmlFilePropertyMgrData *)cg_bittorrent_propertymgr_getuserdata(propMgr))->filename))
 
 #ifdef  __cplusplus
 }
