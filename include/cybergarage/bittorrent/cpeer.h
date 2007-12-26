@@ -291,6 +291,15 @@ BOOL cg_bittorrent_peer_open(CgBittorrentPeer *peer, CgByte *infoHash, CgByte *p
 BOOL cg_bittorrent_peer_close(CgBittorrentPeer *peer);
 
  /**
+ * Check if the specified peer is connected.
+ *
+ * \param peer Peer in question.
+ *
+ * \return TRUE when the peer is connected, otherwise FALSE.
+ */
+#define cg_bittorrent_peer_isbound(peer) cg_socket_isbound(peer->sock)
+
+ /**
  * Read data from the specified peer.
  *
  * \param peer Peer in question.
@@ -547,6 +556,13 @@ BOOL cg_bittorrent_peer_choke(CgBittorrentPeer *peer);
 BOOL cg_bittorrent_peer_unchoke(CgBittorrentPeer *peer);
 BOOL cg_bittorrent_peer_interested(CgBittorrentPeer *peer);
 BOOL cg_bittorrent_peer_notinterested(CgBittorrentPeer *peer);
+
+/****************************************
+* Function (Internal)
+****************************************/
+
+BOOL cg_bittorrent_getbitfieldparam(int pieceIdx, int *bitfieldNum, CgByte *bitfieldMask);
+BOOL cg_bittorrent_haspiece(CgByte *bitfield, int bitfieldLen, int pieceIdx);
 
 #ifdef  __cplusplus
 }

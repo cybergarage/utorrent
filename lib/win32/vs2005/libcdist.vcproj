@@ -269,6 +269,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_bitfield.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_command.c"
 				>
 			</File>

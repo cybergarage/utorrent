@@ -16,19 +16,50 @@
 #include <cybergarage/bittorrent/impl/strategymgr/csequential.h>
 
 /****************************************
-* cg_bittorrent_sequential_strategymgr_new
+* cg_bittorrent_sequential_strategymgr_getnextpieceindex
 ****************************************/
 
-int cg_bittorrent_sequential_strategymgr_getnextpieceindex(CgBittorrentStrategyMgr *stgMgr)
+int cg_bittorrent_sequential_strategymgr_getnextpieceindex(CgBittorrentStrategyMgr *stgMgr, CgBittorrentMetainfo *cbm)
 {
+	int numPieces;
+	int n;
+
+	numPieces = cg_bittorrent_metainfo_numpieces(cbm);
+	if (numPieces <= 0)
+		return -1;
+	
+	for (n=0; n<numPieces; n++) {
+		if (!cg_bittorrent_metainfo_haspiece(cbm, n))
+			return n;
+	}
+
+	return -1;
 }
 
 /****************************************
-* cg_bittorrent_sequential_strategymgr_new
+* cg_bittorrent_sequential_strategymgr_getpeer
 ****************************************/
 
-CgBittorrentPeer *cg_bittorrent_sequential_strategymgr_getpeer(CgBittorrentStrategyMgr *stgMgr, CgBittorrentTracker *cbt, int pieceIdx)
+CgBittorrentPeer *cg_bittorrent_sequential_strategymgr_getpeer(CgBittorrentStrategyMgr *stgMgr, CgBittorrentMetainfo *cbm, int pieceIdx)
 {
+	CgBittorrentTracker *tracker;
+	CgBittorrentPeer *peer;
+
+	tracker = cg_bittorrent_metainfo_gettracker(cbm);
+	if (!tracker)
+		return NULL;
+
+	for (peer=cg_bittorrent_tracker_getpeers(tracker); peer; peer=cg_bittorrent_peer_next(peer)) {
+		if (0 < cg_bittorrent_peer_getnumfailed(peer))
+			continue;
+		if (cg_bittorrent_peer_isbound(peer))
+			continue;
+		if (cg_bittorrent_peer_hasbitfield(peer)) {
+		}
+		return peer;
+	}
+
+	return NULL;
 }
 
 /****************************************

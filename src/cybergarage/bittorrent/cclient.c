@@ -430,7 +430,7 @@ BOOL cg_bittorrent_client_downloadpieces(CgBittorrentClient *cbc,  CgBittorrentM
 	if (!stgMgr)
 		return FALSE;
 
-	totalPieceNum = cg_bittorrent_metainfo_gettotalpieces(cbm);
+	totalPieceNum = cg_bittorrent_metainfo_numpieces(cbm);
 	if (totalPieceNum <= 0)
 		return FALSE;
 

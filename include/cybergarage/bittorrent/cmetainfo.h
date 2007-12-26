@@ -513,7 +513,7 @@ CgInt64 cg_bittorrent_metainfo_getinfototallength(CgBittorrentMetainfo *cbm);
  *
  * \return Length of all files.
  */
-int cg_bittorrent_metainfo_gettotalpieces(CgBittorrentMetainfo *cbm);
+int cg_bittorrent_metainfo_numpieces(CgBittorrentMetainfo *cbm);
 
 /**
  * Get length of the piece.

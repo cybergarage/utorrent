@@ -28,7 +28,7 @@ int cg_bittorrent_metainfo_getdownloadedpercentage(CgBittorrentMetainfo *cbm)
 	if (!cbm)
 		return FALSE;
 
-	nTotalPieces = cg_bittorrent_metainfo_gettotalpieces(cbm);
+	nTotalPieces = cg_bittorrent_metainfo_numpieces(cbm);
 	if (nTotalPieces <= 0)
 		return FALSE;
 	
