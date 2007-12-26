@@ -22,6 +22,7 @@
 #include <cybergarage/bittorrent/csha1.h>
 #include <cybergarage/bittorrent/ctracker.h>
 #include <cybergarage/bittorrent/cpieceinfo.h>
+#include <cybergarage/bittorrent/cutil.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -235,7 +236,7 @@ BOOL cg_bittorrent_metainfo_tostring(CgBittorrentMetainfo *cbm, CgString *buf);
  *
  * \return Bitfield.
  */
-BOOL cg_bittorrent_metainfo_setbitfield(CgBittorrentMetainfo *cbm, int pieceIdx, BOOL flag);
+#define cg_bittorrent_metainfo_setbitfield(cbm, pieceIdx, flag) cg_bittorrent_setbitfield(cbm->bitfield, cbm->bitfieldLen, pieceIdx, flag)
 
 /**
  * Allocate the bitfield.
@@ -263,7 +264,7 @@ BOOL cg_bittorrent_metainfo_freebitfield(CgBittorrentMetainfo *cbm);
  *
  * \return TRUE if the piece is downloaded, otherwise FALSE.
  */
-BOOL cg_bittorrent_metainfo_haspiece(CgBittorrentMetainfo *cbm, int index);
+#define cg_bittorrent_metainfo_haspiece(cbm, pieceIdx) cg_bittorrent_haspiece(cbm->bitfield, cbm->bitfieldLen, pieceIdx)
 
 /**
  * Load the metainfo from a file.

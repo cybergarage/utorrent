@@ -33,12 +33,8 @@ extern "C" {
 ****************************************/
 
 /****************************************
-* Function (Internal)
+* Function
 ****************************************/
-
-BOOL cg_bittorrent_getbitfieldparam(int pieceIdx, int *bitfieldNum, CgByte *bitfieldMask);
-BOOL cg_bittorrent_haspiece(CgByte *bitfield, int bitfieldLen, int pieceIdx);
-
 
 #ifdef  __cplusplus
 }

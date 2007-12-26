@@ -193,10 +193,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\cybergarage\bittorrent\ccommon.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cdictionary.c"
 				>
 			</File>
@@ -329,6 +325,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\cutil.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\impl\propertymgr\cxmlfile.c"
 				>
 			</File>
@@ -408,6 +408,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\cybergarage\bittorrent\ctracker.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\include\cybergarage\bittorrent\cutil.h"
 				>
 			</File>
 			<File

@@ -211,7 +211,7 @@ void CDistTestCase::testBencodingDictionaryNest()
 void CDistTestCase::testMessageHasPiece()
 {
 	CgBittorrentPeer *peer = cg_bittorrent_peer_new();
-	peer->bitfieldLength = CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE;
+	peer->bitfieldLen = CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE;
 	peer->bitfield = (CgByte *)malloc(CDIST_TEST_MESSAGE_HAS_PIECE_PAYLOAD_SIZE);
 	for (int n=0; n<32; n++)
 		peer->bitfield[n] = 0xAA; // 10101010

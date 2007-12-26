@@ -403,45 +403,6 @@ BOOL cg_bittorrent_metainfo_freebitfield(CgBittorrentMetainfo *cbm)
 }
 
 /****************************************
-* cg_bittorrent_metainfo_setbitfield
-****************************************/
-
-BOOL cg_bittorrent_metainfo_setbitfield(CgBittorrentMetainfo *cbm, int pieceIdx, BOOL flag)
-{
-	int bitfieldNum;
-	CgByte bitfieldMask;
-
-	if (!cg_bittorrent_peer_getbitfieldparam(pieceIdx, &bitfieldNum, &bitfieldMask))
-		return FALSE;
-	if (cg_bittorrent_metainfo_getbitfieldlength(cbm) < bitfieldNum)
-		return FALSE;
-	
-	if (flag)
-		cbm->bitfield[bitfieldNum] |= bitfieldMask;
-	else
-		cbm->bitfield[bitfieldNum] &= ~bitfieldMask;
-
-	return TRUE;
-}
-
-/****************************************
-* cg_bittorrent_metainfo_haspiece
-****************************************/
-
-BOOL cg_bittorrent_metainfo_haspiece(CgBittorrentMetainfo *cbm, int pieceIdx)
-{
-	int bitfieldNum;
-	CgByte bitfieldMask;
-
-	if (!cg_bittorrent_peer_getbitfieldparam(pieceIdx, &bitfieldNum, &bitfieldMask))
-		return FALSE;
-	if (cg_bittorrent_metainfo_getbitfieldlength(cbm) < bitfieldNum)
-		return FALSE;
-	
-	return (cbm->bitfield[bitfieldNum] & bitfieldMask) ? TRUE : FALSE;
-}
-
-/****************************************
 * cg_bittorrent_metainfo_updatetracker
 ****************************************/
 

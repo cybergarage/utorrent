@@ -13,12 +13,10 @@
 *
 ******************************************************************/
 
-#ifndef _CG_BITTORRENT_H_
-#define _CG_BITTORRENT_H_
+#ifndef _CG_BITTORRENT_UTIL_H_
+#define _CG_BITTORRENT_UTIL_H_
 
-#include <cybergarage/bittorrent/ctracker.h>
-#include <cybergarage/bittorrent/cdownloadmgr.h>
-#include <cybergarage/bittorrent/cclient.h>
+#include <cybergarage/typedef.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -37,8 +35,8 @@ extern "C" {
 ****************************************/
 
 BOOL cg_bittorrent_getbitfieldparam(int pieceIdx, int *bitfieldNum, CgByte *bitfieldMask);
+BOOL cg_bittorrent_setbitfield(CgByte *bitfield, int bitfieldLen, int pieceIdx, BOOL flag);
 BOOL cg_bittorrent_haspiece(CgByte *bitfield, int bitfieldLen, int pieceIdx);
-
 
 #ifdef  __cplusplus
 }

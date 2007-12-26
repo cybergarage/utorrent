@@ -55,6 +55,8 @@ CgBittorrentPeer *cg_bittorrent_sequential_strategymgr_getpeer(CgBittorrentStrat
 		if (cg_bittorrent_peer_isbound(peer))
 			continue;
 		if (cg_bittorrent_peer_hasbitfield(peer)) {
+			if (cg_bittorrent_peer_haspiece(peer, pieceIdx))
+				return peer;
 		}
 		return peer;
 	}

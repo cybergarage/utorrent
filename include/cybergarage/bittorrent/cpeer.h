@@ -22,6 +22,7 @@
 #include <cybergarage/bittorrent/chandshake.h>
 #include <cybergarage/bittorrent/cmessage.h>
 #include <cybergarage/bittorrent/csha1.h>
+#include <cybergarage/bittorrent/cutil.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -51,7 +52,7 @@ typedef struct _CgBittorrentPeer {
 	int timeout;
 	/* Bitfield */
 	CgByte *bitfield;
-	int bitfieldLength;
+	int bitfieldLen;
 	/* Statistics */
 	int numSucceeded;
 	int numFailed;
@@ -215,7 +216,7 @@ void cg_bittorrent_peer_setaddress(CgBittorrentPeer *peer, char *addr);
  * \param value Bitfield to set.
  * \param value Length of the bitfield to set.
  */
-void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, int bitfieldLength);
+void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, int bitfieldLen);
 
  /**
  * Get a peer bitfield.
@@ -259,7 +260,7 @@ void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, in
  *
  * \return Length of the bitfield.
  */
-#define cg_bittorrent_peer_getbitfieldlength(peer) (peer->bitfieldLength)
+#define cg_bittorrent_peer_getbitfieldlength(peer) (peer->bitfieldLen)
 
  /**
  * Connect the specified peer.
@@ -342,7 +343,7 @@ BOOL cg_bittorrent_peer_handshake(CgBittorrentPeer *peer, CgBittorrentHandshake 
  *
  * \return TRUE if the peer has the specified piece, otherwise FALSE.
  */
-BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index);
+#define cg_bittorrent_peer_haspiece(peer, pieceIdx) cg_bittorrent_haspiece(peer->bitfield, peer->bitfieldLen, pieceIdx)
 
 /**
  * Check if a peer has the specfied piece.

@@ -35,7 +35,7 @@ CgBittorrentPeer *cg_bittorrent_peer_new(void)
 	peer->port = 0;
 	peer->sock = NULL;
 	peer->bitfield = NULL;
-	peer->bitfieldLength = 0;
+	peer->bitfieldLen = 0;
 	peer->tracker = NULL;
 	peer->timeout = 0;
 
@@ -93,7 +93,7 @@ void cg_bittorrent_peer_setaddress(CgBittorrentPeer *peer, char *addr)
 * cg_bittorrent_peer_setbitfield
 ****************************************/
 
-void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, int bitfieldLength)
+void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, int bitfieldLen)
 {
 	if (!peer)
 		return;
@@ -101,31 +101,14 @@ void cg_bittorrent_peer_setbitfield(CgBittorrentPeer *peer, CgByte *bitfield, in
 	if (peer->bitfield) {
 		free(peer->bitfield);
 		peer->bitfield = NULL;
-		peer->bitfieldLength = 0;
+		peer->bitfieldLen = 0;
 	}
 
-	if (bitfield && 0 < bitfieldLength) {
-		peer->bitfield = malloc(bitfieldLength);
-		memcpy(peer->bitfield, bitfield, bitfieldLength);
-		peer->bitfieldLength = bitfieldLength;
+	if (bitfield && 0 < bitfieldLen) {
+		peer->bitfield = malloc(bitfieldLen);
+		memcpy(peer->bitfield, bitfield, bitfieldLen);
+		peer->bitfieldLen = bitfieldLen;
 	}
-}
-
-/****************************************
-* cg_bittorrent_peer_haspiece
-****************************************/
-
-BOOL cg_bittorrent_peer_haspiece(CgBittorrentPeer *peer, int index)
-{
-	int bitfieldNum;
-	int bitfieldOffset;
-	CgByte bitfieldMask;
-	bitfieldNum = index / 8;
-	bitfieldOffset = index % 8;
-	bitfieldMask = 1 << (7 - bitfieldOffset); 
-	if (cg_bittorrent_peer_getbitfieldlength(peer) < bitfieldNum)
-		return FALSE;
-	return (peer->bitfield[bitfieldNum] & bitfieldMask) ? TRUE : FALSE;
 }
 
 /****************************************
