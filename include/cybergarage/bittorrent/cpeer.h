@@ -557,13 +557,6 @@ BOOL cg_bittorrent_peer_unchoke(CgBittorrentPeer *peer);
 BOOL cg_bittorrent_peer_interested(CgBittorrentPeer *peer);
 BOOL cg_bittorrent_peer_notinterested(CgBittorrentPeer *peer);
 
-/****************************************
-* Function (Internal)
-****************************************/
-
-BOOL cg_bittorrent_getbitfieldparam(int pieceIdx, int *bitfieldNum, CgByte *bitfieldMask);
-BOOL cg_bittorrent_haspiece(CgByte *bitfield, int bitfieldLen, int pieceIdx);
-
 #ifdef  __cplusplus
 }
 #endif

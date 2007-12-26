@@ -193,6 +193,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\cybergarage\bittorrent\ccommon.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cdictionary.c"
 				>
 			</File>
@@ -266,10 +270,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\cybergarage\bittorrent\cpeer_bitfield.c"
 				>
 			</File>
 			<File
